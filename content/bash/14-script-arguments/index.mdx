@@ -1,0 +1,513 @@
+---
+title: "Script Arguments"
+track: "bash"
+chapter: 3
+lesson: 14
+slug: "14-script-arguments"
+prerequisites: ["13-text-processing"]
+estimatedTime: 25
+difficulty: "intermediate"
+xpReward: 50
+objectives:
+  - Understand positional parameters ($1, $2, etc)
+  - Master special variables ($@, $#, $*)
+  - Learn to pass arguments to scripts
+  - Build flexible, reusable scripts
+nextLesson: "15-final-quest"
+prevLesson: "13-text-processing"
+---
+
+# Script Arguments
+
+<StoryBox character="bash_betty">
+  Welcome back, script architect! Your scripts are looking good and working with files. But they all do the SAME thing every time. Boring!
+
+  What if your script could be different each time you run it? What if YOU could tell the script what to do when you run it? That's the power of ARGUMENTS!
+</StoryBox>
+
+## What Are Script Arguments?
+
+Arguments are like giving instructions to your script when you run it. Just like commands take arguments!
+
+<TerminalDemo>
+{`# Commands use arguments all the time:
+ls -la /home
+# ls is the command
+# -la and /home are ARGUMENTS
+
+# Your scripts can do the same!
+./greet.sh Alice
+# ./greet.sh is your script
+# Alice is an ARGUMENT`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  Think of arguments like customizing a pizza order:
+  - The pizza shop (your script) is always there
+  - But YOU tell them what toppings you want (arguments)
+  - Same shop, different pizza every time!
+
+  Same script, different behavior every time!
+</StoryBox>
+
+## Positional Parameters
+
+Bash uses special variables to store arguments:
+
+| Variable | What It Contains |
+|----------|------------------|
+| `$0` | The script name itself |
+| `$1` | First argument |
+| `$2` | Second argument |
+| `$3` | Third argument |
+| ... | And so on... |
+
+<TerminalDemo>
+{`#!/bin/bash
+# Save as greet.sh
+
+echo "Script name: $0"
+echo "First argument: $1"
+echo "Second argument: $2"
+
+# Run it:
+# ./greet.sh Alice Bob
+#
+# Output:
+# Script name: ./greet.sh
+# First argument: Alice
+# Second argument: Bob`}
+</TerminalDemo>
+
+## Your First Argument Script
+
+Let's create a greeting script that says hello to whoever you specify:
+
+<TerminalDemo>
+{`#!/bin/bash
+# greet.sh - Personalized greeting
+
+echo "Hello, $1!"
+echo "Welcome to bash scripting!"
+
+# Run it:
+# ./greet.sh Alice
+# Output: Hello, Alice!
+#         Welcome to bash scripting!
+
+# ./greet.sh Bob
+# Output: Hello, Bob!
+#         Welcome to bash scripting!`}
+</TerminalDemo>
+
+<FunFact>
+  You can have as many arguments as you want! There's no practical limit. Scripts can accept $1, $2, $3... all the way to $999 and beyond!
+</FunFact>
+
+## Multiple Arguments
+
+Let's use multiple arguments together:
+
+<TerminalDemo>
+{`#!/bin/bash
+# introduce.sh - Full introduction
+
+echo "Hi! My name is $1 $2"
+echo "I am $3 years old"
+echo "I live in $4"
+
+# Run it:
+# ./introduce.sh John Smith 25 Boston
+#
+# Output:
+# Hi! My name is John Smith
+# I am 25 years old
+# I live in Boston`}
+</TerminalDemo>
+
+## Special Variables
+
+Bash has some SUPER useful special variables for working with arguments:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+echo "Script name: $0"
+echo "Number of arguments: $#"
+echo "All arguments: $@"
+echo "All arguments (as one): $*"
+echo "Process ID: $$"
+echo "Last command exit status: $?"`}
+</TerminalDemo>
+
+| Variable | What It Does |
+|----------|--------------|
+| `$#` | Count how many arguments |
+| `$@` | All arguments as separate words |
+| `$*` | All arguments as one string |
+| `$?` | Exit status of last command |
+| `$$` | Process ID of the script |
+
+<StoryBox character="bash_betty">
+  The `$#` is SUPER useful! You can check if someone forgot to provide arguments:
+
+  "Did you give me 3 arguments? No? Then I'll show an error message!"
+
+  Professional scripts ALWAYS check if they got the right number of arguments!
+</StoryBox>
+
+## Checking Argument Count
+
+Always check if you got the arguments you need:
+
+<TerminalDemo>
+{`#!/bin/bash
+# greet_safe.sh - Checks for arguments
+
+if [ $# -eq 0 ]; then
+    echo "Error: Please provide a name!"
+    echo "Usage: $0 <name>"
+    exit 1
+fi
+
+echo "Hello, $1!"
+
+# Run without argument:
+# ./greet_safe.sh
+# Output: Error: Please provide a name!
+#         Usage: ./greet_safe.sh <name>
+
+# Run with argument:
+# ./greet_safe.sh Alice
+# Output: Hello, Alice!`}
+</TerminalDemo>
+
+## The Right Way to Handle Arguments
+
+Here's a professional template for argument handling:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+# Check if we got exactly 2 arguments
+if [ $# -ne 2 ]; then
+    echo "Error: Wrong number of arguments"
+    echo "Usage: $0 <name> <age>"
+    echo "Example: $0 Alice 25"
+    exit 1
+fi
+
+# Now safe to use the arguments
+NAME=$1
+AGE=$2
+
+echo "Hello, $NAME!"
+echo "You are $AGE years old."`}
+</TerminalDemo>
+
+<FunFact>
+  The `exit 1` is important! When a script exits with 0, it means "success". Any other number (1, 2, 3...) means "error". This helps other scripts or systems know if your script worked or failed!
+</FunFact>
+
+## Looping Through All Arguments
+
+Sometimes you don't know how many arguments you'll get. Use `$@` to loop through them all:
+
+<TerminalDemo>
+{`#!/bin/bash
+# greet_all.sh - Greet everyone!
+
+if [ $# -eq 0 ]; then
+    echo "Error: Please provide at least one name"
+    exit 1
+fi
+
+echo "Greeting everyone..."
+echo ""
+
+for name in "$@"; do
+    echo "Hello, $name!"
+done
+
+# Run it:
+# ./greet_all.sh Alice Bob Charlie
+#
+# Output:
+# Greeting everyone...
+#
+# Hello, Alice!
+# Hello, Bob!
+# Hello, Charlie!`}
+</TerminalDemo>
+
+## Practice: Create a File Backup Script
+
+<Challenge
+  id="ch3-backup-script"
+  title="Build a Flexible Backup Script"
+  description="Create a script that backs up files with custom names"
+  steps={[
+    {
+      command: "#!/bin/bash",
+      hint: "Start your backup script"
+    },
+    {
+      command: "if [ $# -ne 2 ]; then\n    echo \"Usage: $0 <source> <backup_name>\"\n    exit 1\nfi",
+      hint: "Check for exactly 2 arguments"
+    },
+    {
+      command: "SOURCE=$1\nBACKUP=$2",
+      hint: "Store arguments in readable variable names"
+    },
+    {
+      command: "if [ ! -f \"$SOURCE\" ]; then\n    echo \"Error: $SOURCE does not exist\"\n    exit 1\nfi",
+      hint: "Check if source file exists"
+    },
+    {
+      command: "cp \"$SOURCE\" \"$BACKUP\"\necho \"Backed up $SOURCE to $BACKUP\"",
+      hint: "Perform the backup"
+    }
+  ]}
+  xp={40}
+  badge="backup_master"
+/>
+
+## Arguments vs Variables
+
+What's the difference?
+
+<TerminalDemo>
+{`#!/bin/bash
+
+# This is a variable YOU create
+MY_VAR="Hello"
+
+# This is an argument the USER provides
+USER_INPUT=$1
+
+echo "Variable: $MY_VAR"
+echo "Argument: $USER_INPUT"
+
+# Variables stay the same every time
+# Arguments can be different every time!`}
+</TerminalDemo>
+
+## Shifting Arguments
+
+You can "shift" arguments to process them one at a time:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+echo "First argument: $1"
+
+shift  # Move all arguments left by one
+
+echo "First argument after shift: $1"
+
+# Run: ./script.sh A B C
+# Output:
+# First argument: A
+# First argument after shift: B`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  Shifting is like moving through a line:
+  - First person in line gets served
+  - They leave
+  - Next person moves to the front
+  - Repeat!
+
+  It's useful when processing arguments one by one in a loop!
+</StoryBox>
+
+## Default Values for Arguments
+
+What if an argument is optional? Provide a default!
+
+<TerminalDemo>
+{`#!/bin/bash
+
+# Use argument if provided, otherwise use default
+NAME=${1:-"Guest"}
+AGE=${2:-"unknown"}
+
+echo "Hello, $NAME!"
+echo "Age: $AGE"
+
+# Run without arguments:
+# ./script.sh
+# Output: Hello, Guest!
+#         Age: unknown
+
+# Run with arguments:
+# ./script.sh Alice 25
+# Output: Hello, Alice!
+#         Age: 25`}
+</TerminalDemo>
+
+The syntax `${VAR:-default}` means: "Use $VAR if it exists, otherwise use default"
+
+## Real-World Example: File Search Script
+
+<TerminalDemo>
+{`#!/bin/bash
+# search.sh - Search for files
+
+# Check arguments
+if [ $# -lt 1 ]; then
+    echo "Error: Please provide a search term"
+    echo "Usage: $0 <search_term> [directory]"
+    exit 1
+fi
+
+SEARCH=$1
+DIR=${2:-.}  # Use second argument or current directory
+
+echo "Searching for '$SEARCH' in $DIR..."
+echo ""
+
+# Perform search
+find "$DIR" -name "*$SEARCH*" -type f
+
+# Run it:
+# ./search.sh "data" /home/user
+# Searches for files containing "data" in /home/user
+
+# ./search.sh "data"
+# Searches for files containing "data" in current directory`}
+</TerminalDemo>
+
+## Complete Example: Copy Multiple Files
+
+<TerminalDemo>
+{`#!/bin/bash
+# multicopy.sh - Copy multiple files to a directory
+
+# Need at least 2 arguments (source and destination)
+if [ $# -lt 2 ]; then
+    echo "Error: Not enough arguments"
+    echo "Usage: $0 <file1> [file2] [...] <destination>"
+    exit 1
+fi
+
+# Get all arguments
+ARGS=($@)
+
+# Last argument is the destination
+DEST="${ARGS[-1]}"
+
+# All other arguments are source files
+SOURCES=("${ARGS[@]:0:$#-1}")
+
+# Check if destination is a directory
+if [ ! -d "$DEST" ]; then
+    echo "Error: $DEST is not a directory"
+    exit 1
+fi
+
+# Copy each file
+echo "Copying files to $DEST..."
+for file in "${SOURCES[@]}"; do
+    if [ -f "$file" ]; then
+        cp "$file" "$DEST"
+        echo "✓ Copied $file"
+    else
+        echo "✗ Skipped $file (not found)"
+    fi
+done
+
+echo "Done!"
+
+# Run it:
+# ./multicopy.sh file1.txt file2.txt file3.txt ~/backups/`}
+</TerminalDemo>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does $1 represent in a bash script?",
+    options: ["The script name", "The first argument passed to the script", "The number 1", "The first line of the script"],
+    correct: 1,
+    explanation: "$1 is the first argument passed to your script when you run it. For example, in './script.sh hello', hello is $1!"
+  },
+  {
+    question: "How do you check the number of arguments?",
+    options: ["$?", "$#", "$@", "$!"],
+    correct: 1,
+    explanation: "$# contains the count of arguments. If you run './script.sh A B C', then $# equals 3!"
+  },
+  {
+    question: "What does $0 contain?",
+    options: ["Zero", "Nothing", "The script name", "The last argument"],
+    correct: 2,
+    explanation: "$0 contains the name of the script itself. If you run './myscript.sh', then $0 is './myscript.sh'!"
+  },
+  {
+    question: "What does ${NAME:-Guest} do?",
+    options: ["Subtract Guest from NAME", "Use NAME if set, otherwise use Guest", "Compare NAME to Guest", "Set NAME to Guest permanently"],
+    correct: 1,
+    explanation: "This provides a default value! If NAME is not set or empty, it uses 'Guest' instead. Perfect for optional arguments!"
+  }
+]} />
+
+## Challenge: Build a Calculator Script
+
+<Challenge
+  id="ch3-calculator"
+  title="Create a Command-Line Calculator"
+  description="Build a script that performs math operations"
+  steps={[
+    {
+      command: "# Create calc.sh that takes 3 arguments: num1 operation num2",
+      hint: "Example: ./calc.sh 5 + 3"
+    },
+    {
+      command: "# Check for exactly 3 arguments",
+      hint: "Show usage if not 3 arguments"
+    },
+    {
+      command: "# Support +, -, *, / operations",
+      hint: "Use case statement or if-elif"
+    },
+    {
+      command: "# Validate that num1 and num2 are numbers",
+      hint: "Check if they're valid numbers"
+    },
+    {
+      command: "# Display result with nice formatting",
+      hint: "Example: 5 + 3 = 8"
+    }
+  ]}
+  xp={50}
+  badge="calculator_creator"
+/>
+
+## What You've Learned
+
+You now know how to:
+- Use positional parameters ($1, $2, $3...)
+- Check argument count with $#
+- Loop through all arguments with $@
+- Provide default values for optional arguments
+- Validate arguments before using them
+- Create flexible, reusable scripts
+
+<StoryBox character="bash_betty">
+  FANTASTIC! You've unlocked one of the most powerful features of bash scripting!
+
+  Arguments turn your scripts from "doing one thing" to "doing ANYTHING you tell them". That's the difference between a toy and a TOOL!
+
+  Professional scripts are flexible. Now YOUR scripts can be flexible too!
+</StoryBox>
+
+## What's Next?
+
+You've mastered all the essential skills! Now it's time for your FINAL QUEST - build a complete automation project!
+
+<NextLesson
+  track="bash"
+  lesson="15-final-quest"
+  teaser="Put everything together and become a Bash Wizard!"
+/>

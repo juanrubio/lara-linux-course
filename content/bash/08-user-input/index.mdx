@@ -1,0 +1,523 @@
+---
+title: "User Input"
+track: "bash"
+chapter: 2
+lesson: 8
+slug: "08-user-input"
+prerequisites: ["07-loops"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Master the read command
+  - Create interactive scripts
+  - Handle user input safely
+  - Build user-friendly prompts
+nextLesson: "09-command-substitution"
+prevLesson: "07-loops"
+---
+
+# User Input
+
+<StoryBox character="bash_betty">
+  Time to make your scripts come alive! Up until now, your scripts do the same thing every time. But what if you want your script to ASK questions and respond differently based on the answers?
+
+  That's where USER INPUT comes in! You'll learn to create scripts that talk to you, ask questions, and make decisions based on what you tell them!
+
+  Let's make your scripts INTERACTIVE!
+</StoryBox>
+
+## The Read Command
+
+The `read` command is how bash gets input from the user. It waits for you to type something, then stores it in a variable.
+
+Basic structure:
+```bash
+read variable_name
+```
+
+Let's see it in action:
+
+<TerminalDemo>
+{`$ echo "What is your name?"
+What is your name?
+$ read name
+Betty
+$ echo "Hello, $name!"
+Hello, Betty!`}
+</TerminalDemo>
+
+<FunFact>
+  The read command WAITS for you to press Enter. The script pauses until you give it input! It's like the script is having a conversation with you.
+</FunFact>
+
+## Read with a Prompt
+
+You can combine the question and read into one line using the `-p` flag (prompt):
+
+<TerminalDemo>
+{`$ read -p "What is your name? " name
+What is your name? Betty
+$ echo "Hello, $name!"
+Hello, Betty!`}
+</TerminalDemo>
+
+This is much cleaner! The `-p` flag displays a prompt and waits for input on the same line.
+
+## Creating an Interactive Script
+
+Let's create a script that asks questions:
+
+<TerminalDemo>
+{`$ cat > greet.sh << 'EOF'
+#!/bin/bash
+
+echo "=== FRIENDLY GREETER ==="
+echo
+
+read -p "What is your name? " name
+read -p "How old are you? " age
+read -p "What is your favorite color? " color
+
+echo
+echo "Nice to meet you, $name!"
+echo "You are $age years old."
+echo "I also love the color $color!"
+EOF
+
+$ chmod +x greet.sh
+$ ./greet.sh
+=== FRIENDLY GREETER ===
+
+What is your name? Betty
+How old are you? 14
+What is your favorite color? blue
+
+Nice to meet you, Betty!
+You are 14 years old.
+I also love the color blue!`}
+</TerminalDemo>
+
+## Reading Numbers
+
+When you read input, it comes in as text. To do math with it, treat it as a number:
+
+<TerminalDemo>
+{`$ cat > calculator.sh << 'EOF'
+#!/bin/bash
+
+echo "=== SIMPLE CALCULATOR ==="
+
+read -p "Enter first number: " num1
+read -p "Enter second number: " num2
+
+sum=$((num1 + num2))
+difference=$((num1 - num2))
+product=$((num1 * num2))
+
+echo
+echo "Sum: $sum"
+echo "Difference: $difference"
+echo "Product: $product"
+EOF
+
+$ chmod +x calculator.sh
+$ ./calculator.sh
+=== SIMPLE CALCULATOR ===
+Enter first number: 10
+Enter second number: 5
+
+Sum: 15
+Difference: 5
+Product: 50`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  Notice how we use $((num1 + num2)) to do math? Bash automatically treats the input as numbers when you use $(( )) for arithmetic!
+</StoryBox>
+
+## Silent Input (Passwords)
+
+When asking for passwords, you don't want the text to show on screen! Use `-s` for silent input:
+
+<TerminalDemo>
+{`$ read -sp "Enter password: " password
+Enter password:
+$ echo
+$ echo "Password stored! (It was: $password)"
+Password stored! (It was: secret123)`}
+</TerminalDemo>
+
+The `-s` flag means "silent" - the user's typing won't appear on screen!
+
+## Reading Multiple Values at Once
+
+You can read multiple words into separate variables:
+
+<TerminalDemo>
+{`$ read -p "Enter your first and last name: " first last
+Enter your first and last name: Betty Bash
+$ echo "First name: $first"
+First name: Betty
+$ echo "Last name: $last"
+Last name: Bash`}
+</TerminalDemo>
+
+## Default Values with -e and -i
+
+You can provide default values that users can edit:
+
+<TerminalDemo>
+{`$ read -p "Username: " -e -i "betty" username
+Username: betty█
+$ # User can edit or press Enter to accept
+$ echo "Username: $username"`}
+</TerminalDemo>
+
+## Reading Arrays
+
+You can read multiple items into an array:
+
+<TerminalDemo>
+{`$ read -p "Enter your favorite colors (space-separated): " -a colors
+Enter your favorite colors (space-separated): red blue green yellow
+$ echo "You entered ${#colors[@]} colors"
+You entered 4 colors
+$ echo "First color: ${colors[0]}"
+First color: red
+$ echo "All colors: ${colors[@]}"
+All colors: red blue green yellow`}
+</TerminalDemo>
+
+## Timeout for Read
+
+Don't want to wait forever? Use `-t` to set a timeout:
+
+<TerminalDemo>
+{`$ if read -t 5 -p "Enter your name (5 seconds): " name
+> then
+>     echo "Hello, $name!"
+> else
+>     echo "Too slow! Using default name."
+>     name="Guest"
+> fi
+Enter your name (5 seconds): █
+# If you wait 5 seconds without typing
+Too slow! Using default name.`}
+</TerminalDemo>
+
+## Real-World Example: User Registration Script
+
+<TerminalDemo>
+{`$ cat > register.sh << 'EOF'
+#!/bin/bash
+
+echo "=============================="
+echo "     USER REGISTRATION"
+echo "=============================="
+echo
+
+# Get user information
+read -p "Enter username: " username
+
+# Check if username is empty
+if [ -z "$username" ]
+then
+    echo "Error: Username cannot be empty!"
+    exit 1
+fi
+
+# Get password (hidden)
+read -sp "Enter password: " password
+echo
+
+# Confirm password
+read -sp "Confirm password: " password2
+echo
+
+# Check if passwords match
+if [ "$password" != "$password2" ]
+then
+    echo "Error: Passwords do not match!"
+    exit 1
+fi
+
+# Get email
+read -p "Enter email: " email
+
+# Get age
+read -p "Enter age: " age
+
+# Validate age is a number
+if ! [[ "$age" =~ ^[0-9]+$ ]]
+then
+    echo "Error: Age must be a number!"
+    exit 1
+fi
+
+# All validations passed!
+echo
+echo "=============================="
+echo "   REGISTRATION SUCCESSFUL!"
+echo "=============================="
+echo "Username: $username"
+echo "Email: $email"
+echo "Age: $age"
+echo
+echo "Welcome to the system, $username!"
+EOF
+
+$ chmod +x register.sh
+$ ./register.sh
+==============================
+     USER REGISTRATION
+==============================
+
+Enter username: bash_betty
+Enter password:
+Confirm password:
+Enter email: betty@bash.com
+Enter age: 14
+
+==============================
+   REGISTRATION SUCCESSFUL!
+==============================
+Username: bash_betty
+Email: betty@bash.com
+Age: 14
+
+Welcome to the system, bash_betty!`}
+</TerminalDemo>
+
+## Real-World Example: Interactive Menu
+
+<TerminalDemo>
+{`$ cat > menu.sh << 'EOF'
+#!/bin/bash
+
+while true
+do
+    echo
+    echo "=============================="
+    echo "       MAIN MENU"
+    echo "=============================="
+    echo "1. Show date and time"
+    echo "2. Show current directory"
+    echo "3. List files"
+    echo "4. Show disk usage"
+    echo "5. Exit"
+    echo "=============================="
+
+    read -p "Enter your choice (1-5): " choice
+
+    case $choice in
+        1)
+            echo
+            date
+            ;;
+        2)
+            echo
+            pwd
+            ;;
+        3)
+            echo
+            ls -lh
+            ;;
+        4)
+            echo
+            df -h
+            ;;
+        5)
+            echo "Goodbye!"
+            exit 0
+            ;;
+        *)
+            echo "Invalid choice! Please enter 1-5."
+            ;;
+    esac
+
+    read -p "Press Enter to continue..."
+done
+EOF
+
+$ chmod +x menu.sh
+$ ./menu.sh
+==============================
+       MAIN MENU
+==============================
+1. Show date and time
+2. Show current directory
+3. List files
+4. Show disk usage
+5. Exit
+==============================
+Enter your choice (1-5): 1
+
+Fri Dec 19 11:00:00 PST 2025
+Press Enter to continue...`}
+</TerminalDemo>
+
+<FunFact>
+  The case statement is perfect for menus! It checks the user's choice against multiple options. It's like a fancy if/elif/else for checking one variable against many values!
+</FunFact>
+
+## Input Validation
+
+Always validate user input to prevent errors:
+
+<TerminalDemo>
+{`$ cat > validate.sh << 'EOF'
+#!/bin/bash
+
+# Keep asking until we get valid input
+while true
+do
+    read -p "Enter a number between 1 and 10: " num
+
+    # Check if it's a number
+    if ! [[ "$num" =~ ^[0-9]+$ ]]
+    then
+        echo "Error: That's not a number!"
+        continue
+    fi
+
+    # Check if in range
+    if [ "$num" -ge 1 ] && [ "$num" -le 10 ]
+    then
+        echo "Great! You entered: $num"
+        break
+    else
+        echo "Error: Number must be between 1 and 10!"
+    fi
+done
+EOF
+
+$ chmod +x validate.sh
+$ ./validate.sh
+Enter a number between 1 and 10: abc
+Error: That's not a number!
+Enter a number between 1 and 10: 15
+Error: Number must be between 1 and 10!
+Enter a number between 1 and 10: 7
+Great! You entered: 7`}
+</TerminalDemo>
+
+## Practice Time!
+
+<Challenge
+  id="bash-input-quiz"
+  title="Quiz Game"
+  description="Create an interactive quiz that asks questions and scores answers"
+  steps={[
+    {
+      command: 'score=0',
+      hint: "Initialize score to zero"
+    },
+    {
+      command: 'read -p "What is 2 + 2? " answer\nif [ "$answer" = "4" ]; then\n    echo "Correct!"\n    score=$((score + 1))\nelse\n    echo "Wrong! The answer is 4"\nfi',
+      hint: "Ask a question and check the answer"
+    },
+    {
+      command: 'echo "Your final score: $score"',
+      hint: "Display the final score"
+    }
+  ]}
+  xp={30}
+  badge="interactive_master"
+/>
+
+## Read Command Options
+
+| Option | Purpose | Example |
+|--------|---------|---------|
+| `-p` | Display prompt | `read -p "Name: " name` |
+| `-s` | Silent (hidden input) | `read -sp "Password: " pass` |
+| `-t` | Timeout in seconds | `read -t 5 -p "Quick! " ans` |
+| `-n` | Read N characters | `read -n 1 -p "Press any key"` |
+| `-a` | Read into array | `read -a colors` |
+| `-e` | Enable line editing | `read -e -i "default" var` |
+| `-i` | Default value | `read -e -i "betty" name` |
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "Which command reads user input in bash?",
+    options: ["input", "read", "get", "scan"],
+    correct: 1,
+    explanation: "The read command gets input from the user and stores it in a variable!"
+  },
+  {
+    question: "What does the -p flag do with read?",
+    options: ["Makes it private", "Shows a prompt", "Prints the input", "Makes it permanent"],
+    correct: 1,
+    explanation: "The -p flag displays a prompt message on the same line as the input!"
+  },
+  {
+    question: "How do you hide password input?",
+    options: ["read -h", "read -s", "read -p", "read --hide"],
+    correct: 1,
+    explanation: "The -s flag makes input silent (not displayed on screen) - perfect for passwords!"
+  },
+  {
+    question: "Why should you validate user input?",
+    options: ["It's optional", "To prevent errors and ensure correct data", "To make it slower", "Because it looks cool"],
+    correct: 1,
+    explanation: "Validation prevents errors by ensuring users enter valid data in the correct format!"
+  },
+  {
+    question: "What happens when read command executes?",
+    options: ["Script continues immediately", "Script waits for Enter key", "Script exits", "Nothing happens"],
+    correct: 1,
+    explanation: "The read command pauses and waits for the user to type something and press Enter!"
+  }
+]} />
+
+## Input Best Practices
+
+1. **Always validate input:**
+   ```bash
+   # Check if empty
+   if [ -z "$input" ]
+   then
+       echo "Error: Input cannot be empty!"
+   fi
+   ```
+
+2. **Provide clear prompts:**
+   ```bash
+   # BAD
+   read name
+
+   # GOOD
+   read -p "Please enter your name: " name
+   ```
+
+3. **Give feedback:**
+   ```bash
+   read -p "Enter filename: " file
+   echo "Processing $file..."
+   ```
+
+4. **Use defaults when helpful:**
+   ```bash
+   read -p "Port [8080]: " port
+   port=${port:-8080}  # Use 8080 if empty
+   ```
+
+5. **Handle cancellation (Ctrl+C) gracefully:**
+   ```bash
+   trap 'echo "Cancelled by user"; exit 1' INT
+   ```
+
+<StoryBox character="bash_betty">
+  Congratulations! Your scripts can now have conversations with users!
+
+  Next, we'll learn about COMMAND SUBSTITUTION - how to capture the output of commands and use them in your scripts. It's like giving your scripts superpowers!
+</StoryBox>
+
+<NextLesson
+  track="bash"
+  lesson="09-command-substitution"
+  teaser="Learn to capture and use command output in your scripts!"
+/>

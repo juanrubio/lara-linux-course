@@ -1,0 +1,192 @@
+---
+title: "Navigation"
+track: "linux"
+chapter: 2
+lesson: 7
+slug: "07-navigation"
+prerequisites: ["06-understanding-directories"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Master the cd command for navigation
+  - Use Tab completion for faster typing
+  - Navigate efficiently with shortcuts
+nextLesson: "08-creating-removing"
+prevLesson: "06-understanding-directories"
+---
+
+# Navigation
+
+<StoryBox character="commander_byte">
+  Time to learn how to MOVE, soldier! Standing still gets you nowhere in the digital realm.
+
+  The `cd` command is your teleporter. Master it, and you can zip anywhere in the file system instantly!
+</StoryBox>
+
+## The cd Command
+
+**cd** stands for "**C**hange **D**irectory". It's how you move from one folder to another.
+
+<TerminalDemo>
+{`learner@codequest:~$ pwd
+/home/learner
+
+learner@codequest:~$ cd Documents
+learner@codequest:~/Documents$ pwd
+/home/learner/Documents`}
+</TerminalDemo>
+
+Notice how the prompt changed from `~` to `~/Documents`? That shows you moved!
+
+## Navigation Shortcuts
+
+| Command | Where it takes you |
+|---------|-------------------|
+| `cd ~` or just `cd` | Your home directory |
+| `cd /` | The root directory |
+| `cd ..` | One directory up (parent) |
+| `cd -` | Back to previous directory |
+| `cd ../..` | Two directories up |
+
+<FunFact>
+  Just typing `cd` with nothing after it always takes you home! It's like clicking "Home" on a website - quick escape!
+</FunFact>
+
+## Tab Completion: Your Best Friend
+
+Here's a SECRET that will save you HOURS of typing: **Tab completion!**
+
+Start typing a directory name, then press Tab:
+
+<TerminalDemo>
+{`learner@codequest:~$ cd Doc<TAB>
+learner@codequest:~$ cd Documents/`}
+</TerminalDemo>
+
+The terminal auto-completes for you! If there are multiple matches, press Tab twice to see all options.
+
+<StoryBox character="commander_byte">
+  ALWAYS use Tab completion! It's not just faster - it prevents typos too. If Tab doesn't complete, that means the file or folder doesn't exist (or you spelled something wrong)!
+</StoryBox>
+
+## Navigation Practice
+
+Let's practice moving around!
+
+<TerminalDemo>
+{`learner@codequest:~$ cd /
+learner@codequest:/$ pwd
+/
+
+learner@codequest:/$ cd home
+learner@codequest:/home$ ls
+learner
+
+learner@codequest:/home$ cd learner
+learner@codequest:~$ pwd
+/home/learner
+
+learner@codequest:~$ cd -
+/home
+learner@codequest:/home$ cd
+learner@codequest:~$ pwd
+/home/learner`}
+</TerminalDemo>
+
+See how `cd -` took us BACK to `/home`? Super useful when bouncing between two directories!
+
+## Combining Commands
+
+You can chain directories together:
+
+<TerminalDemo>
+{`learner@codequest:~$ cd Documents/projects/game
+learner@codequest:~/Documents/projects/game$ pwd
+/home/learner/Documents/projects/game
+
+learner@codequest:~/Documents/projects/game$ cd ../..
+learner@codequest:~/Documents$ pwd
+/home/learner/Documents`}
+</TerminalDemo>
+
+## Common Mistakes
+
+| What you typed | The problem | Solution |
+|----------------|-------------|----------|
+| `cd documents` | Wrong case! | Use `cd Documents` (Linux is case-sensitive) |
+| `cd My Documents` | Space in name | Use `cd "My Documents"` or `cd My\ Documents` |
+| `cd downloads` | Doesn't exist | Use `ls` first to see what's actually there |
+
+<FunFact>
+  Linux is CASE-SENSITIVE! "Documents", "documents", and "DOCUMENTS" are three DIFFERENT folders. Always check with `ls` if you're not sure!
+</FunFact>
+
+## Practice: Navigate Like a Pro
+
+<Challenge
+  id="ch2-navigation"
+  title="Directory Teleporter"
+  description="Master the art of navigation"
+  steps={[
+    { command: "cd /", hint: "Go to the root directory" },
+    { command: "cd /home", hint: "Navigate to the home folder" },
+    { command: "cd ~", hint: "Return to YOUR home directory" },
+    { command: "cd -", hint: "Go back to where you just were" },
+    { command: "cd", hint: "Use the shortcut to go home" }
+  ]}
+  xp={30}
+  badge="navigator"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does 'cd ..' do?",
+    options: ["Goes to home", "Goes up one directory", "Lists files", "Shows current directory"],
+    correct: 1,
+    explanation: "cd .. moves you up one level to the parent directory!"
+  },
+  {
+    question: "What's the fastest way to go to your home directory?",
+    options: ["cd /home/username", "cd ~", "Just cd", "Both cd and cd ~"],
+    correct: 3,
+    explanation: "Both 'cd' alone and 'cd ~' take you to your home directory!"
+  },
+  {
+    question: "What does 'cd -' do?",
+    options: ["Goes home", "Goes to root", "Goes to previous directory", "Deletes current directory"],
+    correct: 2,
+    explanation: "cd - takes you back to wherever you were before - like an undo!"
+  },
+  {
+    question: "Why should you use Tab completion?",
+    options: ["It's required", "Saves time and prevents typos", "It's the only way", "It looks cool"],
+    correct: 1,
+    explanation: "Tab completion saves time AND catches errors - if it doesn't complete, something's wrong!"
+  }
+]} />
+
+## Navigation Cheat Sheet
+
+```
+cd              → Go to home directory
+cd ~            → Go to home directory
+cd /            → Go to root directory
+cd ..           → Go up one directory
+cd ../..        → Go up two directories
+cd -            → Go to previous directory
+cd folder       → Go into folder
+cd path/to/dir  → Go to specific path
+```
+
+## What's Next?
+
+Now you can move around! Next, let's learn to CREATE new directories and files!
+
+<NextLesson
+  track="linux"
+  lesson="08-creating-removing"
+  teaser="Learn to build (and tear down) your own file structures!"
+/>

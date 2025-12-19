@@ -1,0 +1,536 @@
+---
+title: "Text Processing"
+track: "bash"
+chapter: 3
+lesson: 13
+slug: "13-text-processing"
+prerequisites: ["12-working-with-files"]
+estimatedTime: 25
+difficulty: "intermediate"
+xpReward: 50
+objectives:
+  - Master echo and printf for output
+  - Learn string manipulation techniques
+  - Format text with colors and styles
+  - Create professional-looking script output
+nextLesson: "14-script-arguments"
+prevLesson: "12-working-with-files"
+---
+
+# Text Processing
+
+<StoryBox character="bash_betty">
+  Welcome back, text wizard! You can work with files, now let's make your scripts look AMAZING!
+
+  Ever wondered how professional scripts have colors, formatted tables, and beautiful output? Today you'll learn the secrets of text processing and formatting!
+</StoryBox>
+
+## Echo vs Printf
+
+You've been using `echo` all along, but did you know there's a more powerful cousin called `printf`?
+
+**echo:** Simple and quick
+**printf:** Powerful and precise
+
+<TerminalDemo>
+{`# Echo - simple output
+echo "Hello, World!"
+# Output: Hello, World!
+
+# Printf - formatted output
+printf "Hello, %s!\\n" "World"
+# Output: Hello, World!`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  Think of echo like writing with a crayon - simple and it works!
+  Think of printf like using a fancy pen - more control, more options!
+
+  For most things, echo is fine. But when you need precise formatting, printf is your friend!
+</StoryBox>
+
+## Echo Basics and Options
+
+Echo has some useful options you might not know about:
+
+<TerminalDemo>
+{`# Regular echo (adds newline at end)
+echo "Line 1"
+echo "Line 2"
+# Output:
+# Line 1
+# Line 2
+
+# Echo without newline (-n)
+echo -n "Loading"
+echo -n "..."
+echo "Done!"
+# Output: Loading...Done!
+
+# Echo with escape sequences (-e)
+echo -e "Line 1\\nLine 2\\nLine 3"
+# Output:
+# Line 1
+# Line 2
+# Line 3`}
+</TerminalDemo>
+
+## Escape Sequences
+
+Escape sequences let you add special characters to your text:
+
+| Sequence | What It Does |
+|----------|--------------|
+| `\n` | New line |
+| `\t` | Tab |
+| `\b` | Backspace |
+| `\\` | Backslash |
+| `\"` | Double quote |
+
+<TerminalDemo>
+{`# Create formatted output
+echo -e "Name:\\tJohn"
+echo -e "Age:\\t25"
+echo -e "City:\\tNew York"
+# Output:
+# Name:   John
+# Age:    25
+# City:   New York
+
+# Multiple new lines
+echo -e "Line 1\\n\\nLine 3"
+# Output:
+# Line 1
+#
+# Line 3`}
+</TerminalDemo>
+
+<FunFact>
+  The `-e` flag in echo means "enable escape sequences". Without it, echo will print `\n` literally instead of creating a new line!
+</FunFact>
+
+## Printf: The Powerful One
+
+Printf uses format specifiers to control output precisely:
+
+| Specifier | What It Formats |
+|-----------|-----------------|
+| `%s` | String |
+| `%d` | Integer (decimal) |
+| `%f` | Floating point number |
+| `%x` | Hexadecimal number |
+
+<TerminalDemo>
+{`# Basic printf with strings
+printf "Hello, %s!\\n" "Alice"
+# Output: Hello, Alice!
+
+# Printf with numbers
+printf "You have %d new messages\\n" 5
+# Output: You have 5 new messages
+
+# Printf with floats
+printf "Pi is approximately %.2f\\n" 3.14159
+# Output: Pi is approximately 3.14
+
+# Multiple values
+printf "%s scored %d points\\n" "Bob" 95
+# Output: Bob scored 95 points`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  The `%.2f` is really cool! It means "show a float with 2 decimal places". You can change the number to show more or fewer decimals!
+
+  `%.4f` would show 3.1416
+  `%.0f` would show 3
+</StoryBox>
+
+## Creating Tables with Printf
+
+Printf is perfect for creating aligned tables:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+# Create a nicely formatted table
+printf "%-10s %-5s %-8s\\n" "Name" "Age" "City"
+printf "%-10s %-5s %-8s\\n" "----------" "-----" "--------"
+printf "%-10s %-5d %-8s\\n" "Alice" 25 "Boston"
+printf "%-10s %-5d %-8s\\n" "Bob" 30 "Chicago"
+printf "%-10s %-5d %-8s\\n" "Charlie" 28 "Denver"
+
+# Output:
+# Name       Age   City
+# ---------- ----- --------
+# Alice      25    Boston
+# Bob        30    Chicago
+# Charlie    28    Denver`}
+</TerminalDemo>
+
+**What does `%-10s` mean?**
+- `%s` = string
+- `10` = use 10 characters width
+- `-` = left-align (without `-`, it's right-aligned)
+
+## Adding Colors to Your Scripts!
+
+This is where things get FUN! You can add colors using ANSI escape codes:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+# Color codes
+RED='\\033[0;31m'
+GREEN='\\033[0;32m'
+YELLOW='\\033[0;33m'
+BLUE='\\033[0;34m'
+NC='\\033[0m' # No Color (reset)
+
+# Use colors
+echo -e "${RED}This is red!${NC}"
+echo -e "${GREEN}This is green!${NC}"
+echo -e "${YELLOW}This is yellow!${NC}"
+echo -e "${BLUE}This is blue!${NC}"
+echo "This is normal again"`}
+</TerminalDemo>
+
+<FunFact>
+  ANSI stands for "American National Standards Institute". These color codes work in almost every terminal! They're like secret codes that tell the terminal "hey, make this text colorful!"
+</FunFact>
+
+## Bold and Bright Colors
+
+<TerminalDemo>
+{`#!/bin/bash
+
+# Regular colors
+RED='\\033[0;31m'
+GREEN='\\033[0;32m'
+
+# Bold/Bright colors
+BOLD_RED='\\033[1;31m'
+BOLD_GREEN='\\033[1;32m'
+
+NC='\\033[0m'
+
+echo -e "${RED}Regular red${NC}"
+echo -e "${BOLD_RED}Bold red${NC}"
+echo -e "${GREEN}Regular green${NC}"
+echo -e "${BOLD_GREEN}Bold green${NC}"`}
+</TerminalDemo>
+
+## Background Colors
+
+You can also set background colors!
+
+<TerminalDemo>
+{`#!/bin/bash
+
+# Text with background colors
+BG_RED='\\033[41m'
+BG_GREEN='\\033[42m'
+BG_BLUE='\\033[44m'
+NC='\\033[0m'
+
+echo -e "${BG_RED}Red background${NC}"
+echo -e "${BG_GREEN}Green background${NC}"
+echo -e "${BG_BLUE}Blue background${NC}"`}
+</TerminalDemo>
+
+## Creating Status Messages
+
+Let's make professional status messages:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+# Color definitions
+GREEN='\\033[0;32m'
+RED='\\033[0;31m'
+YELLOW='\\033[0;33m'
+NC='\\033[0m'
+
+# Status functions
+success() {
+    echo -e "${GREEN}[✓]${NC} $1"
+}
+
+error() {
+    echo -e "${RED}[✗]${NC} $1"
+}
+
+warning() {
+    echo -e "${YELLOW}[!]${NC} $1"
+}
+
+info() {
+    echo -e "[i] $1"
+}
+
+# Use them
+success "File created successfully"
+error "Cannot connect to server"
+warning "Disk space is low"
+info "Processing data..."`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  Professional scripts ALWAYS have nice status messages! It makes your scripts feel polished and helps users understand what's happening.
+
+  Users will love your scripts when they're easy to read and understand!
+</StoryBox>
+
+## String Length
+
+Get the length of a string:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+NAME="Alice"
+echo "Length: ${#NAME}"
+# Output: Length: 5
+
+MESSAGE="Hello, World!"
+echo "Length: ${#MESSAGE}"
+# Output: Length: 13`}
+</TerminalDemo>
+
+## String Slicing (Substring)
+
+Extract parts of a string:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+TEXT="Hello, World!"
+
+# Get substring starting at position 7, length 5
+echo "${TEXT:7:5}"
+# Output: World
+
+# Get substring from position 0, length 5
+echo "${TEXT:0:5}"
+# Output: Hello
+
+# Get everything from position 7 to end
+echo "${TEXT:7}"
+# Output: World!`}
+</TerminalDemo>
+
+## String Replacement
+
+Replace parts of a string:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+FILENAME="document.txt"
+
+# Replace first occurrence
+echo "${FILENAME/txt/pdf}"
+# Output: document.pdf
+
+# Replace all occurrences
+TEXT="cat cat cat"
+echo "${TEXT//cat/dog}"
+# Output: dog dog dog`}
+</TerminalDemo>
+
+## Uppercase and Lowercase
+
+<TerminalDemo>
+{`#!/bin/bash
+
+NAME="Alice"
+
+# Convert to uppercase
+echo "${NAME^^}"
+# Output: ALICE
+
+# Convert to lowercase
+echo "${NAME,,}"
+# Output: alice
+
+MIXED="HeLLo WoRLd"
+echo "${MIXED,,}"
+# Output: hello world`}
+</TerminalDemo>
+
+<FunFact>
+  The `^^` looks like upward arrows (uppercase!) and `,,` looks like downward arrows (lowercase!). It's a fun way to remember which is which!
+</FunFact>
+
+## Practice: Create a Colorful Menu
+
+<Challenge
+  id="ch3-color-menu"
+  title="Build a Colorful Menu System"
+  description="Create a menu with colors and formatting"
+  steps={[
+    {
+      command: "#!/bin/bash",
+      hint: "Start your script"
+    },
+    {
+      command: "# Define colors",
+      hint: "Create variables for GREEN, BLUE, YELLOW, NC"
+    },
+    {
+      command: "clear",
+      hint: "Clear the screen for a clean menu"
+    },
+    {
+      command: "echo -e \"${BLUE}==================================${NC}\"",
+      hint: "Create a colored header"
+    },
+    {
+      command: "echo -e \"${GREEN}     MAIN MENU${NC}\"",
+      hint: "Show the menu title"
+    },
+    {
+      command: "echo -e \"${BLUE}==================================${NC}\"",
+      hint: "Close the header"
+    },
+    {
+      command: "printf \"${YELLOW}%-5s${NC} %s\\n\" \"1.\" \"List Files\"",
+      hint: "Create formatted menu options"
+    }
+  ]}
+  xp={40}
+  badge="color_master"
+/>
+
+## Complete Example: System Status Script
+
+Here's a complete script using everything:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+# Color definitions
+RED='\\033[0;31m'
+GREEN='\\033[0;32m'
+YELLOW='\\033[0;33m'
+BLUE='\\033[0;34m'
+NC='\\033[0m'
+
+# Print header
+print_header() {
+    echo -e "${BLUE}╔════════════════════════════════╗${NC}"
+    printf "${BLUE}║${NC} %-30s ${BLUE}║${NC}\\n" "$1"
+    echo -e "${BLUE}╚════════════════════════════════╝${NC}"
+}
+
+# Status functions
+success() { echo -e "${GREEN}[✓]${NC} $1"; }
+error() { echo -e "${RED}[✗]${NC} $1"; }
+info() { echo -e "${BLUE}[i]${NC} $1"; }
+
+# Main script
+clear
+print_header "SYSTEM STATUS REPORT"
+echo ""
+
+# Check disk space
+DISK_USAGE=$(df -h / | awk 'NR==2 {print $5}' | sed 's/%//')
+info "Checking disk space..."
+if [ "$DISK_USAGE" -lt 80 ]; then
+    success "Disk usage: ${DISK_USAGE}% - OK"
+else
+    error "Disk usage: ${DISK_USAGE}% - HIGH!"
+fi
+
+# Check system uptime
+UPTIME=$(uptime -p)
+info "Checking uptime..."
+success "System uptime: $UPTIME"
+
+echo ""
+echo -e "${GREEN}Report complete!${NC}"`}
+</TerminalDemo>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does the -e flag do in echo?",
+    options: ["Makes echo faster", "Enables escape sequences like \\n and \\t", "Makes text bold", "Adds errors"],
+    correct: 1,
+    explanation: "The -e flag enables escape sequences, allowing you to use special characters like \\n (newline) and \\t (tab)!"
+  },
+  {
+    question: "What does printf \"%.2f\" 3.14159 display?",
+    options: ["3.14159", "3.14", "3.1", "314.159"],
+    correct: 1,
+    explanation: "%.2f formats a floating point number with exactly 2 decimal places, so 3.14159 becomes 3.14!"
+  },
+  {
+    question: "How do you convert a string to uppercase?",
+    options: ["${VAR^^}", "${VAR,,}", "${VAR++}", "${VAR--}"],
+    correct: 0,
+    explanation: "${VAR^^} converts to uppercase. Think of ^^ as arrows pointing up!"
+  },
+  {
+    question: "What does ${TEXT:7:5} do?",
+    options: ["Repeats text 7 times", "Gets 5 characters starting at position 7", "Adds 7 and 5", "Deletes 7 characters"],
+    correct: 1,
+    explanation: "String slicing! ${TEXT:start:length} extracts a substring. This gets 5 characters starting at position 7."
+  }
+]} />
+
+## Challenge: Build a Status Dashboard
+
+<Challenge
+  id="ch3-dashboard"
+  title="Create a Colorful System Dashboard"
+  description="Build a dashboard that shows system information with colors and formatting"
+  steps={[
+    {
+      command: "# Create dashboard.sh",
+      hint: "Include colors, header function, status messages"
+    },
+    {
+      command: "# Show: username, hostname, date, disk usage",
+      hint: "Use printf for alignment"
+    },
+    {
+      command: "# Use colors based on status (green=good, red=warning)",
+      hint: "If disk > 80%, show red. Otherwise green"
+    },
+    {
+      command: "# Make it look professional!",
+      hint: "Use borders, aligned text, clear sections"
+    }
+  ]}
+  xp={50}
+  badge="dashboard_creator"
+/>
+
+## What You've Learned
+
+You now know how to:
+- Use echo and printf effectively
+- Format text with escape sequences
+- Add colors to your scripts
+- Create aligned tables
+- Manipulate strings (slice, replace, case)
+- Build professional-looking output
+
+<StoryBox character="bash_betty">
+  WOW! Your scripts are going to look AMAZING now!
+
+  Colors and formatting might seem like "just decoration", but they make scripts SO much easier to use. When users can quickly see what's important (in red) vs what's good (in green), they can understand your script instantly!
+
+  Professional scripts ALWAYS have great output formatting. Now you can create them too!
+</StoryBox>
+
+## What's Next?
+
+You can create beautiful output, now let's make your scripts even more flexible by accepting arguments!
+
+<NextLesson
+  track="bash"
+  lesson="14-script-arguments"
+  teaser="Learn to pass arguments to your scripts and make them super flexible!"
+/>

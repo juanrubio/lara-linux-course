@@ -1,0 +1,275 @@
+---
+title: "Disk Usage"
+track: "linux"
+chapter: 4
+lesson: 17
+slug: "17-disk-usage"
+prerequisites: ["16-system-information"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Check available disk space with df
+  - Measure directory sizes with du
+  - Identify space-hogging files and folders
+  - Understand disk space management
+nextLesson: "18-processes"
+prevLesson: "16-system-information"
+---
+
+# Disk Usage
+
+<StoryBox character="pixel_the_penguin">
+  Uh oh! My hard drive is almost full! Where did all the space go?
+
+  Don't worry, young explorer! Today you'll learn the detective skills to track down disk space criminals. We'll use df and du - the dynamic duo of disk investigation!
+
+  Think of your hard drive like a backpack - you need to know how much space you have and what's taking up room!
+</StoryBox>
+
+## Command 1: df - Disk Free Space
+
+**df** stands for "**D**isk **F**ree" - it shows how much space is available on your drives!
+
+<TerminalDemo>
+{`learner@codequest:~$ df
+Filesystem     1K-blocks    Used Available Use% Mounted on
+/dev/sda1       51474912 25737456  23083544  53% /
+tmpfs            4021776        0   4021776   0% /dev/shm`}
+</TerminalDemo>
+
+Hmm, those numbers are hard to read! Let's make it human-friendly.
+
+### df -h: Human-Readable Format
+
+<TerminalDemo>
+{`learner@codequest:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda1        50G   25G   22G  53% /
+tmpfs           3.9G     0  3.9G   0% /dev/shm
+/dev/sdb1       100G   45G   55G  45% /home`}
+</TerminalDemo>
+
+Much better! Now we can see:
+- **Size**: Total space available
+- **Used**: Space already taken
+- **Avail**: Free space remaining
+- **Use%**: Percentage used
+- **Mounted on**: Where the disk is connected
+
+<FunFact>
+  The `-h` flag means "human-readable" - it converts big numbers like 25737456 KB into friendly units like 25G. Much easier on the eyes!
+</FunFact>
+
+### df -T: Show File System Type
+
+<TerminalDemo>
+{`learner@codequest:~$ df -Th
+Filesystem     Type      Size  Used Avail Use% Mounted on
+/dev/sda1      ext4       50G   25G   22G  53% /
+tmpfs          tmpfs     3.9G     0  3.9G   0% /dev/shm`}
+</TerminalDemo>
+
+Now you can see what type of file system each disk uses (ext4, tmpfs, ntfs, etc.)!
+
+<StoryBox character="pixel_the_penguin">
+  Pro tip: If your disk is over 90% full, it's time to do some cleaning! A full disk can slow down your computer or even cause crashes!
+</StoryBox>
+
+## Command 2: du - Disk Usage
+
+**df** tells you about entire disks, but **du** (Disk Usage) tells you how much space directories and files are using!
+
+<TerminalDemo>
+{`learner@codequest:~$ du Documents/
+4       Documents/notes
+8       Documents/projects/game
+12      Documents/projects
+20      Documents/`}
+</TerminalDemo>
+
+Those numbers are in kilobytes (KB). Let's make it readable!
+
+### du -h: Human-Readable Sizes
+
+<TerminalDemo>
+{`learner@codequest:~$ du -h Documents/
+4.0K    Documents/notes
+8.0K    Documents/projects/game
+12K     Documents/projects
+20K     Documents/`}
+</TerminalDemo>
+
+### du -sh: Summary Only
+
+Sometimes you don't want to see every subfolder - just the total!
+
+<TerminalDemo>
+{`learner@codequest:~$ du -sh Documents/
+20K     Documents/
+
+learner@codequest:~$ du -sh Downloads/
+2.3G    Downloads/`}
+</TerminalDemo>
+
+The `-s` means "summary" - just show the total size!
+
+### Finding the Biggest Space Hogs
+
+Want to find your largest directories? Combine du with sort!
+
+<TerminalDemo>
+{`learner@codequest:~$ du -h ~ | sort -hr | head -5
+2.3G    /home/learner/Downloads
+1.5G    /home/learner/Videos
+500M    /home/learner/Documents
+250M    /home/learner/Pictures
+100M    /home/learner/.cache`}
+</TerminalDemo>
+
+This shows the 5 biggest directories in your home folder!
+
+<FunFact>
+  The Downloads folder is often the biggest space criminal! People forget to clean it out after downloading large files. Always check there first when you need space!
+</FunFact>
+
+## Common du Options
+
+| Command | What it does |
+|---------|-------------|
+| `du` | Show size of all subdirectories |
+| `du -h` | Human-readable sizes (KB, MB, GB) |
+| `du -s` | Summary only (total size) |
+| `du -sh` | Summary in human-readable format |
+| `du -sh *` | Size of each item in current directory |
+| `du -a` | Include files (not just directories) |
+
+## Checking Specific Locations
+
+<TerminalDemo>
+{`learner@codequest:~$ du -sh /var/log
+150M    /var/log
+
+learner@codequest:~$ du -sh ~/.cache
+100M    /home/learner/.cache
+
+learner@codequest:~$ du -sh /tmp
+25M     /tmp`}
+</TerminalDemo>
+
+These locations often accumulate junk over time!
+
+## The Difference: df vs du
+
+<StoryBox character="commander_byte">
+  Remember this:
+  - **df** = Disk Free - shows space on ENTIRE drives/partitions
+  - **du** = Disk Usage - shows space used by SPECIFIC files/folders
+
+  Use df to check your overall disk health, use du to hunt down space hogs!
+</StoryBox>
+
+## Quick Reference
+
+| Task | Command |
+|------|---------|
+| Check disk space | `df -h` |
+| Check disk space with types | `df -Th` |
+| Size of a folder | `du -sh folder/` |
+| Size of all items here | `du -sh *` |
+| Find biggest folders | `du -h ~ \| sort -hr \| head -10` |
+
+## Practice: Space Detective
+
+<Challenge
+  id="ch4-disk-usage"
+  title="Space Detective"
+  description="Investigate disk usage on your system"
+  steps={[
+    { command: "df -h", hint: "Check overall disk space" },
+    { command: "du -sh ~", hint: "How big is your home directory?" },
+    { command: "du -sh ~/Downloads", hint: "Check your Downloads folder" },
+    { command: "du -sh ~/Documents", hint: "Check your Documents folder" },
+    { command: "du -sh /tmp", hint: "Check temporary files" }
+  ]}
+  xp={35}
+  badge="space_detective"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does 'df -h' show you?",
+    options: [
+      "Size of specific folders",
+      "Available space on disks",
+      "Number of files",
+      "Internet speed"
+    ],
+    correct: 1,
+    explanation: "df shows disk free space - how much room is left on your drives!"
+  },
+  {
+    question: "What does the 'h' in 'du -sh' mean?",
+    options: [
+      "Hidden files",
+      "Help",
+      "Human-readable",
+      "Hardware"
+    ],
+    correct: 2,
+    explanation: "-h makes sizes human-readable: KB, MB, GB instead of just bytes!"
+  },
+  {
+    question: "Which command shows the size of a specific folder?",
+    options: ["df folder", "du -sh folder", "ls -size folder", "size folder"],
+    correct: 1,
+    explanation: "du -sh shows the total size of a folder in human-readable format!"
+  },
+  {
+    question: "What does the 's' in 'du -sh' mean?",
+    options: [
+      "Super",
+      "Summary (total only)",
+      "Small files",
+      "Slow mode"
+    ],
+    correct: 1,
+    explanation: "-s shows just the summary total, not every subfolder!"
+  }
+]} />
+
+## Warning Signs
+
+Watch out for these disk space problems:
+
+| Use% | Status | Action |
+|------|--------|--------|
+| 0-70% | Healthy | No action needed |
+| 70-85% | Getting Full | Consider cleaning |
+| 85-95% | Almost Full | Clean up soon! |
+| 95-100% | Critical | Clean up NOW! |
+
+<StoryBox character="pixel_the_penguin">
+  A full disk is like a full backpack - you can't add anything new! Keep at least 10-15% free space for your system to run smoothly.
+</StoryBox>
+
+## Space Cleaning Tips
+
+Common places to clean:
+1. **~/Downloads** - Old downloads pile up!
+2. **~/.cache** - Temporary app data
+3. **/tmp** - Temporary system files
+4. **Old log files** in /var/log (advanced)
+5. **Package caches** (we'll learn this later!)
+
+## What's Next?
+
+Now you can track down disk space mysteries! Next up: learning about processes and what your computer is actually DOING right now!
+
+<NextLesson
+  track="linux"
+  lesson="18-processes"
+  teaser="Discover what programs are running and how to manage them!"
+/>

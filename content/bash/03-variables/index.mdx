@@ -1,0 +1,483 @@
+---
+title: "Variables in Bash"
+track: "bash"
+chapter: 1
+lesson: 3
+slug: "03-variables"
+prerequisites: ["02-first-script"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Create and use variables in Bash
+  - Understand the $ symbol
+  - Learn about quoting in Bash
+nextLesson: "04-running-scripts"
+prevLesson: "02-first-script"
+---
+
+# Variables in Bash
+
+<StoryBox character="bash_betty">
+  Alright, script wizard! Now things get REALLY interesting!
+
+  You already know about variables from Python, right? Well, Bash has variables too! But they work a little differently.
+
+  Variables let you store information and reuse it throughout your script. It's like giving your script a memory!
+</StoryBox>
+
+## What Are Variables?
+
+Variables are like labeled boxes that hold information. You can:
+- Put data in the box (assign a value)
+- Look at what's in the box (use the variable)
+- Change what's in the box (reassign)
+
+In Python, you did this:
+```python
+name = "Betty"
+print(name)
+```
+
+In Bash, it's similar but with a few twists!
+
+## Creating Variables in Bash
+
+Here's how you create a variable in Bash:
+
+```bash
+#!/bin/bash
+
+name="Betty"
+```
+
+**Important rules:**
+- NO spaces around the `=` sign!
+- Variable names are usually lowercase or UPPERCASE
+- No special characters (only letters, numbers, and underscores)
+
+<FunFact>
+  Why no spaces? Because Bash treats spaces as separators between commands and arguments. If you write `name = "Betty"`, Bash thinks you're trying to run a command called "name"!
+</FunFact>
+
+## Using Variables - The $ Symbol
+
+To USE a variable (get its value), you need the dollar sign `$`:
+
+```bash
+#!/bin/bash
+
+name="Betty"
+echo $name
+```
+
+<TerminalDemo>
+{`$ bash script.sh
+Betty`}
+</TerminalDemo>
+
+Think of `$` as "get the value of this variable."
+
+## Your First Variable Script
+
+Let's create a complete script:
+
+```bash
+#!/bin/bash
+
+# Create variables
+name="Betty"
+age=12
+hobby="coding"
+
+# Use the variables
+echo "Hello! My name is $name"
+echo "I am $age years old"
+echo "I love $hobby!"
+```
+
+<TerminalDemo>
+{`$ bash intro.sh
+Hello! My name is Betty
+I am 12 years old
+I love coding!`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  See how the variables get replaced with their values? The $ tells Bash "replace this with the variable's value!"
+
+  This is super powerful because you can change one variable at the top of your script, and it changes everywhere!
+</StoryBox>
+
+## Common Mistakes with Variables
+
+### Mistake 1: Spaces Around =
+```bash
+# Wrong:
+name = "Betty"  # This won't work!
+
+# Right:
+name="Betty"
+```
+
+### Mistake 2: Forgetting the $
+```bash
+#!/bin/bash
+
+name="Betty"
+
+# Wrong:
+echo "My name is name"  # Prints: My name is name
+
+# Right:
+echo "My name is $name"  # Prints: My name is Betty
+```
+
+### Mistake 3: Using Special Characters
+```bash
+# Wrong:
+my-name="Betty"     # Hyphens not allowed
+my.name="Betty"     # Dots not allowed
+
+# Right:
+my_name="Betty"     # Underscores are fine!
+myname="Betty"      # No separators is fine too!
+```
+
+## Quoting: Double vs Single Quotes
+
+Bash has TWO types of quotes, and they work differently!
+
+### Double Quotes: Variables Work!
+```bash
+#!/bin/bash
+
+name="Betty"
+echo "Hello, $name!"
+```
+
+<TerminalDemo>
+{`$ bash test.sh
+Hello, Betty!`}
+</TerminalDemo>
+
+### Single Quotes: Variables DON'T Work!
+```bash
+#!/bin/bash
+
+name="Betty"
+echo 'Hello, $name!'
+```
+
+<TerminalDemo>
+{`$ bash test.sh
+Hello, $name!`}
+</TerminalDemo>
+
+<FunFact>
+  Single quotes tell Bash "treat everything literally - don't replace variables!" This is useful when you actually want to display the $ symbol!
+</FunFact>
+
+## Numbers in Variables
+
+Variables can hold numbers too!
+
+```bash
+#!/bin/bash
+
+age=12
+next_year=13
+
+echo "I am $age years old"
+echo "Next year I'll be $next_year"
+```
+
+Want to do math? Use double parentheses `$(( ))`:
+
+```bash
+#!/bin/bash
+
+age=12
+next_year=$((age + 1))
+
+echo "I am $age years old"
+echo "Next year I'll be $next_year"
+```
+
+<TerminalDemo>
+{`$ bash age.sh
+I am 12 years old
+Next year I'll be 13`}
+</TerminalDemo>
+
+## Math Operations
+
+You can do calculations in Bash:
+
+```bash
+#!/bin/bash
+
+num1=10
+num2=5
+
+sum=$((num1 + num2))
+difference=$((num1 - num2))
+product=$((num1 * num2))
+quotient=$((num1 / num2))
+
+echo "Sum: $sum"
+echo "Difference: $difference"
+echo "Product: $product"
+echo "Quotient: $quotient"
+```
+
+<TerminalDemo>
+{`$ bash math.sh
+Sum: 15
+Difference: 5
+Product: 50
+Quotient: 2`}
+</TerminalDemo>
+
+## Using Command Output in Variables
+
+Here's something SUPER cool - you can store the output of commands in variables!
+
+```bash
+#!/bin/bash
+
+current_user=$(whoami)
+current_dir=$(pwd)
+today=$(date +%A)
+
+echo "User: $current_user"
+echo "Directory: $current_dir"
+echo "Today is: $today"
+```
+
+<TerminalDemo>
+{`$ bash info.sh
+User: pi
+Directory: /home/pi
+Today is: Friday`}
+</TerminalDemo>
+
+The `$( )` syntax runs the command and captures its output!
+
+## Variable Naming Conventions
+
+Professional scripters follow these naming styles:
+
+```bash
+#!/bin/bash
+
+# Lowercase for regular variables
+name="Betty"
+age=12
+
+# UPPERCASE for constants (values that don't change)
+MAX_USERS=100
+PI=3.14159
+
+# Underscores for multi-word names
+first_name="Betty"
+last_name="Basher"
+favorite_color="blue"
+```
+
+## Building a Personal Info Script
+
+Let's combine everything:
+
+```bash
+#!/bin/bash
+
+# Personal information
+first_name="Betty"
+last_name="Script Sorceress"
+age=12
+hobby="automation"
+
+# System information
+username=$(whoami)
+computer=$(hostname)
+today=$(date +%B\ %d,\ %Y)
+
+# Display banner
+echo "=================================="
+echo "     PERSONAL INFO CARD"
+echo "=================================="
+echo ""
+echo "Name: $first_name $last_name"
+echo "Age: $age years old"
+echo "Hobby: $hobby"
+echo ""
+echo "System Info:"
+echo "- Username: $username"
+echo "- Computer: $computer"
+echo "- Date: $today"
+echo ""
+echo "=================================="
+```
+
+<StoryBox character="bash_betty">
+  Now you're thinking like a programmer! Notice how we organize the variables at the top?
+
+  This makes it super easy to update. Change your name once at the top, and it updates everywhere in the script!
+</StoryBox>
+
+## Your Turn to Create!
+
+<Challenge
+  id="ch1-variables"
+  title="Variable Master"
+  description="Practice creating and using variables"
+  steps={[
+    {
+      command: 'favorite_game="Minecraft"',
+      hint: "Create a variable for your favorite game"
+    },
+    {
+      command: 'hours_played=100',
+      hint: "Create a variable for hours played"
+    },
+    {
+      command: 'echo "I love $favorite_game!"',
+      hint: "Display your favorite game"
+    },
+    {
+      command: 'echo "I have played $hours_played hours"',
+      hint: "Display hours played"
+    },
+    {
+      command: 'total_days=$((hours_played / 24))',
+      hint: "Calculate days (divide hours by 24)"
+    },
+    {
+      command: 'echo "That is $total_days days of gaming!"',
+      hint: "Display the result"
+    }
+  ]}
+  xp={30}
+  badge="variable_virtuoso"
+/>
+
+## Creative Challenge: About Me Script
+
+Create a script called `about_me.sh` that introduces you:
+
+```bash
+#!/bin/bash
+
+# Your information (customize these!)
+name="Your Name"
+age=12
+grade=7
+school="Your School"
+favorite_subject="Computer Science"
+dream_job="Software Developer"
+superpower="Creating awesome scripts"
+
+# Calculate some fun facts
+days_alive=$((age * 365))
+years_until_adult=$((18 - age))
+
+# Display your card
+echo "╔════════════════════════════════════════╗"
+echo "║         ALL ABOUT ME!                  ║"
+echo "╔════════════════════════════════════════╗"
+echo ""
+echo "Name: $name"
+echo "Age: $age years ($days_alive days alive!)"
+echo "Grade: $grade"
+echo "School: $school"
+echo ""
+echo "Favorite Subject: $favorite_subject"
+echo "Dream Job: $dream_job"
+echo "Superpower: $superpower"
+echo ""
+echo "Years until adult: $years_until_adult"
+echo ""
+echo "╚════════════════════════════════════════╝"
+```
+
+## Quiz Time!
+
+<Quiz questions={[
+  {
+    question: "How do you create a variable in Bash?",
+    options: ['name = "Betty"', 'name="Betty"', 'var name="Betty"', 'let name="Betty"'],
+    correct: 1,
+    explanation: "No spaces around the = sign! It's: name=\"Betty\""
+  },
+  {
+    question: "How do you use a variable's value?",
+    options: ["name", "$name", "&name", "@name"],
+    correct: 1,
+    explanation: "Use the $ symbol before the variable name: $name"
+  },
+  {
+    question: "Which quotes allow variable expansion?",
+    options: ["Single quotes ' '", "Double quotes \" \"", "Backticks ` `", "No quotes"],
+    correct: 1,
+    explanation: "Double quotes allow variables to be expanded. Single quotes treat everything literally!"
+  },
+  {
+    question: "How do you do math in Bash?",
+    options: ["$[5 + 3]", "$(5 + 3)", "$((5 + 3))", "${5 + 3}"],
+    correct: 2,
+    explanation: "Use double parentheses: $((5 + 3))"
+  },
+  {
+    question: "Which variable name is valid?",
+    options: ["my-name", "my.name", "my_name", "my name"],
+    correct: 2,
+    explanation: "Only underscores, letters, and numbers are allowed. my_name is correct!"
+  }
+]} />
+
+## Comparing Bash and Python Variables
+
+If you know Python, here's the comparison:
+
+| Concept | Python | Bash |
+|---------|--------|------|
+| Create variable | `name = "Betty"` | `name="Betty"` |
+| Use variable | `print(name)` | `echo $name` |
+| Math | `x = 5 + 3` | `x=$((5 + 3))` |
+| Command output | `import os; x = os.getcwd()` | `x=$(pwd)` |
+
+## What You've Learned!
+
+Congratulations! You can now:
+- Create variables in Bash
+- Use variables with the $ symbol
+- Understand the difference between double and single quotes
+- Do math with variables
+- Store command output in variables
+- Follow naming conventions
+
+<StoryBox character="bash_betty">
+  Awesome work! Variables are the KEY to making powerful, flexible scripts!
+
+  Now you can write scripts that store information, do calculations, and adapt to different situations!
+
+  Next up - we'll learn how to make your scripts EXECUTABLE so you can run them with just `./script.sh`!
+</StoryBox>
+
+## Command Reference
+
+| Code | What It Does |
+|------|--------------|
+| `name="Betty"` | Create a variable (no spaces!) |
+| `$name` | Use a variable's value |
+| `echo "$name"` | Display with double quotes (variables work) |
+| `echo '$name'` | Display with single quotes (literal text) |
+| `$((5 + 3))` | Do math |
+| `x=$(command)` | Store command output |
+
+<NextLesson
+  track="bash"
+  lesson="04-running-scripts"
+  teaser="Make your scripts executable and run them like real programs!"
+/>

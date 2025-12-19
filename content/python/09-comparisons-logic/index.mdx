@@ -1,0 +1,454 @@
+---
+title: "Comparisons and Logic"
+track: "python"
+chapter: 2
+lesson: 9
+slug: "09-comparisons-logic"
+prerequisites: ["08-if-else"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Master logical operators (and, or, not)
+  - Learn to combine multiple conditions
+  - Understand boolean logic
+  - Create complex decision-making programs
+nextLesson: "10-chapter2-quest"
+prevLesson: "08-if-else"
+---
+
+# Comparisons and Logic
+
+<StoryBox character="python_pete">
+  Hey there, logic master in training! Last lesson we learned to make simple decisions with if statements. But real life is rarely simple!
+
+  What if you need to check TWO things at once? Like "Is it the weekend AND is it sunny?" or "Do I have pizza OR tacos for dinner?"
+
+  Today we're learning **logical operators** - the secret sauce that makes your programs REALLY smart! Get ready to level up your decision-making powers!
+</StoryBox>
+
+## What are Boolean Values?
+
+Before we dive into logic, let's talk about **booleans** - the building blocks of decisions.
+
+A boolean is a special type that can only be `True` or `False` (notice the capital letters!):
+
+<TerminalDemo>
+{`>>> is_raining = True
+>>> is_sunny = False
+>>>
+>>> print(is_raining)
+True
+>>> print(type(is_sunny))
+<class 'bool'>`}
+</TerminalDemo>
+
+Every comparison creates a boolean:
+
+<TerminalDemo>
+{`>>> age = 13
+>>> is_teenager = age >= 13
+>>> print(is_teenager)
+True
+>>>
+>>> print(5 > 10)
+False
+>>> print(5 == 5)
+True`}
+</TerminalDemo>
+
+<FunFact>
+  Booleans are named after George Boole, a mathematician who invented Boolean algebra in the 1800s. He created the math of True and False - and now it runs every computer!
+</FunFact>
+
+## The AND Operator
+
+The `and` operator checks if BOTH conditions are true. If even one is false, the whole thing is false.
+
+Think of it like needing TWO keys to open a treasure chest - you need BOTH!
+
+<TerminalDemo>
+{`>>> age = 13
+>>> has_permission = True
+>>>
+>>> if age >= 13 and has_permission:
+...     print("You can play the game!")
+... else:
+...     print("Sorry, you can't play.")
+...
+You can play the game!`}
+</TerminalDemo>
+
+Truth table for `and`:
+
+| Condition A | Condition B | A and B |
+|-------------|-------------|---------|
+| True | True | **True** |
+| True | False | False |
+| False | True | False |
+| False | False | False |
+
+**Both must be True for the result to be True!**
+
+<TerminalDemo>
+{`>>> # Checking if a number is in a range
+>>> number = 50
+>>>
+>>> if number >= 1 and number <= 100:
+...     print("Number is between 1 and 100!")
+...
+Number is between 1 and 100!`}
+</TerminalDemo>
+
+## The OR Operator
+
+The `or` operator checks if AT LEAST ONE condition is true. If any condition is true, the whole thing is true!
+
+Think of it like having TWO doors - you only need ONE to be unlocked!
+
+<TerminalDemo>
+{`>>> day = "Saturday"
+>>>
+>>> if day == "Saturday" or day == "Sunday":
+...     print("It's the weekend!")
+...     print("Time to relax!")
+... else:
+...     print("It's a weekday - back to work!")
+...
+It's the weekend!
+Time to relax!`}
+</TerminalDemo>
+
+Truth table for `or`:
+
+| Condition A | Condition B | A or B |
+|-------------|-------------|--------|
+| True | True | **True** |
+| True | False | **True** |
+| False | True | **True** |
+| False | False | False |
+
+**Only ONE needs to be True for the result to be True!**
+
+<TerminalDemo>
+{`>>> # Checking valid user input
+>>> answer = input("Continue? (yes/y): ")
+Continue? (yes/y): y
+>>>
+>>> if answer == "yes" or answer == "y":
+...     print("Great! Let's continue!")
+...
+Great! Let's continue!`}
+</TerminalDemo>
+
+## The NOT Operator
+
+The `not` operator flips the value - it turns True into False and False into True!
+
+Think of it like opposite day - everything means the opposite!
+
+<TerminalDemo>
+{`>>> is_raining = False
+>>>
+>>> if not is_raining:
+...     print("Let's go to the park!")
+... else:
+...     print("Let's stay inside!")
+...
+Let's go to the park!`}
+</TerminalDemo>
+
+Truth table for `not`:
+
+| Condition | not Condition |
+|-----------|---------------|
+| True | False |
+| False | True |
+
+<TerminalDemo>
+{`>>> logged_in = False
+>>>
+>>> if not logged_in:
+...     print("Please log in first!")
+...
+Please log in first!`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  The `not` operator is like saying "the opposite of" - if something is True, `not` makes it False, and vice versa. It's super useful when you want to check if something is NOT the case!
+</StoryBox>
+
+## Combining Multiple Operators
+
+You can combine `and`, `or`, and `not` to create complex conditions!
+
+<TerminalDemo>
+{`>>> age = 15
+>>> has_ticket = True
+>>> is_weekend = True
+>>>
+>>> if (age >= 13 and has_ticket) and is_weekend:
+...     print("Welcome to the teen movie night!")
+... else:
+...     print("Sorry, you can't attend.")
+...
+Welcome to the teen movie night!`}
+</TerminalDemo>
+
+<FunFact>
+  Use parentheses `()` to group conditions and make your logic clear! Python evaluates what's in parentheses first, just like in math!
+</FunFact>
+
+## Real-World Example - Game Login
+
+<TerminalDemo>
+{`>>> print("=== Game Login System ===\\n")
+=== Game Login System ===
+
+>>> username = input("Username: ")
+Username: pete123
+>>> password = input("Password: ")
+Password: dragon
+>>> age = int(input("Age: "))
+Age: 14
+>>>
+>>> # Check multiple conditions
+>>> correct_user = username == "pete123"
+>>> correct_pass = password == "dragon"
+>>> old_enough = age >= 13
+>>>
+>>> if correct_user and correct_pass and old_enough:
+...     print("\\n✓ Login successful!")
+...     print("Welcome to the game!")
+... elif not correct_user or not correct_pass:
+...     print("\\n✗ Invalid username or password!")
+... elif not old_enough:
+...     print("\\n✗ You must be 13 or older!")
+... else:
+...     print("\\n✗ Access denied!")
+...
+✓ Login successful!
+Welcome to the game!`}
+</TerminalDemo>
+
+## Operator Precedence
+
+When you mix operators, Python follows these rules (highest to lowest priority):
+
+1. `not` (evaluated first)
+2. `and` (evaluated second)
+3. `or` (evaluated last)
+
+<TerminalDemo>
+{`>>> # Without parentheses
+>>> True or False and False
+True
+
+>>> # With parentheses to change order
+>>> (True or False) and False
+False`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  When in doubt, use parentheses! They make your code clearer and prevent bugs. It's better to be explicit than to rely on remembering operator precedence!
+</StoryBox>
+
+## Common Patterns
+
+**Pattern 1: Range Check**
+```python
+# Check if number is between 1 and 10
+if number >= 1 and number <= 10:
+    print("In range!")
+```
+
+**Pattern 2: Multiple Valid Options**
+```python
+# Check if answer is yes or y
+if answer == "yes" or answer == "y" or answer == "YES":
+    print("Confirmed!")
+```
+
+**Pattern 3: Exclusion Check**
+```python
+# Check if NOT a specific value
+if not (age < 0 or age > 120):
+    print("Valid age!")
+```
+
+**Pattern 4: Complex Permission Check**
+```python
+# Must be admin OR (member AND verified)
+if is_admin or (is_member and is_verified):
+    print("Access granted!")
+```
+
+## The != Operator Revisited
+
+Remember `!=` (not equal)? It's actually a shorthand for `not ==`:
+
+<TerminalDemo>
+{`>>> password = "abc123"
+>>>
+>>> # These two are the same:
+>>> if password != "":
+...     print("Password not empty!")
+...
+Password not empty!
+>>>
+>>> if not password == "":
+...     print("Password not empty!")
+...
+Password not empty!`}
+</TerminalDemo>
+
+Use `!=` - it's cleaner and more readable!
+
+## Practice Time!
+
+<Challenge
+  id="ch2-logic"
+  title="Logic Master"
+  description="Create a program using logical operators"
+  steps={[
+    {
+      command: 'print("=== Amusement Park Entry ===")',
+      hint: "Create a title"
+    },
+    {
+      command: 'age = int(input("Your age: "))',
+      hint: "Get user's age"
+    },
+    {
+      command: 'height = int(input("Your height (cm): "))',
+      hint: "Get user's height"
+    },
+    {
+      command: 'has_ticket = input("Have ticket? (yes/no): ")',
+      hint: "Check if they have a ticket"
+    },
+    {
+      command: 'if age >= 12 and height >= 140 and has_ticket == "yes":\n    print("Welcome to the ride!")\nelse:\n    print("Sorry, you cannot ride.")',
+      hint: "Check all conditions"
+    }
+  ]}
+  xp={30}
+  badge="logic_master"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does the 'and' operator require?",
+    options: ["At least one condition to be True", "Both conditions to be True", "No conditions to be True", "Exactly one condition to be True"],
+    correct: 1,
+    explanation: "The 'and' operator requires BOTH conditions to be True. If even one is False, the whole thing is False!"
+  },
+  {
+    question: "What does 'True or False' evaluate to?",
+    options: ["True", "False", "Error", "None"],
+    correct: 0,
+    explanation: "With 'or', you only need ONE condition to be True. Since the first is True, the result is True!"
+  },
+  {
+    question: "What does 'not True' evaluate to?",
+    options: ["True", "False", "None", "Error"],
+    correct: 1,
+    explanation: "The 'not' operator flips the value - 'not True' becomes False!"
+  },
+  {
+    question: "Which operator has the highest precedence?",
+    options: ["or", "and", "not", "They're all equal"],
+    correct: 2,
+    explanation: "'not' is evaluated first, then 'and', then 'or'. But use parentheses to be clear!"
+  }
+]} />
+
+## Truth Tables - Quick Reference
+
+**AND - Both must be True**
+```
+True  and True  → True
+True  and False → False
+False and True  → False
+False and False → False
+```
+
+**OR - At least one True**
+```
+True  or True  → True
+True  or False → True
+False or True  → True
+False or False → False
+```
+
+**NOT - Flip the value**
+```
+not True  → False
+not False → True
+```
+
+<StoryBox character="python_pete">
+  Here's a memory trick:
+
+  - **AND** is strict - it's like a bouncer that needs to check TWO IDs
+  - **OR** is flexible - it's like a door with TWO keys, you only need ONE
+  - **NOT** is a flip-flopper - it always says the opposite!
+</StoryBox>
+
+## Advanced Example - Weather Decision
+
+<TerminalDemo>
+{`>>> print("=== Weather Activity Planner ===\\n")
+=== Weather Activity Planner ===
+
+>>> temp = int(input("Temperature (°C): "))
+Temperature (°C): 25
+>>> is_raining = input("Is it raining? (yes/no): ")
+Is it raining? (yes/no): no
+>>> is_windy = input("Is it windy? (yes/no): ")
+Is it windy? (yes/no): no
+>>>
+>>> # Convert to booleans
+>>> raining = is_raining == "yes"
+>>> windy = is_windy == "yes"
+>>>
+>>> # Make recommendations
+>>> if temp >= 20 and temp <= 30 and not raining and not windy:
+...     print("\\nPerfect day for the beach!")
+... elif temp >= 15 and not raining:
+...     print("\\nGood day for a park visit!")
+... elif raining and temp >= 15:
+...     print("\\nGood day for indoor activities!")
+... else:
+...     print("\\nStay cozy at home!")
+...
+Perfect day for the beach!`}
+</TerminalDemo>
+
+## Logic Cheat Sheet
+
+| Operator | Purpose | Example | Result |
+|----------|---------|---------|--------|
+| `and` | Both must be True | `True and True` | True |
+| `or` | At least one True | `True or False` | True |
+| `not` | Flip the value | `not False` | True |
+| `==` | Equal to | `5 == 5` | True |
+| `!=` | Not equal to | `5 != 3` | True |
+| `>` | Greater than | `5 > 3` | True |
+| `<` | Less than | `3 < 5` | True |
+| `>=` | Greater or equal | `5 >= 5` | True |
+| `<=` | Less or equal | `3 <= 5` | True |
+
+## What's Next?
+
+You've mastered the building blocks of decision making! Now it's time to put everything together in an EPIC quest!
+
+In the next lesson, you'll build a **Number Guessing Game** that uses strings, input, if-else, and logic. Are you ready for the challenge?
+
+<NextLesson
+  track="python"
+  lesson="10-chapter2-quest"
+  teaser="Build an awesome guessing game and earn your Chapter 2 badge!"
+/>

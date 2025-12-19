@@ -1,0 +1,220 @@
+---
+title: "Copying & Moving"
+track: "linux"
+chapter: 2
+lesson: 9
+slug: "09-copying-moving"
+prerequisites: ["08-creating-removing"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Copy files and directories with cp
+  - Move and rename files with mv
+  - Understand the difference between copy and move
+nextLesson: "10-chapter2-quest"
+prevLesson: "08-creating-removing"
+---
+
+# Copying & Moving
+
+<StoryBox character="pixel_the_penguin">
+  Time to learn the art of duplication and teleportation! These commands will let you organize your files like a pro!
+
+  Think of `cp` as a photocopier and `mv` as a teleporter!
+</StoryBox>
+
+## Copying Files: cp
+
+**cp** means "**C**o**P**y". It duplicates files!
+
+<TerminalDemo>
+{`learner@codequest:~$ ls
+notes.txt
+
+learner@codequest:~$ cp notes.txt notes_backup.txt
+learner@codequest:~$ ls
+notes.txt  notes_backup.txt`}
+</TerminalDemo>
+
+Now you have TWO files with the same content!
+
+### Copy to a Different Directory
+
+<TerminalDemo>
+{`learner@codequest:~$ cp notes.txt Documents/
+learner@codequest:~$ ls Documents
+notes.txt`}
+</TerminalDemo>
+
+### Copy and Rename
+
+<TerminalDemo>
+{`learner@codequest:~$ cp notes.txt Documents/my_notes.txt`}
+</TerminalDemo>
+
+## Copying Directories: cp -r
+
+To copy a directory with all its contents, use `-r` (recursive):
+
+<TerminalDemo>
+{`learner@codequest:~$ cp -r projects projects_backup
+
+learner@codequest:~$ ls
+projects  projects_backup`}
+</TerminalDemo>
+
+<FunFact>
+  The `-r` stands for "recursive" - it means "go into all subfolders and copy everything inside too!" Without -r, cp refuses to copy directories.
+</FunFact>
+
+## Moving Files: mv
+
+**mv** means "**M**o**V**e". Unlike cp, it MOVES (not copies) - the original is gone!
+
+<TerminalDemo>
+{`learner@codequest:~$ ls
+notes.txt  Documents
+
+learner@codequest:~$ mv notes.txt Documents/
+learner@codequest:~$ ls
+Documents
+
+learner@codequest:~$ ls Documents
+notes.txt`}
+</TerminalDemo>
+
+The file MOVED - it's not in both places!
+
+<StoryBox character="pixel_the_penguin">
+  Think of it like this:
+  - **cp** = Photocopy (original stays, you get a copy)
+  - **mv** = Teleport (original moves to new location)
+</StoryBox>
+
+## Renaming Files: mv (again!)
+
+mv is also used to RENAME files! Just "move" to a new name in the same folder:
+
+<TerminalDemo>
+{`learner@codequest:~$ ls
+oldname.txt
+
+learner@codequest:~$ mv oldname.txt newname.txt
+learner@codequest:~$ ls
+newname.txt`}
+</TerminalDemo>
+
+### Rename AND Move
+
+<TerminalDemo>
+{`learner@codequest:~$ mv report.txt Documents/final_report.txt`}
+</TerminalDemo>
+
+This moves the file to Documents AND renames it!
+
+## Moving Directories
+
+mv works on directories without needing -r:
+
+<TerminalDemo>
+{`learner@codequest:~$ mv projects Documents/
+learner@codequest:~$ ls Documents
+projects`}
+</TerminalDemo>
+
+<FunFact>
+  Why doesn't mv need -r? Because moving is actually just changing the file's address - the actual data stays in place on the disk! Copying requires actually duplicating all the data.
+</FunFact>
+
+## Preventing Accidents: -i Option
+
+Both cp and mv can overwrite existing files without warning! Use `-i` to be safe:
+
+<TerminalDemo>
+{`learner@codequest:~$ cp -i file1.txt file2.txt
+cp: overwrite 'file2.txt'? n`}
+</TerminalDemo>
+
+## Comparison Chart
+
+| Task | Command | Example |
+|------|---------|---------|
+| Copy a file | `cp` | `cp a.txt b.txt` |
+| Copy to directory | `cp` | `cp a.txt folder/` |
+| Copy directory | `cp -r` | `cp -r dir1 dir2` |
+| Move a file | `mv` | `mv a.txt folder/` |
+| Move a directory | `mv` | `mv dir1 folder/` |
+| Rename a file | `mv` | `mv old.txt new.txt` |
+| Rename a directory | `mv` | `mv olddir newdir` |
+
+## Practice: Copy and Move
+
+<Challenge
+  id="ch2-copy-move"
+  title="File Organizer"
+  description="Practice copying and moving files"
+  steps={[
+    { command: "touch practice.txt", hint: "Create a test file" },
+    { command: "mkdir backup", hint: "Create a backup folder" },
+    { command: "cp practice.txt backup/", hint: "Copy file to backup" },
+    { command: "mv practice.txt renamed.txt", hint: "Rename the original file" },
+    { command: "ls", hint: "Verify your work!" }
+  ]}
+  xp={35}
+  badge="organizer"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What's the difference between cp and mv?",
+    options: [
+      "No difference",
+      "cp copies, mv moves (original is gone)",
+      "mv is faster",
+      "cp only works on directories"
+    ],
+    correct: 1,
+    explanation: "cp creates a duplicate, mv relocates the original!"
+  },
+  {
+    question: "How do you copy a directory with all its contents?",
+    options: ["cp dir", "cp -r dir", "cp -d dir", "cp -all dir"],
+    correct: 1,
+    explanation: "The -r (recursive) option tells cp to go into all subdirectories!"
+  },
+  {
+    question: "How do you rename a file from 'a.txt' to 'b.txt'?",
+    options: [
+      "rename a.txt b.txt",
+      "rn a.txt b.txt",
+      "mv a.txt b.txt",
+      "cp a.txt b.txt"
+    ],
+    correct: 2,
+    explanation: "mv is used for both moving AND renaming files!"
+  },
+  {
+    question: "What does -i do with cp and mv?",
+    options: [
+      "Makes it faster",
+      "Interactive mode - asks before overwriting",
+      "Info mode",
+      "Nothing"
+    ],
+    correct: 1,
+    explanation: "-i prompts you before overwriting existing files!"
+  }
+]} />
+
+## What's Next?
+
+You've mastered Chapter 2's file operations! Time for your quest!
+
+<NextLesson
+  track="linux"
+  lesson="10-chapter2-quest"
+  teaser="Prove your file management skills in Quest: The Lost Files!"
+/>

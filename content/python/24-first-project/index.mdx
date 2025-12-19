@@ -1,0 +1,474 @@
+---
+title: "Your First Project"
+chapter: 5
+lesson: 24
+xp: 75
+difficulty: "intermediate"
+prevLesson: "23-data-storage"
+description: "Build your first complete Python project by combining all your skills into a real application"
+---
+
+import StoryBox from '@/components/StoryBox'
+import FunFact from '@/components/FunFact'
+import TerminalDemo from '@/components/TerminalDemo'
+import Challenge from '@/components/Challenge'
+import Quiz from '@/components/Quiz'
+import NextLesson from '@/components/NextLesson'
+
+<StoryBox character="python_pete" mood="excited">
+Congratulations, adventurer! You've learned variables, loops, functions, collections, and file handling. Now it's time to put it all together!
+
+Today, we're building a **complete project** from scratch. Not just a few lines of code - a real, working application that does something useful. This is where you become a true Python developer!
+</StoryBox>
+
+## What Makes a Good Project?
+
+Before we start coding, let's think about what makes a project "complete":
+
+1. **Clear Purpose** - It solves a real problem or need
+2. **Multiple Features** - It does several related things
+3. **Data Persistence** - It saves and loads data
+4. **User-Friendly** - Easy menus and clear instructions
+5. **Error Handling** - Doesn't crash when users make mistakes
+6. **Good Organization** - Functions with clear purposes
+
+<FunFact title="Project Structure">
+Professional programmers organize projects like this:
+```
+my_project/
+├── main.py          # The main program
+├── data/            # Folder for data files
+│   └── saves.json
+└── README.md        # Instructions for users
+```
+
+For now, we'll keep it simple with one file, but this is how real projects look!
+</FunFact>
+
+## Project Idea: Task Manager
+
+Let's build a **task manager** (also called a "todo list"). It will let users:
+- Add tasks with priority levels
+- View all tasks
+- Mark tasks as complete
+- Save/load tasks from a file
+- Delete tasks
+
+This is a perfect first project because it uses EVERYTHING you've learned!
+
+## Step 1: Planning
+
+Before writing code, let's plan our functions:
+
+```python
+# Functions we need:
+- load_tasks() - Load tasks from JSON file
+- save_tasks(tasks) - Save tasks to JSON file
+- add_task() - Add a new task
+- view_tasks() - Display all tasks
+- complete_task() - Mark a task as done
+- delete_task() - Remove a task
+- show_menu() - Display the menu
+- main() - Run the program
+```
+
+<StoryBox character="python_pete" mood="proud">
+Professional programmers always plan before coding! It's like drawing a map before going on an adventure. You can change the plan as you go, but having one makes everything easier.
+</StoryBox>
+
+## Step 2: Building the Project
+
+Let's build it piece by piece!
+
+<TerminalDemo>
+```python
+import json
+
+# File where we'll save tasks
+TASKS_FILE = "tasks.json"
+
+def load_tasks():
+    """Load tasks from file, return empty list if file doesn't exist"""
+    try:
+        with open(TASKS_FILE, "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def save_tasks(tasks):
+    """Save tasks to file"""
+    with open(TASKS_FILE, "w") as file:
+        json.dump(tasks, file, indent=4)
+    print("Tasks saved!")
+
+def add_task():
+    """Add a new task"""
+    tasks = load_tasks()
+
+    print("\n=== ADD NEW TASK ===")
+    description = input("Task description: ")
+
+    print("Priority: 1=Low, 2=Medium, 3=High")
+    priority = input("Priority (1-3): ")
+
+    # Validate priority
+    if priority not in ["1", "2", "3"]:
+        print("Invalid priority! Using Medium.")
+        priority = "2"
+
+    # Create task dictionary
+    task = {
+        "description": description,
+        "priority": int(priority),
+        "completed": False
+    }
+
+    tasks.append(task)
+    save_tasks(tasks)
+    print(f"✓ Added task: {description}")
+
+def view_tasks():
+    """Display all tasks"""
+    tasks = load_tasks()
+
+    if not tasks:
+        print("\nNo tasks yet! Time to add some.")
+        return
+
+    print("\n=== YOUR TASKS ===")
+
+    priority_names = {1: "LOW", 2: "MEDIUM", 3: "HIGH"}
+
+    for i, task in enumerate(tasks, 1):
+        status = "✓ DONE" if task["completed"] else "○ TODO"
+        priority = priority_names[task["priority"]]
+
+        print(f"{i}. [{status}] {task['description']}")
+        print(f"   Priority: {priority}")
+        print()
+
+def complete_task():
+    """Mark a task as complete"""
+    tasks = load_tasks()
+
+    if not tasks:
+        print("No tasks to complete!")
+        return
+
+    view_tasks()
+    choice = input("Enter task number to mark complete: ")
+
+    try:
+        index = int(choice) - 1
+        if 0 <= index < len(tasks):
+            tasks[index]["completed"] = True
+            save_tasks(tasks)
+            print(f"✓ Completed: {tasks[index]['description']}")
+        else:
+            print("Invalid task number!")
+    except ValueError:
+        print("Please enter a number!")
+
+def delete_task():
+    """Delete a task"""
+    tasks = load_tasks()
+
+    if not tasks:
+        print("No tasks to delete!")
+        return
+
+    view_tasks()
+    choice = input("Enter task number to delete: ")
+
+    try:
+        index = int(choice) - 1
+        if 0 <= index < len(tasks):
+            deleted = tasks.pop(index)
+            save_tasks(tasks)
+            print(f"✗ Deleted: {deleted['description']}")
+        else:
+            print("Invalid task number!")
+    except ValueError:
+        print("Please enter a number!")
+
+def show_menu():
+    """Display the main menu"""
+    print("\n" + "="*40)
+    print("         TASK MANAGER")
+    print("="*40)
+    print("1. Add task")
+    print("2. View tasks")
+    print("3. Complete task")
+    print("4. Delete task")
+    print("5. Exit")
+    print("="*40)
+
+def main():
+    """Main program loop"""
+    print("Welcome to Task Manager!")
+
+    while True:
+        show_menu()
+        choice = input("\nChoose an option (1-5): ")
+
+        if choice == "1":
+            add_task()
+        elif choice == "2":
+            view_tasks()
+        elif choice == "3":
+            complete_task()
+        elif choice == "4":
+            delete_task()
+        elif choice == "5":
+            print("\nGoodbye! Stay productive!")
+            break
+        else:
+            print("Invalid choice! Please choose 1-5.")
+
+# Start the program
+if __name__ == "__main__":
+    main()
+```
+</TerminalDemo>
+
+<StoryBox character="python_pete" mood="excited">
+Look at what you just created! This is a **real, working application**. It has:
+- A menu system
+- Data persistence (saves to JSON)
+- Error handling
+- Multiple features
+- Clean organization
+
+You could actually use this every day to manage your tasks!
+</StoryBox>
+
+## Understanding Key Parts
+
+Let's break down some important concepts:
+
+### The `if __name__ == "__main__":` Block
+
+<TerminalDemo>
+```python
+if __name__ == "__main__":
+    main()
+```
+</TerminalDemo>
+
+This is a Python idiom that means "only run this code if this file is run directly (not imported)". For now, just know it's the professional way to start your program!
+
+### Using Constants
+
+<TerminalDemo>
+```python
+TASKS_FILE = "tasks.json"  # ALL CAPS means this is a constant
+```
+</TerminalDemo>
+
+Constants (variables that never change) are written in ALL_CAPS. This makes it easy to change the filename in one place if needed.
+
+### Error Handling
+
+<TerminalDemo>
+```python
+try:
+    index = int(choice) - 1
+    # ... do something with index
+except ValueError:
+    print("Please enter a number!")
+```
+</TerminalDemo>
+
+This prevents crashes when users enter text instead of numbers!
+
+<FunFact title="User Input is Dangerous!">
+Never trust user input! Users will:
+- Type words when you want numbers
+- Press Enter without typing anything
+- Type negative numbers
+- Try to break your program (accidentally or on purpose)
+
+Always validate and handle errors!
+</FunFact>
+
+## Testing Your Project
+
+A good project needs testing! Try these scenarios:
+
+1. **Happy Path** - Everything works normally
+   - Add a few tasks
+   - View them
+   - Complete one
+   - Delete one
+
+2. **Edge Cases** - Unusual situations
+   - Try to view tasks when none exist
+   - Try to complete task #999
+   - Enter text when asked for a number
+   - Add a task with empty description
+
+3. **Data Persistence** - Does it save/load?
+   - Add tasks and exit
+   - Run the program again
+   - Are your tasks still there?
+
+<Challenge title="Enhance the Task Manager">
+Add these features to make the project even better:
+
+1. **Filter by priority** - Show only high priority tasks
+2. **Due dates** - Let users add due dates to tasks
+3. **Task categories** - Group tasks (Work, Personal, School, etc.)
+4. **Statistics** - Show how many tasks are done vs. todo
+5. **Clear completed** - Delete all completed tasks at once
+
+Choose at least 2 features to implement!
+
+<details>
+<summary>Hint for Statistics</summary>
+
+```python
+def show_statistics():
+    """Display task statistics"""
+    tasks = load_tasks()
+
+    if not tasks:
+        print("No tasks to analyze!")
+        return
+
+    total = len(tasks)
+    completed = sum(1 for task in tasks if task["completed"])
+    remaining = total - completed
+
+    print("\n=== STATISTICS ===")
+    print(f"Total tasks: {total}")
+    print(f"Completed: {completed}")
+    print(f"Remaining: {remaining}")
+    print(f"Completion rate: {(completed/total)*100:.1f}%")
+```
+</details>
+</Challenge>
+
+## Project Ideas for More Practice
+
+Now that you've built one project, here are more ideas:
+
+### Beginner Projects
+1. **Password Generator** - Create random secure passwords
+2. **Number Guessing Game** - Computer picks a number, you guess
+3. **Simple Calculator** - Does multiple operations with a menu
+4. **Word Counter** - Counts words/characters in text files
+
+### Intermediate Projects
+1. **Budget Tracker** - Track income and expenses
+2. **Study Flashcards** - Quiz yourself on any topic
+3. **Habit Tracker** - Track daily habits and streaks
+4. **Simple Diary** - Write daily entries with search
+
+### Advanced Projects
+1. **Text-Based RPG** - A choose-your-own-adventure game
+2. **Grade Manager** - Calculate GPA and track assignments
+3. **Recipe Book** - Store and search recipes
+4. **URL Shortener** - Create short codes for long URLs
+
+<FunFact title="Build What You Need!">
+The best projects solve YOUR problems! Think about:
+- What repetitive tasks do you do?
+- What information do you want to track?
+- What would make your life easier?
+
+Then build it! That's how real software gets created.
+</FunFact>
+
+## Best Practices Recap
+
+When building projects, remember:
+
+1. **Plan first, code second** - Outline your functions
+2. **Start simple** - Get basic features working first
+3. **Test frequently** - Don't write 100 lines before testing
+4. **Use functions** - Break code into small, manageable pieces
+5. **Handle errors** - Expect users to do unexpected things
+6. **Save often** - Both your code AND user data
+7. **Comment tricky parts** - Help future you understand
+
+<TerminalDemo>
+```python
+# Good function structure
+def do_something():
+    """
+    Clear description of what this does.
+    """
+    # Load data
+    data = load_data()
+
+    # Process data
+    result = process(data)
+
+    # Save and return
+    save_data(result)
+    return result
+```
+</TerminalDemo>
+
+<Quiz
+  questions={[
+    {
+      question: "What is the FIRST step when starting a new project?",
+      options: [
+        "Write as much code as possible",
+        "Plan your functions and features",
+        "Make it look pretty",
+        "Test everything"
+      ],
+      correctAnswer: 1,
+      explanation: "Always plan before coding! Outline your features and functions first. It's like drawing a map before going on an adventure."
+    },
+    {
+      question: "Why should you use try/except blocks when getting user input?",
+      options: [
+        "It makes the code longer",
+        "Python requires it",
+        "Users might enter invalid data that causes errors",
+        "It makes the program run faster"
+      ],
+      correctAnswer: 2,
+      explanation: "Users will enter unexpected things! try/except blocks prevent your program from crashing when users make mistakes."
+    },
+    {
+      question: "What does if __name__ == '__main__': mean?",
+      options: [
+        "Check if the user's name is 'main'",
+        "Only run this code if the file is executed directly",
+        "Make sure the function is named correctly",
+        "It's just for decoration"
+      ],
+      correctAnswer: 1,
+      explanation: "This idiom means 'only run this code if this file is run directly, not imported'. It's the professional way to structure a program."
+    },
+    {
+      question: "Why use constants like TASKS_FILE = 'tasks.json'?",
+      options: [
+        "To make the code look professional",
+        "Python requires all caps",
+        "To easily change values in one place",
+        "Constants run faster"
+      ],
+      correctAnswer: 2,
+      explanation: "Constants let you change important values in one place. If you want to rename the file, you only change it once, not in every function!"
+    }
+  ]}
+/>
+
+<StoryBox character="python_pete" mood="proud">
+You did it! You built a complete, working project from scratch. This isn't just practice code - this is a real application you could actually use every day.
+
+You've learned:
+- Project planning and structure
+- Combining multiple skills (functions, loops, files, JSON)
+- Error handling for real users
+- Professional coding practices
+
+You're now ready for the ultimate challenge: your **Final Quest**. This will test everything you've learned in one epic project. Are you ready to become a Python Master?
+</StoryBox>
+
+<NextLesson href="/python/25-final-quest" />

@@ -1,0 +1,165 @@
+---
+title: "Getting Help"
+track: "linux"
+chapter: 1
+lesson: 4
+slug: "04-getting-help"
+prerequisites: ["03-first-commands"]
+estimatedTime: 10
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Use the man command to read manuals
+  - Use --help for quick reference
+  - Understand how to learn new commands
+nextLesson: "05-chapter1-quest"
+prevLesson: "03-first-commands"
+---
+
+# Getting Help
+
+<StoryBox character="pixel_the_penguin">
+  Hey there, friend! I'm Pixel the Penguin, and I've got a secret to share...
+
+  Even the most experienced Linux users don't remember everything! The real skill is knowing how to FIND the answers. Let me show you the tools that will make you unstoppable!
+</StoryBox>
+
+## The Man Pages: Your Built-in Encyclopedia
+
+Linux has a powerful built-in manual called "man pages" (short for manual pages). Every command has its own manual page!
+
+To read a manual, type `man` followed by the command name:
+
+<TerminalDemo>
+{`learner@codequest:~$ man ls
+LS(1)                            User Commands                           LS(1)
+
+NAME
+       ls - list directory contents
+
+SYNOPSIS
+       ls [OPTION]... [FILE]...
+
+DESCRIPTION
+       List  information  about  the FILEs (the current directory by default).
+
+       -a, --all
+              do not ignore entries starting with .
+
+       -l     use a long listing format
+       ...`}
+</TerminalDemo>
+
+<FunFact>
+  The man pages have been around since 1971! They're older than most people's parents. Every Linux system has them built in - no internet needed!
+</FunFact>
+
+### Navigating Man Pages
+
+When you're inside a man page:
+
+| Key | Action |
+|-----|--------|
+| `Space` or `Page Down` | Scroll down one page |
+| `b` or `Page Up` | Scroll up one page |
+| `↑` `↓` | Scroll line by line |
+| `/word` | Search for "word" |
+| `n` | Jump to next search result |
+| `q` | Quit (very important!) |
+
+<StoryBox character="pixel_the_penguin">
+  Don't panic if you get stuck in a man page! Just press `q` to quit and return to your command prompt. It's like the exit door in a library!
+</StoryBox>
+
+## Quick Help with --help
+
+Sometimes you just need a quick reminder, not the whole manual. Most commands support `--help`:
+
+<TerminalDemo>
+{`learner@codequest:~$ ls --help
+Usage: ls [OPTION]... [FILE]...
+List information about the FILEs (the current directory by default).
+
+Mandatory arguments to long options are mandatory for short options too.
+  -a, --all                  do not ignore entries starting with .
+  -l                         use a long listing format
+  ...`}
+</TerminalDemo>
+
+This gives you a shorter, quicker reference!
+
+## Which Should You Use?
+
+| Situation | Use |
+|-----------|-----|
+| Need detailed explanation | `man command` |
+| Quick reminder of options | `command --help` |
+| Learning a new command | `man command` first |
+
+## Practice: Explore the Manual
+
+<Challenge
+  id="ch1-getting-help"
+  title="Help Yourself!"
+  description="Learn to use the help system like a pro"
+  steps={[
+    { command: "man pwd", hint: "Open the manual for pwd (press q to exit)" },
+    { command: "ls --help", hint: "Get quick help for the ls command" },
+    { command: "man man", hint: "Yes, even man has a manual! (meta!)" }
+  ]}
+  xp={25}
+  badge="help_seeker"
+/>
+
+## Bonus: The whatis Command
+
+Want a one-line description of a command? Use `whatis`:
+
+<TerminalDemo>
+{`learner@codequest:~$ whatis ls
+ls (1)               - list directory contents
+
+learner@codequest:~$ whatis pwd
+pwd (1)              - print name of current/working directory`}
+</TerminalDemo>
+
+Super quick way to remember what a command does!
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "How do you exit a man page?",
+    options: ["Press Escape", "Type 'exit'", "Press 'q'", "Close the terminal"],
+    correct: 2,
+    explanation: "Press 'q' (for quit) to exit any man page and return to your prompt!"
+  },
+  {
+    question: "Which is faster for a quick reminder about a command?",
+    options: ["man command", "command --help", "Searching the internet", "Asking a friend"],
+    correct: 1,
+    explanation: "--help gives you a quick summary, while man pages are more detailed!"
+  },
+  {
+    question: "What command gives you a one-line description?",
+    options: ["oneline", "describe", "whatis", "info"],
+    correct: 2,
+    explanation: "whatis gives you a brief one-line description of any command!"
+  }
+]} />
+
+<StoryBox character="pixel_the_penguin">
+  You're doing amazing! Remember: the best Linux users aren't the ones who memorize everything - they're the ones who know how to find answers quickly!
+
+  Now you're ready for your first QUEST! Let's see if you can put everything together!
+</StoryBox>
+
+## What's Next?
+
+You've learned the basics! Now it's time to prove yourself in your first quest, where you'll use all your new skills together!
+
+<NextLesson
+  track="linux"
+  lesson="05-chapter1-quest"
+  teaser="Your first quest awaits! Can you complete Commander Byte's challenge?"
+/>

@@ -1,0 +1,441 @@
+---
+title: "Your First Script"
+track: "bash"
+chapter: 1
+lesson: 2
+slug: "02-first-script"
+prerequisites: ["01-what-is-shell-script"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Create your first .sh file
+  - Understand the shebang line
+  - Write and run a simple script
+nextLesson: "03-variables"
+prevLesson: "01-what-is-shell-script"
+---
+
+# Your First Script
+
+<StoryBox character="bash_betty">
+  This is it! The moment you become a script writer!
+
+  Just like how you wrote your first Python program, today you'll write your first shell script. But shell scripts are different - they're like giving your computer a to-do list!
+
+  Ready to create some automation magic? Let's go!
+</StoryBox>
+
+## What is a .sh File?
+
+Shell scripts are saved in files with the `.sh` extension (which stands for "shell"). These files contain commands that Bash will execute, one after another!
+
+Think of it like:
+- `.py` files are for Python programs
+- `.txt` files are for plain text
+- `.sh` files are for shell scripts!
+
+## Creating Your First Script
+
+Let's create a simple script that says hello! We'll use a text editor you already know - `nano`.
+
+<TerminalDemo>
+{`$ nano hello.sh`}
+</TerminalDemo>
+
+This opens the nano editor with a new file called `hello.sh`.
+
+## The Magic Shebang Line
+
+Every shell script should start with a special line called the **shebang** (pronounced "shuh-BANG"). It looks like this:
+
+```bash
+#!/bin/bash
+```
+
+This line tells Linux: "Hey! Use Bash to run this script!"
+
+Let's break it down:
+- `#!` - The shebang characters (hash + exclamation)
+- `/bin/bash` - The path to the Bash program
+
+<FunFact>
+  The shebang is also called a "hashbang" or "pound bang." The name comes from combining "hash" (#) and "bang" (!)!
+</FunFact>
+
+## Writing Your First Script
+
+In the nano editor, type this:
+
+```bash
+#!/bin/bash
+
+echo "Hello, World!"
+echo "This is my first shell script!"
+echo "I'm learning Bash scripting!"
+```
+
+Then save it:
+1. Press `Ctrl + O` to save
+2. Press `Enter` to confirm
+3. Press `Ctrl + X` to exit
+
+<StoryBox character="bash_betty">
+  Notice that `echo` command? It's like Python's `print()` - it displays text on the screen!
+
+  In Bash, we use `echo` instead of `print()`. Same idea, different name!
+</StoryBox>
+
+## Understanding the Script
+
+Let's look at each line:
+
+```bash
+#!/bin/bash
+# ↑ This tells Linux to use Bash
+
+echo "Hello, World!"
+# ↑ The echo command displays text
+```
+
+**Important parts:**
+- `#!/bin/bash` - Always the first line (the shebang)
+- `echo` - The command that displays text
+- `"text"` - Your message in quotes
+
+## Comments in Shell Scripts
+
+You can add notes to your scripts using comments. Comments start with `#` (except for the shebang):
+
+```bash
+#!/bin/bash
+
+# This is a comment - Bash ignores it!
+echo "Hello!"  # You can also put comments after commands
+
+# Comments help you remember what your script does
+echo "Comments are super useful!"
+```
+
+<FunFact>
+  Professional programmers write lots of comments! It helps them remember what their code does when they look at it months later.
+</FunFact>
+
+## Running Your Script (The Wrong Way First!)
+
+Let's try to run the script:
+
+<TerminalDemo>
+{`$ ./hello.sh
+bash: ./hello.sh: Permission denied`}
+</TerminalDemo>
+
+Oh no! Permission denied! Why?
+
+Because by default, files are NOT executable. You need to tell Linux "this file should be allowed to run!"
+
+Don't worry - we'll learn how to fix this in lesson 4! For now, there's another way...
+
+## Running Scripts with bash
+
+Even without making it executable, you can run it by telling Bash explicitly:
+
+<TerminalDemo>
+{`$ bash hello.sh
+Hello, World!
+This is my first shell script!
+I'm learning Bash scripting!`}
+</TerminalDemo>
+
+It works! The `bash` command reads your script and runs all the commands inside!
+
+## Try Different Messages!
+
+Modify your script to say different things:
+
+```bash
+#!/bin/bash
+
+echo "======================================"
+echo "     WELCOME TO BASH SCRIPTING!"
+echo "======================================"
+echo ""
+echo "My name is [YOUR NAME]"
+echo "Today is a great day to code!"
+echo ""
+echo "This script was created by me!"
+```
+
+Run it again:
+
+<TerminalDemo>
+{`$ bash hello.sh
+======================================
+     WELCOME TO BASH SCRIPTING!
+======================================
+
+My name is [YOUR NAME]
+Today is a great day to code!
+
+This script was created by me!`}
+</TerminalDemo>
+
+## Multiple Commands in One Script
+
+The power of scripts is running MANY commands at once! Let's try:
+
+```bash
+#!/bin/bash
+
+echo "Running multiple commands..."
+echo ""
+
+# Show current directory
+echo "Current directory:"
+pwd
+
+echo ""
+
+# List files
+echo "Files in this directory:"
+ls
+
+echo ""
+
+# Show current user
+echo "Current user:"
+whoami
+
+echo ""
+echo "All done!"
+```
+
+<TerminalDemo>
+{`$ bash info.sh
+Running multiple commands...
+
+Current directory:
+/home/pi
+
+Files in this directory:
+Desktop  Documents  Downloads  hello.sh  info.sh
+
+Current user:
+pi
+
+All done!`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  See how powerful this is? Instead of typing pwd, then ls, then whoami separately, you just type `bash info.sh` and ALL those commands run automatically!
+
+  This is the power of automation!
+</StoryBox>
+
+## Creating a System Info Script
+
+Let's make something really cool - a script that shows useful system information!
+
+```bash
+#!/bin/bash
+
+echo "================================"
+echo "   SYSTEM INFORMATION REPORT"
+echo "================================"
+echo ""
+
+echo "Computer name:"
+hostname
+
+echo ""
+echo "Today's date:"
+date
+
+echo ""
+echo "Disk space:"
+df -h /
+
+echo ""
+echo "Memory usage:"
+free -h
+
+echo ""
+echo "================================"
+echo "     Report Complete!"
+echo "================================"
+```
+
+<FunFact>
+  System administrators use scripts like this to monitor hundreds or even thousands of computers at once!
+</FunFact>
+
+## Your Turn to Create!
+
+<Challenge
+  id="ch1-first-script"
+  title="Script Creator"
+  description="Create your own personalized greeting script"
+  steps={[
+    {
+      command: 'nano mygreeting.sh',
+      hint: "Create a new script file"
+    },
+    {
+      command: '#!/bin/bash',
+      hint: "Start with the shebang line"
+    },
+    {
+      command: 'echo "=== MY AWESOME SCRIPT ==="',
+      hint: "Add a cool title"
+    },
+    {
+      command: 'echo "My name is [YOUR NAME]"',
+      hint: "Introduce yourself"
+    },
+    {
+      command: 'echo "I can write shell scripts!"',
+      hint: "Show your new skill"
+    },
+    {
+      command: 'bash mygreeting.sh',
+      hint: "Run your script!"
+    }
+  ]}
+  xp={30}
+  badge="first_script_writer"
+/>
+
+## Common Mistakes (And How to Fix Them!)
+
+### Mistake 1: Forgetting the Shebang
+```bash
+# Wrong:
+echo "Hello"
+
+# Right:
+#!/bin/bash
+echo "Hello"
+```
+
+### Mistake 2: Typos in Commands
+```bash
+# Wrong:
+ecko "Hello"  # typo in 'echo'
+
+# Right:
+echo "Hello"
+```
+
+### Mistake 3: Mismatched Quotes
+```bash
+# Wrong:
+echo "Hello World'
+
+# Right:
+echo "Hello World"
+```
+
+## Echo vs Print
+
+If you're coming from Python, remember:
+
+| Python | Bash |
+|--------|------|
+| `print("Hello")` | `echo "Hello"` |
+| `print(42)` | `echo 42` |
+| `print("Hi", "there")` | `echo "Hi there"` |
+
+Both do the same thing - display text!
+
+## Practice Challenge: Weather Report
+
+Create a script called `weather.sh` that displays a creative weather report:
+
+```bash
+#!/bin/bash
+
+echo "================================"
+echo "   TODAY'S WEATHER REPORT"
+echo "================================"
+echo ""
+echo "Location: Raspberry Pi Kingdom"
+echo "Temperature: 72°F"
+echo "Conditions: Perfectly Coded"
+echo "Forecast: 100% chance of learning!"
+echo ""
+echo "This weather report was generated"
+echo "by a shell script!"
+echo ""
+echo "================================"
+```
+
+Get creative! Add your own details!
+
+## Quiz Time!
+
+<Quiz questions={[
+  {
+    question: "What should the first line of a shell script be?",
+    options: ["# bash", "#!/bin/bash", "!bash", "#bash#"],
+    correct: 1,
+    explanation: "The shebang line #!/bin/bash should always be first!"
+  },
+  {
+    question: "What command displays text in a shell script?",
+    options: ["print", "echo", "display", "show"],
+    correct: 1,
+    explanation: "The echo command displays text, just like Python's print()!"
+  },
+  {
+    question: "What file extension do shell scripts use?",
+    options: [".bash", ".script", ".sh", ".shell"],
+    correct: 2,
+    explanation: "Shell scripts use the .sh extension!"
+  },
+  {
+    question: "How do you run a script called test.sh?",
+    options: ["run test.sh", "bash test.sh", "execute test.sh", "python test.sh"],
+    correct: 1,
+    explanation: "You run it with: bash test.sh"
+  },
+  {
+    question: "What character starts a comment?",
+    options: ["//", "#", "/*", "--"],
+    correct: 1,
+    explanation: "Comments in shell scripts start with #"
+  }
+]} />
+
+## What You've Learned!
+
+Congratulations! You can now:
+- Create shell script files
+- Write the shebang line
+- Use the echo command
+- Add comments to your scripts
+- Run scripts with the bash command
+- Combine multiple commands in one script
+
+<StoryBox character="bash_betty">
+  You're doing AMAZING! You just wrote your first shell scripts!
+
+  Can you feel the power? With just a few lines, you can automate tasks and make your computer do exactly what you want!
+
+  Next up, we'll learn about VARIABLES - how to store information in your scripts and make them even more powerful!
+</StoryBox>
+
+## Command Reference
+
+| Command | What It Does |
+|---------|--------------|
+| `nano script.sh` | Create/edit a script |
+| `#!/bin/bash` | Shebang line (first line) |
+| `echo "text"` | Display text |
+| `bash script.sh` | Run a script |
+| `# comment` | Add a comment |
+
+<NextLesson
+  track="bash"
+  lesson="03-variables"
+  teaser="Learn to store data in variables and make your scripts dynamic!"
+/>

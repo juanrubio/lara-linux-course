@@ -1,0 +1,734 @@
+---
+title: "Traffic Light"
+track: "raspberry-pi"
+chapter: 1
+lesson: 4
+slug: "04-traffic-light"
+prerequisites: ["03-button-input"]
+estimatedTime: 35
+difficulty: "beginner"
+xpReward: 100
+objectives:
+  - Control multiple LEDs simultaneously
+  - Create timed sequences
+  - Build a realistic traffic light system
+  - Understand state machines
+  - Add button control for pedestrian crossing
+nextLesson: "05-temperature-monitor"
+prevLesson: "03-button-input"
+---
+
+# Traffic Light: Multi-LED Control!
+
+<StoryBox character="pi_princess">
+  Welcome back, maker! Today we're leveling up - we're going to control THREE LEDs to build a working traffic light!
+
+  This project teaches you about sequences, timing, and state machines - concepts used in everything from elevators to video games to factory automation!
+
+  Plus, we'll add a pedestrian crossing button, just like real intersections! Let's build something that looks and works like the real deal!
+</StoryBox>
+
+## What You'll Need
+
+### Components for This Lesson
+
+- Your Raspberry Pi (with previous circuits)
+- 3× LEDs (red, yellow/amber, and green - like a real traffic light!)
+- 3× Resistors (220Ω or 330Ω)
+- 1× Pushbutton (for pedestrian crossing)
+- Jumper wires (about 8 male-to-female)
+- Breadboard
+
+<FunFact>
+  The first electric traffic light was installed in 1914 in Cleveland, Ohio! Before that, police officers directed traffic by hand. The inventor was Garrett Morgan, who also invented the gas mask. His traffic signal had three positions: Stop, Go, and an all-directional stop to let pedestrians cross!
+</FunFact>
+
+## Understanding Traffic Light Logic
+
+### Real Traffic Light Sequence
+
+A standard traffic light follows this pattern:
+
+1. **GREEN**: Go! (cars can proceed)
+2. **YELLOW/AMBER**: Caution! (prepare to stop)
+3. **RED**: Stop! (cars must stop)
+4. Back to GREEN
+
+### Timing
+
+In real intersections:
+- Green: 10-30 seconds (depending on traffic)
+- Yellow: 3-5 seconds
+- Red: 10-30 seconds
+
+For our project, we'll use shorter times so we don't wait forever!
+
+### State Machines
+
+A traffic light is a perfect example of a **state machine**:
+- It has different **states** (red, yellow, green)
+- It **transitions** between states in a specific order
+- Each state has a **duration**
+- You can't skip states (no green→red directly!)
+
+<StoryBox character="pi_princess">
+  State machines are EVERYWHERE in programming! Video game characters have states (idle, walking, jumping), websites have states (loading, loaded, error), and your phone has states (locked, unlocked, charging).
+
+  Understanding state machines is a superpower for programmers!
+</StoryBox>
+
+## Building the Circuit
+
+### Pin Assignments
+
+Let's use these GPIO pins:
+- **Red LED**: GPIO 22 (Physical Pin 15)
+- **Yellow LED**: GPIO 27 (Physical Pin 13)
+- **Green LED**: GPIO 17 (Physical Pin 11)
+- **Button**: GPIO 2 (Physical Pin 3)
+
+### Wiring Diagram
+
+For each LED:
+```
+GPIO Pin → Resistor → LED (long leg/+)
+LED (short leg/-) → GND (Ground)
+```
+
+For the button:
+```
+Button leg 1 → GPIO 2
+Button leg 2 → GND
+```
+
+### Step-by-Step Assembly
+
+**TURN OFF YOUR PI FIRST!**
+
+1. **Insert three LEDs into breadboard**
+   - Keep them in order: red, yellow, green (top to bottom)
+   - Long legs on the left, short legs on the right
+
+2. **Connect resistors**
+   - One resistor for each LED's long leg
+
+3. **Connect GPIO wires to resistors**
+   - Red LED: GPIO 22
+   - Yellow LED: GPIO 27
+   - Green LED: GPIO 17
+
+4. **Connect all short LED legs to ground**
+   - You can share a ground rail on the breadboard
+
+5. **Add the button** (from previous lesson)
+   - GPIO 2 and GND
+
+<TerminalDemo>
+{`# Check your pin layout
+pinout
+
+# We're using:
+# GPIO 22 (Pin 15) - Red LED
+# GPIO 27 (Pin 13) - Yellow LED
+# GPIO 17 (Pin 11) - Green LED
+# GPIO 2  (Pin 3)  - Button
+# GND pins - All ground connections`}
+</TerminalDemo>
+
+<StoryBox character="pi_princess">
+  Pro tip: Use actual red, yellow, and green LEDs if you have them! It makes the project feel more realistic. But if you only have one color, that's totally fine - the code works the same!
+
+  Also, organize your wires by color if possible (red wire to red LED, etc.) - it makes debugging SO much easier!
+</StoryBox>
+
+## Code: Basic Traffic Light
+
+Let's start with a simple, repeating traffic light sequence:
+
+```python
+from gpiozero import LED
+from time import sleep
+
+# Set up our three LEDs
+red = LED(22)
+yellow = LED(27)
+green = LED(17)
+
+print("Traffic Light Starting...")
+print("Press Ctrl+C to stop")
+
+def all_off():
+    """Turn all LEDs off"""
+    red.off()
+    yellow.off()
+    green.off()
+
+try:
+    while True:
+        # RED light
+        all_off()
+        red.on()
+        print("RED - STOP!")
+        sleep(3)
+
+        # RED + YELLOW (some countries do this!)
+        yellow.on()
+        print("RED + YELLOW - Get ready...")
+        sleep(1)
+
+        # GREEN light
+        all_off()
+        green.on()
+        print("GREEN - GO!")
+        sleep(3)
+
+        # YELLOW light
+        all_off()
+        yellow.on()
+        print("YELLOW - CAUTION!")
+        sleep(1)
+
+except KeyboardInterrupt:
+    print("\nTraffic light stopped")
+    all_off()
+```
+
+Run this and watch your traffic light cycle through the sequence!
+
+<FunFact>
+  In the UK and some other countries, traffic lights show RED + YELLOW together before turning green! This warns drivers to get ready. In the US, lights go straight from red to green. Different countries, different rules!
+</FunFact>
+
+## Code: Cleaner Version with Functions
+
+Let's make the code more organized:
+
+```python
+from gpiozero import LED
+from time import sleep
+
+# Set up LEDs
+red = LED(22)
+yellow = LED(27)
+green = LED(17)
+
+def all_off():
+    """Turn all LEDs off"""
+    red.off()
+    yellow.off()
+    green.off()
+
+def show_red():
+    """Show red light"""
+    all_off()
+    red.on()
+    print("🔴 RED - STOP!")
+
+def show_yellow():
+    """Show yellow light"""
+    all_off()
+    yellow.on()
+    print("🟡 YELLOW - CAUTION!")
+
+def show_green():
+    """Show green light"""
+    all_off()
+    green.on()
+    print("🟢 GREEN - GO!")
+
+def traffic_cycle():
+    """One complete traffic light cycle"""
+    show_red()
+    sleep(3)
+
+    show_green()
+    sleep(3)
+
+    show_yellow()
+    sleep(1)
+
+# Main program
+print("Traffic Light System")
+print("Press Ctrl+C to stop")
+
+try:
+    while True:
+        traffic_cycle()
+
+except KeyboardInterrupt:
+    print("\nTraffic light stopped")
+    all_off()
+```
+
+Much cleaner! Each function has one job, making the code easy to understand and modify.
+
+## Adding Pedestrian Crossing
+
+Now let's add the coolest feature - a pedestrian crossing button!
+
+When pressed:
+1. Current light finishes its cycle
+2. Switches to red
+3. Pedestrians can cross
+4. Returns to normal sequence
+
+```python
+from gpiozero import LED, Button
+from time import sleep
+
+# Set up LEDs
+red = LED(22)
+yellow = LED(27)
+green = LED(17)
+
+# Set up pedestrian button
+pedestrian_button = Button(2, pull_up=True)
+
+# Global variable to track crossing request
+crossing_requested = False
+
+def all_off():
+    """Turn all LEDs off"""
+    red.off()
+    yellow.off()
+    green.off()
+
+def request_crossing():
+    """Called when pedestrian button is pressed"""
+    global crossing_requested
+    if not crossing_requested:
+        crossing_requested = True
+        print("👤 Pedestrian crossing requested!")
+
+def pedestrian_crossing():
+    """Handle pedestrian crossing"""
+    global crossing_requested
+
+    print("👤 PEDESTRIAN CROSSING!")
+    all_off()
+    red.on()
+
+    # Blink red to indicate crossing is active
+    print("👤 Safe to cross!")
+    for i in range(6):  # Blink 3 times
+        red.toggle()
+        sleep(0.5)
+
+    red.on()  # Make sure red is on
+    print("👤 Crossing complete")
+    crossing_requested = False
+
+def traffic_cycle():
+    """One complete traffic light cycle"""
+    global crossing_requested
+
+    # Red light
+    all_off()
+    red.on()
+    print("🔴 RED - STOP!")
+    sleep(3)
+
+    # Check for pedestrian crossing during red
+    if crossing_requested:
+        pedestrian_crossing()
+        return
+
+    # Green light
+    all_off()
+    green.on()
+    print("🟢 GREEN - GO!")
+    sleep(3)
+
+    # Yellow light
+    all_off()
+    yellow.on()
+    print("🟡 YELLOW - CAUTION!")
+    sleep(1)
+
+    # Check for crossing at end of cycle
+    if crossing_requested:
+        pedestrian_crossing()
+
+# Set up button event
+pedestrian_button.when_pressed = request_crossing
+
+# Main program
+print("🚦 Traffic Light with Pedestrian Crossing")
+print("👤 Press button to cross")
+print("Press Ctrl+C to stop")
+
+try:
+    while True:
+        traffic_cycle()
+
+except KeyboardInterrupt:
+    print("\nTraffic light stopped")
+    all_off()
+```
+
+Now you have a fully interactive traffic light!
+
+<StoryBox character="pi_princess">
+  This is getting serious! You've just built a system that responds to input (button), manages multiple outputs (LEDs), follows timed sequences, and handles interrupts (crossing requests).
+
+  These are the same concepts used in real traffic control systems! You're learning real engineering!
+</StoryBox>
+
+## Practice Challenges!
+
+<Challenge
+  id="rpi-04-traffic-basic"
+  title="Traffic Light Master"
+  description="Customize and improve your traffic light"
+  steps={[
+    {
+      command: "Change the timing to be faster or slower",
+      hint: "Modify the sleep() values"
+    },
+    {
+      command: "Add a startup sequence where all lights blink",
+      hint: "Create a startup() function that blinks all LEDs"
+    },
+    {
+      command: "Make yellow blink rapidly before turning red",
+      hint: "Use a for loop with toggle() and short sleep"
+    },
+    {
+      command: "Add a night mode where yellow blinks continuously",
+      hint: "Create a night_mode() function"
+    }
+  ]}
+  xp={50}
+/>
+
+## Advanced: Traffic Light with LED Brightness
+
+Use PWM to simulate realistic lighting effects:
+
+```python
+from gpiozero import PWMLED
+from time import sleep
+
+# PWM LEDs allow brightness control
+red = PWMLED(22)
+yellow = PWMLED(27)
+green = PWMLED(17)
+
+def fade_in_out(led, duration=1):
+    """Fade an LED in and out"""
+    # Fade in
+    for brightness in range(0, 101, 5):
+        led.value = brightness / 100
+        sleep(duration / 40)
+
+    # Fade out
+    for brightness in range(100, -1, -5):
+        led.value = brightness / 100
+        sleep(duration / 40)
+
+    led.value = 0
+
+# Demo
+print("LED brightness demo")
+fade_in_out(red)
+fade_in_out(yellow)
+fade_in_out(green)
+```
+
+## Two-Way Traffic Light System
+
+Let's control TWO traffic lights for a real intersection:
+
+```python
+from gpiozero import LED
+from time import sleep
+
+# North-South lights
+ns_red = LED(22)
+ns_yellow = LED(27)
+ns_green = LED(17)
+
+# East-West lights (add 3 more LEDs!)
+ew_red = LED(23)
+ew_yellow = LED(24)
+ew_green = LED(25)
+
+def set_ns(color):
+    """Set North-South light"""
+    ns_red.off()
+    ns_yellow.off()
+    ns_green.off()
+
+    if color == "red":
+        ns_red.on()
+    elif color == "yellow":
+        ns_yellow.on()
+    elif color == "green":
+        ns_green.on()
+
+def set_ew(color):
+    """Set East-West light"""
+    ew_red.off()
+    ew_yellow.off()
+    ew_green.off()
+
+    if color == "red":
+        ew_red.on()
+    elif color == "yellow":
+        ew_yellow.on()
+    elif color == "green":
+        ew_green.on()
+
+def intersection_cycle():
+    """Control both lights to avoid collisions!"""
+
+    # North-South GREEN, East-West RED
+    set_ns("green")
+    set_ew("red")
+    print("↑↓ North-South GO | ←→ East-West STOP")
+    sleep(5)
+
+    # North-South YELLOW, East-West RED
+    set_ns("yellow")
+    set_ew("red")
+    print("↑↓ North-South CAUTION | ←→ East-West STOP")
+    sleep(2)
+
+    # Both RED (safety gap!)
+    set_ns("red")
+    set_ew("red")
+    print("⛔ ALL STOP (safety gap)")
+    sleep(1)
+
+    # North-South RED, East-West GREEN
+    set_ns("red")
+    set_ew("green")
+    print("↑↓ North-South STOP | ←→ East-West GO")
+    sleep(5)
+
+    # North-South RED, East-West YELLOW
+    set_ns("red")
+    set_ew("yellow")
+    print("↑↓ North-South STOP | ←→ East-West CAUTION")
+    sleep(2)
+
+    # Both RED (safety gap!)
+    set_ns("red")
+    set_ew("red")
+    print("⛔ ALL STOP (safety gap)")
+    sleep(1)
+
+# Main program
+print("🚦 Two-Way Intersection Control")
+print("Press Ctrl+C to stop")
+
+try:
+    while True:
+        intersection_cycle()
+
+except KeyboardInterrupt:
+    print("\nIntersection stopped")
+```
+
+<FunFact>
+  Real traffic lights have a brief "all red" period between changes! This gives any cars still in the intersection time to clear out safely. This is called the "clearance interval" and it's usually 1-2 seconds. Safety first!
+</FunFact>
+
+## Emergency Mode
+
+Add an emergency button that makes all lights flash red:
+
+```python
+from gpiozero import LED, Button
+from time import sleep
+from signal import pause
+
+# LEDs
+red = LED(22)
+yellow = LED(27)
+green = LED(17)
+
+# Buttons
+pedestrian = Button(2, pull_up=True)
+emergency = Button(3, pull_up=True)
+
+emergency_mode = False
+
+def all_off():
+    red.off()
+    yellow.off()
+    green.off()
+
+def activate_emergency():
+    """Emergency mode - flash all red"""
+    global emergency_mode
+    emergency_mode = True
+    print("🚨 EMERGENCY MODE ACTIVATED!")
+
+    # Flash red 10 times
+    for i in range(10):
+        all_off()
+        sleep(0.3)
+        red.on()
+        sleep(0.3)
+
+    print("✅ Emergency mode ended")
+    emergency_mode = False
+
+def normal_cycle():
+    """Normal traffic light cycle"""
+    if not emergency_mode:
+        # Your normal traffic light code here
+        pass
+
+# Set up emergency button
+emergency.when_pressed = activate_emergency
+
+print("🚦 Traffic Light with Emergency Mode")
+print("Press emergency button for emergency mode")
+```
+
+## Quiz Time!
+
+<Quiz questions={[
+  {
+    question: "What is a state machine?",
+    options: ["A type of computer", "A system with defined states and transitions", "A machine that creates electricity", "A type of LED"],
+    correct: 1,
+    explanation: "A state machine has different states (like red, yellow, green) and rules for transitioning between them!"
+  },
+  {
+    question: "Why do real intersections have an 'all red' period?",
+    options: ["To save electricity", "To give cars time to clear the intersection safely", "Because it looks cool", "To confuse drivers"],
+    correct: 1,
+    explanation: "The clearance interval (all red) ensures any cars still in the intersection can get through safely before traffic from other directions starts!"
+  },
+  {
+    question: "In our traffic light code, what does all_off() do?",
+    options: ["Turns everything off", "Turns all LEDs off to prepare for next state", "Stops the program", "Resets the button"],
+    correct: 1,
+    explanation: "all_off() turns all LEDs off, which is important before turning on the next light to avoid multiple lights at once!"
+  },
+  {
+    question: "What's the correct order in a standard traffic light?",
+    options: ["Red, Yellow, Green", "Green, Yellow, Red", "Red, Green, Yellow", "Yellow, Red, Green"],
+    correct: 1,
+    explanation: "The standard cycle is Green (go) → Yellow (caution) → Red (stop) → back to Green!"
+  }
+]} />
+
+## Understanding State Diagrams
+
+Here's how we can visualize our traffic light:
+
+```
+    ┌─────────┐
+    │  START  │
+    └────┬────┘
+         │
+         ▼
+    ┌────────┐
+    │  RED   │ ───> Pedestrian crossing?
+    └────┬───┘
+         │
+         ▼
+    ┌────────┐
+    │ GREEN  │
+    └────┬───┘
+         │
+         ▼
+    ┌────────┐
+    │ YELLOW │
+    └────┬───┘
+         │
+         └─────> (loop back to RED)
+```
+
+Each box is a STATE, each arrow is a TRANSITION!
+
+<StoryBox character="pi_princess">
+  State diagrams are used to design everything from video games to vending machines to spacecraft systems! NASA uses state diagrams to plan mission sequences!
+
+  When you draw out states and transitions, complex systems become much easier to understand and program!
+</StoryBox>
+
+## Troubleshooting
+
+### Wrong LED Turning On
+
+- Double-check your GPIO pin numbers in code
+- Verify physical connections match your code
+- Use `pinout` command to confirm pin assignments
+
+### LEDs Not Turning Off Between States
+
+- Make sure you call `all_off()` before setting new state
+- Check that LED off() methods are working: `red.off()`
+
+### Button Not Working with Traffic Light
+
+- Test button separately first
+- Make sure button check happens at right time in cycle
+- Verify button is properly debounced
+
+### All LEDs Dim or Flickering
+
+- Might not have enough current
+- Make sure resistors are correct value (220Ω or 330Ω)
+- Check ground connections are solid
+
+<FunFact>
+  Traffic engineers are real people who design traffic light timings! They use sensors, cameras, and complex algorithms to optimize traffic flow. Some cities have "smart" traffic lights that adjust timing based on real-time traffic. Your Pi could do that too with the right sensors!
+</FunFact>
+
+## Real-World Applications
+
+Traffic light logic applies to many systems:
+
+- **Game Design**: Character states (idle, walking, attacking)
+- **Robotics**: Robot behaviors (searching, picking up, delivering)
+- **Websites**: Page states (loading, loaded, error)
+- **Manufacturing**: Assembly line stages
+- **Vending Machines**: Payment → Selection → Dispensing
+- **Washing Machines**: Fill → Wash → Rinse → Spin
+
+Understanding state machines makes you a better programmer in ANY field!
+
+## What You've Learned
+
+Today you mastered:
+
+- Controlling multiple LEDs
+- Creating timed sequences
+- Building state machines
+- Combining input and output
+- Managing complex logic flow
+- Creating realistic simulations
+- Safety programming (clearance intervals)
+
+<StoryBox character="pi_princess">
+  You've built something REAL! Your traffic light uses the same logic as actual intersections. You're not just playing with LEDs - you're learning traffic engineering, state machine design, and systems programming!
+
+  Every complex system starts with simple building blocks. You've learned to control multiple outputs, handle input, manage timing, and coordinate events. These skills apply to EVERYTHING in electronics and programming!
+
+  Next time, we're moving beyond just LEDs - we're going to read a TEMPERATURE SENSOR! You'll learn to read actual data from the real world. Get excited!
+
+  Outstanding work, traffic engineer! You've earned your stripes!
+</StoryBox>
+
+## Extension Ideas
+
+Try these advanced modifications:
+
+1. **Add a countdown timer**: Show how many seconds until the light changes
+2. **Rush hour mode**: Longer green times during peak hours
+3. **Smart crossing**: Only activate crossing when green, not during yellow
+4. **Sound effects**: Use buzzer for pedestrian crossing beep
+5. **4-way intersection**: Control 4 sets of lights!
+6. **Emergency vehicle preemption**: Button to turn all lights red immediately
+
+<NextLesson
+  track="raspberry-pi"
+  lesson="05-temperature-monitor"
+  teaser="Read temperature sensors and display real-world data!"
+/>

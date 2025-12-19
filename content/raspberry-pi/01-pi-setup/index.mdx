@@ -1,0 +1,393 @@
+---
+title: "Pi Setup"
+track: "raspberry-pi"
+chapter: 1
+lesson: 1
+slug: "01-pi-setup"
+prerequisites: []
+estimatedTime: 45
+difficulty: "beginner"
+xpReward: 75
+objectives:
+  - Understand what a Raspberry Pi is
+  - Set up your Raspberry Pi hardware
+  - Install Raspberry Pi OS
+  - Complete your first boot
+  - Learn basic safety rules
+nextLesson: "02-led-blinker"
+prevLesson: null
+---
+
+# Pi Setup: Your Gateway to Hardware Hacking!
+
+<StoryBox character="pi_princess">
+  Welcome, young maker! I'm Pi Princess, your guide to the amazing world of Raspberry Pi!
+
+  A Raspberry Pi is a tiny computer that fits in your hand, but it's powerful enough to control lights, read sensors, run programs, and build incredible projects!
+
+  Today, we're going to set up your Pi and take your first steps into hardware programming. Let's turn this little board into something amazing!
+</StoryBox>
+
+## What is a Raspberry Pi?
+
+The Raspberry Pi is a credit-card sized computer that can do almost anything a regular computer can do, but with one superpower: it has **GPIO pins** that let you connect to the physical world!
+
+### Why is it called "Raspberry Pi"?
+- **Raspberry**: Many computers are named after fruits (like Apple!)
+- **Pi**: Stands for "Python Interpreter" - Python is the main language we'll use!
+
+<FunFact>
+  The Raspberry Pi was created in 2012 by the Raspberry Pi Foundation in the UK to help kids learn programming. Now over 50 MILLION have been sold worldwide! People use them for everything from retro gaming to controlling robots to running weather stations!
+</FunFact>
+
+## Safety First!
+
+Before we begin, let's learn the important safety rules for working with electronics:
+
+### The Golden Rules of Electronics
+
+1. **Never connect power backwards** - Always check the polarity (+ and -)
+2. **Turn off power before connecting components** - No hot-wiring!
+3. **Don't force connections** - If it doesn't fit easily, you might have it backwards
+4. **Keep liquids away** - Water and electronics don't mix!
+5. **Work on a clean, static-free surface** - A wooden table or anti-static mat is perfect
+6. **Don't touch components while powered** - Wait until everything is off
+
+<StoryBox character="pi_princess">
+  Think of your Raspberry Pi like a pet - treat it gently, keep it safe, and it will serve you well! Electronics aren't scary, but they do need respect.
+
+  Pro tip: Always touch a metal object (like a doorknob) before handling your Pi to discharge any static electricity!
+</StoryBox>
+
+## What You'll Need
+
+### Required Components
+
+Here's everything you need to get started:
+
+**Hardware:**
+- Raspberry Pi 4 (or Raspberry Pi 3 B+)
+- Power supply (USB-C for Pi 4, micro-USB for older models)
+- microSD card (at least 16GB, class 10 or better)
+- HDMI cable (micro-HDMI for Pi 4)
+- Monitor or TV with HDMI input
+- USB keyboard
+- USB mouse
+
+**Optional but Helpful:**
+- Raspberry Pi case (protects your Pi)
+- Heatsinks (keeps it cool)
+- Breadboard and jumper wires (for future projects)
+- Internet connection (Ethernet cable or WiFi)
+
+<FunFact>
+  The Raspberry Pi 4 is incredibly powerful - it can run two 4K monitors at once, and the 8GB model is powerful enough to be used as a daily desktop computer!
+</FunFact>
+
+## Part 1: Preparing the SD Card
+
+Your Raspberry Pi doesn't have built-in storage like a laptop. Instead, it boots from a microSD card, which acts as its hard drive!
+
+### Step 1: Download Raspberry Pi Imager
+
+1. On your regular computer, go to: https://www.raspberrypi.com/software/
+2. Download the Raspberry Pi Imager for your operating system (Windows, Mac, or Linux)
+3. Install it like any other program
+
+### Step 2: Write the OS to SD Card
+
+1. Insert your microSD card into your computer (you might need an SD card adapter)
+2. Open Raspberry Pi Imager
+3. Click "Choose OS" and select "Raspberry Pi OS (32-bit)" - the first option!
+4. Click "Choose Storage" and select your SD card
+   - **CAREFUL!** Make sure you select the right drive - this will erase everything on it!
+5. Click the gear icon (⚙️) for advanced settings:
+   - Set a hostname (like "mypi")
+   - Enable SSH (we'll use this later!)
+   - Set username and password (remember these!)
+   - Configure WiFi if you want
+6. Click "Write" and wait (this takes 5-10 minutes)
+
+<StoryBox character="pi_princess">
+  The Raspberry Pi Imager makes this super easy! In the old days, we had to manually format cards and copy files. Now it's just a few clicks!
+
+  Think of this like installing the brain into your robot - we're giving it an operating system so it knows how to think!
+</StoryBox>
+
+## Part 2: Assembling Your Pi
+
+Now let's put everything together! Think of this like building with LEGO, but for computers!
+
+### The Connection Order (IMPORTANT!)
+
+Always connect things in this order to avoid damage:
+
+1. **Insert the SD card** into the slot on the bottom of the Pi
+2. **Connect HDMI cable** from Pi to monitor
+3. **Connect keyboard** to USB port
+4. **Connect mouse** to USB port
+5. **Connect Ethernet** (if using wired internet)
+6. **Finally, connect power** - your Pi will immediately start booting!
+
+<TerminalDemo>
+{`# Boot sequence you'll see:
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000001] Linux version 6.1.21-v8+
+[    1.234567] Rainbow screen appears (this is normal!)
+[    2.345678] Raspberry Pi logo with loading progress
+[    5.678901] Desktop appears!`}
+</TerminalDemo>
+
+### Why Power Goes Last
+
+Connecting power last is like turning on a light switch - once power is connected, your Pi immediately starts running. If you connect other things while it's powered, you risk damaging components!
+
+<FunFact>
+  That colorful rainbow screen you see at boot? Each color represents a different electrical test! If you see it, your Pi is healthy. If it doesn't appear, there might be a power problem.
+</FunFact>
+
+## Part 3: First Boot!
+
+When you power on your Pi for the first time, you'll see:
+
+### The Welcome Wizard
+
+1. **Welcome Screen** - Click "Next"
+2. **Set Country** - Choose your country, language, and timezone
+3. **Change Password** - Set a secure password (or keep the one you set in Imager)
+4. **Select WiFi Network** - Connect to your WiFi
+5. **Update Software** - Click "Next" to update (this takes a while!)
+6. **Restart** - Your Pi will reboot with all updates installed
+
+### Exploring the Desktop
+
+Once you're at the desktop, you'll see it looks similar to Windows or Mac:
+
+- **Menu** (Raspberry icon, top left) - All your programs
+- **Web Browser** - Chromium browser for internet
+- **File Manager** - Browse your files
+- **Terminal** - The command line (we'll use this a LOT!)
+- **Programming** menu - Python, Thonny IDE, and more!
+
+<StoryBox character="pi_princess">
+  Congratulations! You've just set up your first Linux computer! Raspberry Pi OS is based on Linux, the same operating system that powers most of the internet!
+
+  Don't be intimidated by all the options. We'll explore everything step by step!
+</StoryBox>
+
+## Part 4: Getting to Know Your Pi
+
+Let's explore and make sure everything works!
+
+### Opening the Terminal
+
+The terminal is where the magic happens! It's like having a direct conversation with your computer.
+
+1. Click the Menu (Raspberry icon)
+2. Go to Accessories → Terminal
+3. A black window appears - this is your terminal!
+
+### Your First Commands
+
+Try typing these commands:
+
+<TerminalDemo>
+{`# Check your Python version
+python3 --version
+# Output: Python 3.9.2
+
+# See information about your Pi
+cat /proc/cpuinfo | grep Model
+# Output: Model: Raspberry Pi 4 Model B Rev 1.4
+
+# Check your storage space
+df -h /
+# Shows how much space is available on your SD card
+
+# Check temperature
+vcgencmd measure_temp
+# Output: temp=45.2'C`}
+</TerminalDemo>
+
+<FunFact>
+  Your Raspberry Pi runs on about 5 watts of power - that's less than a nightlight! A regular desktop computer uses 200-500 watts. You could run your Pi 24/7 for a month for less than a dollar in electricity!
+</FunFact>
+
+## Understanding the GPIO Pins
+
+The most exciting part of the Raspberry Pi is the GPIO (General Purpose Input/Output) pins!
+
+### What are GPIO Pins?
+
+The GPIO pins are the two rows of metal pins along the top edge of your Pi. There are 40 pins total, and they let you:
+
+- Turn LEDs on and off
+- Read button presses
+- Control motors
+- Read temperature sensors
+- Talk to other electronic components
+
+### Pin Layout (Simplified)
+
+Here's what the pins do:
+
+- **Power Pins**: 3.3V and 5V - provide power to components
+- **Ground Pins** (GND): Complete the circuit (like the negative end of a battery)
+- **GPIO Pins**: Numbered pins you can program (like GPIO 2, GPIO 3, etc.)
+- **Special Pins**: Some pins have special functions (I2C, SPI, UART)
+
+<TerminalDemo>
+{`# View a diagram of your GPIO pins
+pinout
+# This shows a detailed diagram of all 40 pins!`}
+</TerminalDemo>
+
+<StoryBox character="pi_princess">
+  Think of GPIO pins like the tentacles of an octopus - each one can reach out and touch the world! We'll use them to make LEDs blink, read buttons, and control all sorts of things!
+
+  In the next lesson, we'll actually USE these pins to make an LED blink. Get ready for some serious fun!
+</StoryBox>
+
+## Installing Python Libraries
+
+For our future projects, we need to install the GPIO library:
+
+<TerminalDemo>
+{`# Update package list
+sudo apt-get update
+
+# Install GPIO library
+sudo apt-get install python3-gpiozero python3-rpi.gpio -y
+
+# Test that it installed
+python3 -c "import gpiozero; print('GPIO library ready!')"
+# Output: GPIO library ready!`}
+</TerminalDemo>
+
+The `sudo` command means "super user do" - it gives you administrator powers!
+
+## Practice Challenge!
+
+<Challenge
+  id="rpi-01-setup"
+  title="Pi Setup Master"
+  description="Complete your Pi setup and test everything"
+  steps={[
+    {
+      command: "Open the terminal from the menu",
+      hint: "Menu → Accessories → Terminal"
+    },
+    {
+      command: "Run: python3 --version",
+      hint: "This checks if Python 3 is installed"
+    },
+    {
+      command: "Run: pinout",
+      hint: "This shows your GPIO pin layout"
+    },
+    {
+      command: "Run: vcgencmd measure_temp",
+      hint: "Check your Pi's temperature"
+    },
+    {
+      command: "Create a test file: touch test.txt",
+      hint: "This creates an empty file"
+    }
+  ]}
+  xp={40}
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does GPIO stand for?",
+    options: ["General Power Input Output", "General Purpose Input Output", "Great Pin Input Output", "Global Power Interface Output"],
+    correct: 1,
+    explanation: "GPIO stands for General Purpose Input Output - they're pins you can program to do many different things!"
+  },
+  {
+    question: "Why do we connect power LAST when assembling the Pi?",
+    options: ["It doesn't matter", "To avoid damaging components", "It's easier", "To save electricity"],
+    correct: 1,
+    explanation: "Connecting power last ensures all other components are safely connected before the Pi starts running!"
+  },
+  {
+    question: "What is the microSD card used for?",
+    options: ["Decoration", "Acting as the Pi's hard drive/storage", "Just the operating system", "Internet connection"],
+    correct: 1,
+    explanation: "The microSD card is like the Pi's hard drive - it stores the operating system AND all your files!"
+  },
+  {
+    question: "What command shows the GPIO pin layout?",
+    options: ["gpio", "pins", "pinout", "showpins"],
+    correct: 2,
+    explanation: "The 'pinout' command displays a detailed diagram of all 40 GPIO pins!"
+  }
+]} />
+
+## Troubleshooting Common Issues
+
+### Pi Won't Boot (No Display)
+- Check HDMI connection
+- Make sure SD card is fully inserted
+- Verify power supply is adequate (5V, 3A for Pi 4)
+- Look for red LED (power) - if it's off, power supply issue
+
+### Rainbow Screen Stuck
+- SD card not written correctly - try re-imaging
+- Power supply insufficient
+
+### Can't Connect to WiFi
+- Check password carefully (it's case-sensitive!)
+- Some Pi models only support 2.4GHz WiFi, not 5GHz
+
+### Temperature Too High
+- Add heatsinks
+- Improve ventilation
+- Get a case with a fan
+
+<StoryBox character="pi_princess">
+  Every maker encounters problems - it's part of the adventure! The important thing is to stay calm, check your connections, and try things one step at a time.
+
+  The Raspberry Pi community is HUGE and super helpful. If you're stuck, a quick internet search usually finds someone who had the same problem!
+</StoryBox>
+
+## What's Next?
+
+You did it! Your Raspberry Pi is set up and ready for adventure!
+
+In the next lesson, we'll write our first hardware program - making an LED blink! We'll learn about circuits, write Python code to control GPIO pins, and create your first electronic project!
+
+### What You Accomplished Today
+
+- Set up Raspberry Pi hardware safely
+- Installed Raspberry Pi OS
+- Learned basic terminal commands
+- Understood GPIO pins
+- Prepared your Pi for electronics projects
+
+<FunFact>
+  The Raspberry Pi has been sent to the International Space Station to help teach astronauts programming! It's been used in countless schools, labs, and maker spaces around the world. You're now part of a global community of makers!
+</FunFact>
+
+<StoryBox character="pi_princess">
+  You're officially a Pi maker now! You've taken the first step into a world where software meets hardware, where code can control the physical world!
+
+  Next time, bring an LED and a resistor - we're going to make it blink! This might seem simple, but it's the foundation of EVERY electronics project. Master the blink, and you can control anything!
+
+  Rest up, maker. The adventure is just beginning!
+</StoryBox>
+
+## Helpful Resources
+
+- **Official Documentation**: https://www.raspberrypi.com/documentation/
+- **GPIO Pin Reference**: Run `pinout` in terminal
+- **Raspberry Pi Forums**: https://forums.raspberrypi.com/
+- **GPIO Zero Documentation**: https://gpiozero.readthedocs.io/
+
+<NextLesson
+  track="raspberry-pi"
+  lesson="02-led-blinker"
+  teaser="Make an LED blink with Python - your first hardware program!"
+/>

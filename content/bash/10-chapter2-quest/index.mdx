@@ -1,0 +1,484 @@
+---
+title: "Quest: Interactive Menu"
+track: "bash"
+chapter: 2
+lesson: 10
+slug: "10-chapter2-quest"
+prerequisites: ["09-command-substitution"]
+estimatedTime: 45
+difficulty: "beginner"
+xpReward: 100
+objectives:
+  - Build a complete interactive menu system
+  - Combine conditionals, loops, and user input
+  - Create a real-world utility script
+  - Master Chapter 2 concepts
+nextLesson: "11-functions"
+prevLesson: "09-command-substitution"
+---
+
+# Quest: Interactive Menu
+
+<StoryBox character="bash_betty">
+  THIS IS IT! Your Chapter 2 FINAL QUEST!
+
+  The Bash Kingdom needs a powerful System Control Center - an interactive menu that lets users manage their system with ease! No more remembering complex commands - just choose from a menu!
+
+  You'll combine EVERYTHING you've learned:
+  - Conditionals to check options
+  - Loops to keep the menu running
+  - User input to get choices
+  - Command substitution to show system info
+
+  Complete this quest and you'll earn the **Control Flow Master** badge! Ready? Let's build something AMAZING!
+</StoryBox>
+
+## Your Mission
+
+Build a complete interactive menu system called "System Control Center" that provides useful system information and utilities through an easy-to-use interface!
+
+### Quest Objectives:
+
+1. Create a menu that displays multiple options
+2. Accept user input and respond to choices
+3. Use command substitution to show live system data
+4. Validate input and handle errors gracefully
+5. Allow users to return to menu or exit
+6. Make it user-friendly and professional
+
+## Part 1: The Basic Menu Structure
+
+Let's start with a simple menu that loops:
+
+<Challenge
+  id="quest2-basic-menu"
+  title="Create Basic Menu Loop"
+  description="Build the foundation of your menu system"
+  steps={[
+    {
+      command: 'cat > control_center.sh << \'EOF\'\n#!/bin/bash\n\nwhile true\ndo\n    echo "========================================"\n    echo "       SYSTEM CONTROL CENTER"\n    echo "========================================"\n    echo "1. Show System Information"\n    echo "2. Exit"\n    echo "========================================"\n    \n    read -p "Enter your choice: " choice\n    \n    if [ "$choice" = "1" ]; then\n        echo "System info will go here!"\n    elif [ "$choice" = "2" ]; then\n        echo "Goodbye!"\n        exit 0\n    else\n        echo "Invalid choice!"\n    fi\n    \n    echo\n    read -p "Press Enter to continue..."\ndone\nEOF',
+      hint: "Create a script with a basic menu loop"
+    },
+    {
+      command: 'chmod +x control_center.sh',
+      hint: "Make the script executable"
+    }
+  ]}
+  xp={20}
+/>
+
+<StoryBox character="bash_betty">
+  Great start! Now let's add REAL functionality using command substitution!
+</StoryBox>
+
+## Part 2: Add System Information
+
+Let's make the first menu option show actual system information:
+
+<Challenge
+  id="quest2-system-info"
+  title="Display System Information"
+  description="Add real system data using command substitution"
+  steps={[
+    {
+      command: '# Add this case for option 1:\necho ""\necho "--- SYSTEM INFORMATION ---"\necho "Hostname: $(hostname)"\necho "Username: $(whoami)"\necho "Current Date: $(date)"\necho "Uptime: $(uptime -p)"\necho "Kernel: $(uname -r)"',
+      hint: "Use command substitution to show system data"
+    }
+  ]}
+  xp={20}
+/>
+
+## Part 3: Add More Menu Options
+
+Now let's add several useful options! Update your script to include these:
+
+<Challenge
+  id="quest2-full-menu"
+  title="Complete Menu System"
+  description="Add all menu options with full functionality"
+  steps={[
+    {
+      command: 'cat > control_center.sh << \'EOF\'\n#!/bin/bash\n\nwhile true\ndo\n    clear\n    echo "========================================"\n    echo "       SYSTEM CONTROL CENTER"\n    echo "========================================"\n    echo "1. System Information"\n    echo "2. Disk Usage"\n    echo "3. Memory Usage"\n    echo "4. Current Processes"\n    echo "5. Network Info"\n    echo "6. File Search"\n    echo "7. Create Backup"\n    echo "8. Exit"\n    echo "========================================"\n    \n    read -p "Enter your choice (1-8): " choice\n    echo\n    \n    case $choice in\n        1)\n            echo "--- SYSTEM INFORMATION ---"\n            echo "Hostname: $(hostname)"\n            echo "Username: $(whoami)"\n            echo "Current Date: $(date)"\n            echo "Uptime: $(uptime -p)"\n            echo "Kernel: $(uname -r)"\n            echo "Shell: $SHELL"\n            ;;\n        2)\n            echo "--- DISK USAGE ---"\n            df -h\n            echo\n            echo "Home directory size: $(du -sh $HOME 2>/dev/null | cut -f1)"\n            ;;\n        3)\n            echo "--- MEMORY USAGE ---"\n            free -h\n            ;;\n        4)\n            echo "--- TOP PROCESSES ---"\n            ps aux --sort=-%mem | head -11\n            ;;\n        5)\n            echo "--- NETWORK INFORMATION ---"\n            echo "IP Address: $(hostname -I)"\n            echo "Network Interfaces:"\n            ip -brief addr 2>/dev/null || ifconfig 2>/dev/null\n            ;;\n        6)\n            read -p "Enter filename to search: " filename\n            echo "Searching for: $filename"\n            find $HOME -name "$filename" -type f 2>/dev/null\n            ;;\n        7)\n            timestamp=$(date +%Y%m%d_%H%M%S)\n            backup_file="backup_$timestamp.tar.gz"\n            echo "Creating backup: $backup_file"\n            tar -czf "$HOME/$backup_file" "$HOME/Documents" 2>/dev/null\n            if [ -f "$HOME/$backup_file" ]; then\n                size=$(du -h "$HOME/$backup_file" | cut -f1)\n                echo "✓ Backup created successfully!"\n                echo "  File: $backup_file"\n                echo "  Size: $size"\n            else\n                echo "✗ Backup failed!"\n            fi\n            ;;\n        8)\n            echo "Thank you for using System Control Center!"\n            echo "Goodbye!"\n            exit 0\n            ;;\n        *)\n            echo "✗ Invalid choice! Please enter 1-8."\n            ;;\n    esac\n    \n    echo\n    read -p "Press Enter to continue..."\ndone\nEOF',
+      hint: "Create the complete control center script"
+    },
+    {
+      command: 'chmod +x control_center.sh',
+      hint: "Make it executable"
+    }
+  ]}
+  xp={40}
+/>
+
+## Testing Your Control Center
+
+Let's test each function:
+
+<TerminalDemo>
+{`$ ./control_center.sh
+========================================
+       SYSTEM CONTROL CENTER
+========================================
+1. System Information
+2. Disk Usage
+3. Memory Usage
+4. Current Processes
+5. Network Info
+6. File Search
+7. Create Backup
+8. Exit
+========================================
+Enter your choice (1-8): 1
+
+--- SYSTEM INFORMATION ---
+Hostname: bash-server
+Username: betty
+Current Date: Fri Dec 19 12:00:00 PST 2025
+Uptime: up 5 days, 4 hours, 15 minutes
+Kernel: 6.8.0-90-generic
+Shell: /bin/bash
+
+Press Enter to continue...`}
+</TerminalDemo>
+
+## Part 4: Add Input Validation
+
+Let's make it more robust by validating input:
+
+<Challenge
+  id="quest2-validation"
+  title="Add Input Validation"
+  description="Ensure user enters valid choices"
+  steps={[
+    {
+      command: '# Add validation function at the top:\nvalidate_choice() {\n    if [[ "$1" =~ ^[1-8]$ ]]; then\n        return 0\n    else\n        return 1\n    fi\n}\n\n# Then use it:\nread -p "Enter your choice (1-8): " choice\nif ! validate_choice "$choice"; then\n    echo "✗ Error: Please enter a number between 1-8!"\n    continue\nfi',
+      hint: "Create a validation function"
+    }
+  ]}
+  xp={20}
+/>
+
+## Part 5: Add Colors (Bonus!)
+
+Make your menu colorful and professional:
+
+<TerminalDemo>
+{`$ cat > control_center.sh << 'EOF'
+#!/bin/bash
+
+# Color codes
+RED='\\033[0;31m'
+GREEN='\\033[0;32m'
+YELLOW='\\033[1;33m'
+BLUE='\\033[0;34m'
+CYAN='\\033[0;36m'
+NC='\\033[0m' # No Color
+
+while true
+do
+    clear
+    echo -e "${CYAN}========================================${NC}"
+    echo -e "${CYAN}       SYSTEM CONTROL CENTER${NC}"
+    echo -e "${CYAN}========================================${NC}"
+    echo -e "${GREEN}1.${NC} System Information"
+    echo -e "${GREEN}2.${NC} Disk Usage"
+    echo -e "${GREEN}3.${NC} Memory Usage"
+    echo -e "${GREEN}4.${NC} Current Processes"
+    echo -e "${GREEN}5.${NC} Network Info"
+    echo -e "${GREEN}6.${NC} File Search"
+    echo -e "${GREEN}7.${NC} Create Backup"
+    echo -e "${RED}8.${NC} Exit"
+    echo -e "${CYAN}========================================${NC}"
+
+    read -p "Enter your choice (1-8): " choice
+    echo
+
+    case $choice in
+        1)
+            echo -e "${YELLOW}--- SYSTEM INFORMATION ---${NC}"
+            echo "Hostname: $(hostname)"
+            echo "Username: $(whoami)"
+            echo "Current Date: $(date)"
+            echo "Uptime: $(uptime -p)"
+            echo "Kernel: $(uname -r)"
+            ;;
+        2)
+            echo -e "${YELLOW}--- DISK USAGE ---${NC}"
+            df -h
+            echo
+            disk_usage=$(df / | tail -1 | awk '{print $5}' | sed 's/%//')
+            if [ $disk_usage -gt 80 ]; then
+                echo -e "${RED}⚠ Warning: Disk is $disk_usage% full!${NC}"
+            else
+                echo -e "${GREEN}✓ Disk usage: $disk_usage%${NC}"
+            fi
+            ;;
+        3)
+            echo -e "${YELLOW}--- MEMORY USAGE ---${NC}"
+            free -h
+            ;;
+        4)
+            echo -e "${YELLOW}--- TOP 10 PROCESSES ---${NC}"
+            ps aux --sort=-%mem | head -11
+            ;;
+        5)
+            echo -e "${YELLOW}--- NETWORK INFORMATION ---${NC}"
+            echo "IP Address: $(hostname -I)"
+            echo "Hostname: $(hostname)"
+            ;;
+        6)
+            read -p "Enter filename to search: " filename
+            echo -e "${YELLOW}Searching for: $filename${NC}"
+            results=$(find $HOME -name "$filename" -type f 2>/dev/null)
+            if [ -z "$results" ]; then
+                echo -e "${RED}✗ No files found${NC}"
+            else
+                echo -e "${GREEN}✓ Found files:${NC}"
+                echo "$results"
+            fi
+            ;;
+        7)
+            timestamp=$(date +%Y%m%d_%H%M%S)
+            backup_file="backup_$timestamp.tar.gz"
+            echo -e "${YELLOW}Creating backup: $backup_file${NC}"
+
+            # Create test backup of a small directory
+            if [ -d "$HOME/Documents" ]; then
+                tar -czf "$HOME/$backup_file" "$HOME/Documents" 2>/dev/null
+            else
+                mkdir -p "$HOME/test_backup"
+                echo "Test file" > "$HOME/test_backup/test.txt"
+                tar -czf "$HOME/$backup_file" "$HOME/test_backup" 2>/dev/null
+            fi
+
+            if [ -f "$HOME/$backup_file" ]; then
+                size=$(du -h "$HOME/$backup_file" | cut -f1)
+                echo -e "${GREEN}✓ Backup created successfully!${NC}"
+                echo "  File: $backup_file"
+                echo "  Size: $size"
+                echo "  Location: $HOME/$backup_file"
+            else
+                echo -e "${RED}✗ Backup failed!${NC}"
+            fi
+            ;;
+        8)
+            echo -e "${GREEN}Thank you for using System Control Center!${NC}"
+            echo -e "${CYAN}Goodbye!${NC}"
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}✗ Invalid choice! Please enter 1-8.${NC}"
+            ;;
+    esac
+
+    echo
+    read -p "Press Enter to continue..."
+done
+EOF
+
+$ chmod +x control_center.sh
+$ ./control_center.sh`}
+</TerminalDemo>
+
+## Enhancement Ideas
+
+Now that you have a working control center, try adding these features:
+
+1. **Log viewer**: Show recent system logs
+2. **User management**: List logged-in users
+3. **Service status**: Check if services are running
+4. **File cleaner**: Find and remove temporary files
+5. **System update**: Check for available updates
+6. **Resource monitor**: Show CPU and memory in real-time
+7. **Port scanner**: Show open network ports
+8. **Backup list**: Show all previous backups
+
+## Final Quest Challenge!
+
+<Challenge
+  id="quest2-final-boss"
+  title="Ultimate Control Center"
+  description="Create your own custom control center with at least 6 unique features"
+  steps={[
+    {
+      command: '# Add your own creative features!\n# Ideas:\n# - Weather display\n# - Quote of the day\n# - Password generator\n# - File organizer\n# - Custom calculator\n# - System cleanup tool',
+      hint: "Use your imagination and combine all the concepts you've learned!"
+    }
+  ]}
+  xp={50}
+  badge="control_master"
+/>
+
+## Quiz Time!
+
+<Quiz questions={[
+  {
+    question: "What's the best way to create a menu that runs until the user chooses to exit?",
+    options: ["for loop", "while true loop", "until false loop", "if statement"],
+    correct: 1,
+    explanation: "A while true loop runs forever until you explicitly exit with 'exit' or 'break'!"
+  },
+  {
+    question: "Which command is best for handling menu choices?",
+    options: ["if/elif/else", "case", "for", "while"],
+    correct: 1,
+    explanation: "The case statement is perfect for checking one variable against multiple values - ideal for menus!"
+  },
+  {
+    question: "How do you make a script wait for user input before continuing?",
+    options: ["wait", "pause", "read -p 'Press Enter...'", "sleep"],
+    correct: 2,
+    explanation: "read -p pauses the script and waits for the user to press Enter!"
+  },
+  {
+    question: "What does 'clear' do in a menu script?",
+    options: ["Deletes files", "Clears the terminal screen", "Clears variables", "Exits the script"],
+    correct: 1,
+    explanation: "The clear command clears the terminal screen, making your menu look cleaner!"
+  },
+  {
+    question: "Why use command substitution in a menu?",
+    options: ["To make it slower", "To show dynamic/real-time information", "To make it colorful", "To exit the menu"],
+    correct: 1,
+    explanation: "Command substitution $(command) captures live data each time the menu runs, showing current information!"
+  },
+  {
+    question: "What happens if a user enters an invalid menu choice?",
+    options: ["Script crashes", "Computer explodes", "Default case handles it", "Menu closes"],
+    correct: 2,
+    explanation: "The default case (or *) in a case statement catches invalid input and handles it gracefully!"
+  }
+]} />
+
+## Quest Complete!
+
+<StoryBox character="bash_betty">
+  INCREDIBLE WORK, BASH MASTER! You've completed Chapter 2!
+
+  Look at what you've accomplished:
+  - ✓ Built a complete interactive menu system
+  - ✓ Mastered conditionals (if/then/else)
+  - ✓ Conquered loops (for/while/until)
+  - ✓ Handled user input (read)
+  - ✓ Used command substitution $()
+  - ✓ Created a real-world utility tool
+
+  You didn't just LEARN bash control flow - you BUILT something real with it! This is a script you can actually use to manage your system!
+
+  The Bash Kingdom is proud to award you the **Control Flow Master** badge!
+</StoryBox>
+
+## Rewards Earned
+
+- **XP:** +100
+- **Badge:** Control Flow Master
+- **Title:** System Commander
+- **Unlocked:** Chapter 3 - Advanced Bash
+
+## Skills Mastered
+
+| Concept | What You Learned |
+|---------|------------------|
+| Conditionals | if/then/elif/else/fi statements |
+| Test Operators | Number, string, and file comparisons |
+| Loops | for, while, until loops |
+| Loop Control | break and continue |
+| User Input | read command and options |
+| Validation | Checking and sanitizing input |
+| Command Substitution | $(command) syntax |
+| Case Statements | Menu-style branching |
+| Script Structure | Building complete programs |
+
+## Your Chapter 2 Journey
+
+Here's what you mastered:
+
+1. **Lesson 6: Conditionals** - if/then/else, test conditions
+2. **Lesson 7: Loops** - for and while loops, iteration
+3. **Lesson 8: User Input** - read command, interactive scripts
+4. **Lesson 9: Command Substitution** - Capturing command output
+5. **Lesson 10: Quest** - Built a complete control center!
+
+## Real-World Applications
+
+Your new skills let you create:
+
+- **System monitors** - Track resource usage
+- **Backup tools** - Automate backups with timestamps
+- **Interactive installers** - Guide users through setup
+- **Menu systems** - User-friendly interfaces
+- **Data processors** - Loop through files and process them
+- **Validation scripts** - Check conditions before actions
+- **Report generators** - Collect and display system info
+
+## Code Achievement Showcase
+
+```bash
+# You can now write scripts like this:
+#!/bin/bash
+
+echo "=== YOUR CREATION ==="
+
+# Get user input
+read -p "Enter your name: " name
+
+# Use conditionals
+if [ -n "$name" ]; then
+    # Use loops
+    for i in {1..3}
+    do
+        # Use command substitution
+        echo "$i: Hello, $name! Time is $(date +%H:%M:%S)"
+        sleep 1
+    done
+else
+    echo "No name provided!"
+fi
+
+echo "Script complete!"
+```
+
+<StoryBox character="bash_betty">
+  Chapter 2 is complete, but your bash journey continues!
+
+  In Chapter 3, you'll learn ADVANCED concepts:
+  - Functions (write reusable code)
+  - Arrays (store multiple values)
+  - String manipulation (text processing)
+  - Error handling (making scripts bulletproof)
+  - Debugging (finding and fixing issues)
+
+  Take a break, experiment with your Control Center, and I'll see you in Chapter 3 when you're ready to level up even more!
+
+  Keep scripting, Bash Master!
+</StoryBox>
+
+## Keep Practicing!
+
+Try these challenges to master your skills:
+
+1. **Add new features** to your control center
+2. **Customize the colors** and appearance
+3. **Create a game** using loops and conditionals
+4. **Build a file organizer** that sorts files by type
+5. **Make a quiz game** that tracks scores
+6. **Create a to-do list manager** with add/remove/list options
+7. **Build a password generator** with user options
+8. **Make a system health checker** that alerts on issues
+
+## Share Your Creation!
+
+Your System Control Center is a real tool! Consider:
+
+- Adding it to your scripts directory
+- Creating an alias in your .bashrc
+- Sharing it with friends
+- Expanding it with more features
+- Using it as a starting point for other projects
+
+Remember: Every expert started where you are. The difference? They kept building, experimenting, and improving!
+
+<NextLesson
+  track="bash"
+  lesson="11-functions"
+  teaser="Learn to write reusable code with functions!"
+/>

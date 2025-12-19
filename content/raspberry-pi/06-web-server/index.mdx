@@ -1,0 +1,540 @@
+---
+title: "Web Server"
+track: "raspberry-pi"
+chapter: 2
+lesson: 6
+slug: "06-web-server"
+prerequisites: ["05-temperature-monitor"]
+estimatedTime: 45
+difficulty: "intermediate"
+xpReward: 125
+objectives:
+  - Set up a Flask web server on your Pi
+  - Create simple web pages
+  - Access your Pi from other devices on the network
+  - Build an interactive web interface
+nextLesson: "07-file-server"
+prevLesson: "05-temperature-monitor"
+---
+
+import StoryBox from '@/components/StoryBox'
+import FunFact from '@/components/FunFact'
+import TerminalDemo from '@/components/TerminalDemo'
+import Challenge from '@/components/Challenge'
+import Quiz from '@/components/Quiz'
+import NextLesson from '@/components/NextLesson'
+
+<StoryBox character="pi_princess" mood="excited">
+Hey there, web wizard! Ready to turn your Raspberry Pi into a real web server? That's right - just like the servers that power websites all over the internet!
+
+Today, we're going to build a web server that can serve pages to any device on your network. Your phone, tablet, laptop - they can all connect to YOUR Pi and see YOUR web pages. How cool is that?
+</StoryBox>
+
+## What is a Web Server?
+
+A web server is a program that:
+- Listens for requests from web browsers
+- Sends back web pages (HTML, CSS, JavaScript)
+- Handles interactions (like clicking buttons or submitting forms)
+
+Your Raspberry Pi is powerful enough to be a web server! We'll use **Flask**, a simple and popular Python web framework.
+
+<FunFact title="Raspberry Pi Servers in the Wild">
+People use Raspberry Pi web servers for all kinds of things:
+- Home automation dashboards
+- Weather stations with live data
+- Security camera viewers
+- Personal wikis and note-taking apps
+- Game servers
+- IoT device controllers
+
+Your Pi is small but mighty!
+</FunFact>
+
+## Components You'll Need
+
+For this project, you just need:
+- Your Raspberry Pi (any model)
+- Power supply
+- Network connection (WiFi or Ethernet)
+- Another device to test with (phone, tablet, or computer)
+
+No extra hardware required - this is all software!
+
+## Step 1: Install Flask
+
+First, let's install Flask, the web framework we'll use:
+
+<TerminalDemo>
+{`$ sudo apt update
+$ sudo apt install python3-pip -y
+$ pip3 install flask
+
+Collecting flask
+  Downloading Flask-3.0.0.tar.gz
+Installing...
+Successfully installed Flask-3.0.0`}
+</TerminalDemo>
+
+## Step 2: Your First Web Server
+
+Let's create a super simple web server! Create a new file:
+
+<TerminalDemo>
+{`$ nano web_server.py`}
+</TerminalDemo>
+
+Type this code:
+
+```python
+from flask import Flask
+
+# Create the web app
+app = Flask(__name__)
+
+# Define the home page
+@app.route('/')
+def home():
+    return """
+    <html>
+        <head>
+            <title>My Pi Server</title>
+        </head>
+        <body>
+            <h1>Hello from my Raspberry Pi!</h1>
+            <p>This web page is being served from my Pi!</p>
+        </body>
+    </html>
+    """
+
+# Run the server
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
+```
+
+Save it (Ctrl+X, Y, Enter), then run it:
+
+<TerminalDemo>
+{`$ python3 web_server.py
+
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.100:5000
+
+Press CTRL+C to quit`}
+</TerminalDemo>
+
+<StoryBox character="pi_princess" mood="proud">
+Your Pi is now a web server! See that IP address in the output? Any device on your network can visit that address in their browser and see YOUR page!
+
+Try it - grab your phone, connect to the same WiFi, and go to that address in your browser. Mind = blown!
+</StoryBox>
+
+## Understanding the Code
+
+Let's break down what's happening:
+
+```python
+@app.route('/')
+def home():
+    return "HTML content"
+```
+
+- `@app.route('/')` - This is a "decorator" that says "when someone visits the home page..."
+- `def home():` - ...run this function
+- `return "HTML..."` - ...and send back this HTML
+
+```python
+app.run(host='0.0.0.0', port=5000)
+```
+
+- `host='0.0.0.0'` - Accept connections from ANY device on the network
+- `port=5000` - Use port 5000 (like a channel number)
+- `debug=True` - Show helpful error messages while developing
+
+## Step 3: Multiple Pages
+
+Let's add more pages! Update your code:
+
+```python
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return """
+    <html>
+        <head>
+            <title>My Pi Server</title>
+            <style>
+                body { font-family: Arial; background: #f0f0f0; padding: 20px; }
+                h1 { color: #c51850; }
+                a { color: #3498db; text-decoration: none; }
+            </style>
+        </head>
+        <body>
+            <h1>Welcome to My Pi Server!</h1>
+            <p>Choose a page:</p>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/stats">System Stats</a></li>
+            </ul>
+        </body>
+    </html>
+    """
+
+@app.route('/about')
+def about():
+    return """
+    <html>
+        <head><title>About</title></head>
+        <body>
+            <h1>About This Server</h1>
+            <p>This server is running on a Raspberry Pi!</p>
+            <p>Built by: [Your Name]</p>
+            <p><a href="/">Back to Home</a></p>
+        </body>
+    </html>
+    """
+
+@app.route('/stats')
+def stats():
+    import os
+
+    # Get system info
+    temp = os.popen('vcgencmd measure_temp').readline()
+    cpu_info = os.popen('cat /proc/cpuinfo | grep "Model"').readline()
+
+    return f"""
+    <html>
+        <head><title>System Stats</title></head>
+        <body>
+            <h1>System Statistics</h1>
+            <p><strong>Temperature:</strong> {temp}</p>
+            <p><strong>CPU:</strong> {cpu_info}</p>
+            <p><a href="/">Back to Home</a></p>
+        </body>
+    </html>
+    """
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
+```
+
+Now you have three pages! Try visiting each one.
+
+<FunFact title="Flask Routes">
+You can create routes with variables too!
+
+```python
+@app.route('/user/<name>')
+def user_page(name):
+    return f"<h1>Hello, {name}!</h1>"
+```
+
+Then visiting `/user/Alice` would show "Hello, Alice!"
+</FunFact>
+
+## Step 4: Interactive Page with Buttons
+
+Let's add a page with buttons that do things! We'll create a simple LED controller (even if you don't have LEDs connected, the code will work):
+
+```python
+from flask import Flask, render_template_string
+import os
+
+app = Flask(__name__)
+
+led_state = "OFF"
+
+@app.route('/')
+def home():
+    return """
+    <html>
+        <head>
+            <title>Pi Controller</title>
+            <style>
+                body {
+                    font-family: Arial;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    padding: 40px;
+                    text-align: center;
+                }
+                .button {
+                    background: white;
+                    color: #667eea;
+                    border: none;
+                    padding: 15px 30px;
+                    font-size: 18px;
+                    border-radius: 10px;
+                    margin: 10px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+                }
+                .button:hover { transform: scale(1.05); }
+            </style>
+        </head>
+        <body>
+            <h1>🍓 Raspberry Pi Control Panel 🍓</h1>
+            <p>Control your Pi from any device!</p>
+
+            <div style="margin: 30px;">
+                <a href="/led/on"><button class="button">💡 Turn LED ON</button></a>
+                <a href="/led/off"><button class="button">🌙 Turn LED OFF</button></a>
+            </div>
+
+            <div style="margin: 30px;">
+                <a href="/temp"><button class="button">🌡️ Check Temperature</button></a>
+                <a href="/reboot"><button class="button">🔄 Reboot Pi</button></a>
+            </div>
+        </body>
+    </html>
+    """
+
+@app.route('/led/<state>')
+def led_control(state):
+    global led_state
+    led_state = state.upper()
+
+    # If you have GPIO setup, you could control real LEDs here!
+    # GPIO.output(LED_PIN, GPIO.HIGH if state == "on" else GPIO.LOW)
+
+    return f"""
+    <html>
+        <body style="font-family: Arial; text-align: center; padding: 40px;">
+            <h1>LED is now {led_state}!</h1>
+            <p><a href="/">Back to Control Panel</a></p>
+        </body>
+    </html>
+    """
+
+@app.route('/temp')
+def temperature():
+    temp = os.popen('vcgencmd measure_temp').readline()
+    return f"""
+    <html>
+        <body style="font-family: Arial; text-align: center; padding: 40px;">
+            <h1>🌡️ Current Temperature</h1>
+            <h2>{temp}</h2>
+            <p><a href="/">Back to Control Panel</a></p>
+        </body>
+    </html>
+    """
+
+@app.route('/reboot')
+def reboot():
+    return """
+    <html>
+        <body style="font-family: Arial; text-align: center; padding: 40px;">
+            <h1>⚠️ Reboot Disabled</h1>
+            <p>For safety, the reboot function is disabled in this demo.</p>
+            <p>To enable it, uncomment: os.system('sudo reboot')</p>
+            <p><a href="/">Back to Control Panel</a></p>
+        </body>
+    </html>
+    """
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
+```
+
+<StoryBox character="pi_princess" mood="excited">
+Look at what you've created! You now have a control panel that you can access from ANY device on your network. You could be sitting on the couch with your phone, controlling your Pi upstairs!
+
+This is how smart home systems work. This is how web apps work. You're building real, practical technology!
+</StoryBox>
+
+## Step 5: Making it Permanent
+
+Right now, your server stops when you close the terminal. Let's make it run automatically when your Pi boots!
+
+Create a service file:
+
+<TerminalDemo>
+{`$ sudo nano /etc/systemd/system/webserver.service`}
+</TerminalDemo>
+
+Add this content (change the path if needed):
+
+```ini
+[Unit]
+Description=Raspberry Pi Web Server
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi
+ExecStart=/usr/bin/python3 /home/pi/web_server.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start the service:
+
+<TerminalDemo>
+{`$ sudo systemctl enable webserver.service
+$ sudo systemctl start webserver.service
+$ sudo systemctl status webserver.service
+
+● webserver.service - Raspberry Pi Web Server
+   Active: active (running)
+
+Success! Server is now running automatically!`}
+</TerminalDemo>
+
+## Finding Your Pi's IP Address
+
+To access your server from other devices, you need your Pi's IP address:
+
+<TerminalDemo>
+{`$ hostname -I
+
+192.168.1.100`}
+</TerminalDemo>
+
+Now on any device on your network, open a browser and go to:
+`http://192.168.1.100:5000`
+
+<FunFact title="Port Forwarding">
+Want to access your Pi from ANYWHERE in the world (not just your home network)? You can set up "port forwarding" on your router!
+
+BUT - only do this if you understand security! Never expose servers to the internet without proper authentication and security measures.
+</FunFact>
+
+## Common Issues and Solutions
+
+### Port Already in Use
+If you get "Address already in use", another program is using port 5000:
+
+```python
+# Try a different port
+app.run(host='0.0.0.0', port=8080, debug=True)
+```
+
+### Can't Connect from Other Devices
+- Make sure your Pi and other device are on the same WiFi
+- Check if firewall is blocking connections: `sudo ufw allow 5000`
+- Verify the IP address is correct: `hostname -I`
+
+### Page Won't Load
+- Is the server running? Check with: `sudo systemctl status webserver`
+- Look at the terminal for error messages
+- Make sure you're using `http://` not `https://`
+
+<Challenge
+  title="Build Your Own Dashboard"
+  description="Create a custom web dashboard with your choice of features"
+  steps={[
+    "Create a new page at /dashboard",
+    "Add at least 3 pieces of system information (CPU temp, uptime, disk space)",
+    "Style it with CSS to make it look nice",
+    "Add a button that does something (even if it just displays a message)",
+    "Test it from at least 2 different devices"
+  ]}
+  xp={50}
+/>
+
+## Project Ideas
+
+Now that you know Flask, you can build:
+
+1. **Weather Station Dashboard** - Display sensor data
+2. **Home Security Monitor** - Show camera feeds
+3. **Music Player Remote** - Control music playback
+4. **Smart Home Hub** - Control lights, temperature, etc.
+5. **Personal Wiki** - Store and organize notes
+6. **Game Server Status** - Show who's playing what
+7. **Pet Camera** - View your pets remotely
+
+The possibilities are endless!
+
+<Quiz
+  questions={[
+    {
+      question: "What does @app.route('/') mean in Flask?",
+      options: [
+        "Create a new app",
+        "Define what happens when someone visits the home page",
+        "Start the server",
+        "Close all routes"
+      ],
+      correctAnswer: 1,
+      explanation: "@app.route('/') is a decorator that defines what function runs when someone visits the home page (/) of your server."
+    },
+    {
+      question: "Why do we use host='0.0.0.0' when running the server?",
+      options: [
+        "To make it run faster",
+        "To use less memory",
+        "To accept connections from any device on the network",
+        "To hide the server"
+      ],
+      correctAnswer: 2,
+      explanation: "host='0.0.0.0' means accept connections from ANY IP address on the network, not just localhost!"
+    },
+    {
+      question: "What does Flask return to the browser?",
+      options: [
+        "Python code",
+        "HTML content",
+        "System files",
+        "Images only"
+      ],
+      correctAnswer: 1,
+      explanation: "Flask returns HTML (and CSS/JavaScript) that browsers can display as web pages!"
+    },
+    {
+      question: "How do you find your Pi's IP address?",
+      options: [
+        "hostname -I",
+        "ifconfig",
+        "ip addr",
+        "All of the above"
+      ],
+      correctAnswer: 3,
+      explanation: "All three commands can show your IP address! hostname -I is the quickest, but they all work."
+    }
+  ]}
+/>
+
+<StoryBox character="pi_princess" mood="proud">
+Amazing work! You've turned your Raspberry Pi into a web server that can serve pages to any device on your network!
+
+You learned:
+- How web servers work
+- Flask basics and routing
+- Creating multiple pages
+- Interactive buttons and controls
+- Making services run automatically
+
+Next up, we're going to turn your Pi into a FILE SERVER - so you can share files between all your devices. It's like having your own personal cloud storage at home!
+</StoryBox>
+
+## Quick Reference
+
+| Command | Purpose |
+|---------|---------|
+| `pip3 install flask` | Install Flask |
+| `python3 server.py` | Run your server |
+| `hostname -I` | Get your Pi's IP address |
+| `sudo systemctl status webserver` | Check if service is running |
+| `sudo ufw allow 5000` | Open firewall port |
+
+| Flask Code | What It Does |
+|------------|--------------|
+| `@app.route('/')` | Define home page |
+| `@app.route('/page')` | Define custom page |
+| `app.run(host='0.0.0.0')` | Run server, accept all connections |
+| `return "<html>..."` | Send HTML to browser |
+
+<NextLesson
+  track="raspberry-pi"
+  lesson="07-file-server"
+  teaser="Transform your Pi into a network file server - your own personal cloud!"
+/>

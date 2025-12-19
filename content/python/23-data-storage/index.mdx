@@ -1,0 +1,517 @@
+---
+title: "Storing Data"
+chapter: 5
+lesson: 23
+xp: 50
+difficulty: "intermediate"
+prevLesson: "22-writing-files"
+description: "Learn to save and load complex data structures, making your programs remember everything"
+---
+
+import StoryBox from '@/components/StoryBox'
+import FunFact from '@/components/FunFact'
+import TerminalDemo from '@/components/TerminalDemo'
+import Challenge from '@/components/Challenge'
+import Quiz from '@/components/Quiz'
+import NextLesson from '@/components/NextLesson'
+
+<StoryBox character="python_pete" mood="excited">
+Greetings, data wizard! You've learned to read and write simple text to files. But what if you want to save something more complex? Like a list of items, a dictionary of player stats, or the entire state of your game?
+
+Today we're learning about **data persistence** - making your programs remember complex information even after they close. This is what separates simple scripts from real applications!
+</StoryBox>
+
+## The Problem with Simple Text Files
+
+Let's say you want to save a player's inventory in your game:
+
+<TerminalDemo>
+```python
+inventory = ["sword", "shield", "potion", "map", "torch"]
+
+# Try saving it directly... this doesn't work well!
+with open("inventory.txt", "w") as file:
+    file.write(str(inventory))
+
+# What gets saved: "['sword', 'shield', 'potion', 'map', 'torch']"
+# It's just a string now, not a list!
+```
+</TerminalDemo>
+
+When you read it back, you get a **string that looks like a list**, not an actual list! We need a better solution.
+
+## Solution 1: Simple Line-by-Line Storage
+
+For simple lists, you can save one item per line:
+
+<TerminalDemo>
+```python
+# Saving a list (one item per line)
+inventory = ["sword", "shield", "potion", "map", "torch"]
+
+with open("inventory.txt", "w") as file:
+    for item in inventory:
+        file.write(item + "\n")
+
+print("Inventory saved!")
+
+# Loading the list back
+with open("inventory.txt", "r") as file:
+    loaded_inventory = []
+    for line in file:
+        item = line.strip()  # Remove the \n
+        loaded_inventory.append(item)
+
+print("Loaded inventory:", loaded_inventory)
+# Output: Loaded inventory: ['sword', 'shield', 'potion', 'map', 'torch']
+```
+</TerminalDemo>
+
+<StoryBox character="python_pete" mood="proud">
+This works great for simple lists! But what about more complex data, like dictionaries or nested lists? That's where things get tricky...
+
+Luckily, Python has a special tool for this: the **JSON format**!
+</StoryBox>
+
+## JSON: The Universal Data Format
+
+**JSON** (JavaScript Object Notation) is a way to represent data that:
+- Works with lists, dictionaries, numbers, strings, and booleans
+- Can be saved to files and loaded back perfectly
+- Is used by millions of programs worldwide
+
+<FunFact title="JSON is Everywhere!">
+JSON isn't just for Python - it's the universal language for storing data! When apps on your phone talk to servers on the internet, they often use JSON. It's like a common language that all programming languages understand!
+</FunFact>
+
+## Using the `json` Module
+
+Python has a built-in `json` module that makes saving and loading complex data easy:
+
+<TerminalDemo>
+```python
+import json
+
+# Create a player's data
+player = {
+    "name": "Hero",
+    "level": 5,
+    "health": 100,
+    "inventory": ["sword", "shield", "potion"],
+    "completed_quests": ["rescue_villager", "find_artifact"]
+}
+
+# Save it to a file
+with open("player_data.json", "w") as file:
+    json.dump(player, file)
+
+print("Player data saved!")
+
+# Load it back
+with open("player_data.json", "r") as file:
+    loaded_player = json.load(file)
+
+print("Loaded player:", loaded_player)
+# Output: Loaded player: {'name': 'Hero', 'level': 5, ...}
+```
+</TerminalDemo>
+
+Let's look at what `player_data.json` contains:
+
+```json
+{"name": "Hero", "level": 5, "health": 100, "inventory": ["sword", "shield", "potion"], "completed_quests": ["rescue_villager", "find_artifact"]}
+```
+
+It's human-readable! You can even open it in a text editor and understand it.
+
+## Pretty Printing JSON
+
+The default JSON is compact but hard to read. Add `indent` parameter to make it beautiful:
+
+<TerminalDemo>
+```python
+import json
+
+player = {
+    "name": "Hero",
+    "level": 5,
+    "health": 100,
+    "inventory": ["sword", "shield", "potion"]
+}
+
+# Save with nice formatting
+with open("player_data.json", "w") as file:
+    json.dump(player, file, indent=4)
+```
+</TerminalDemo>
+
+Now `player_data.json` looks like this:
+
+```json
+{
+    "name": "Hero",
+    "level": 5,
+    "health": 100,
+    "inventory": [
+        "sword",
+        "shield",
+        "potion"
+    ]
+}
+```
+
+Much better!
+
+<FunFact title="JSON vs Python Syntax">
+JSON looks similar to Python dictionaries, but there are small differences:
+- JSON uses `null` instead of Python's `None`
+- JSON uses `true`/`false` instead of Python's `True`/`False`
+- The `json` module handles these conversions automatically!
+</FunFact>
+
+## Complete Save/Load Example
+
+Let's create a full game save system:
+
+<TerminalDemo>
+```python
+import json
+
+def save_game(player_data, filename="savegame.json"):
+    """Save the game state to a file"""
+    try:
+        with open(filename, "w") as file:
+            json.dump(player_data, file, indent=4)
+        print(f"Game saved to {filename}!")
+        return True
+    except Exception as e:
+        print(f"Error saving game: {e}")
+        return False
+
+def load_game(filename="savegame.json"):
+    """Load the game state from a file"""
+    try:
+        with open(filename, "r") as file:
+            player_data = json.load(file)
+        print(f"Game loaded from {filename}!")
+        return player_data
+    except FileNotFoundError:
+        print("No save file found. Starting new game!")
+        return None
+    except Exception as e:
+        print(f"Error loading game: {e}")
+        return None
+
+# Create a new game
+new_game = {
+    "player_name": "Alex",
+    "level": 1,
+    "xp": 0,
+    "gold": 50,
+    "inventory": ["rusty sword"],
+    "location": "village"
+}
+
+# Save it
+save_game(new_game)
+
+# Play the game... (imagine the player does stuff)
+new_game["level"] = 3
+new_game["xp"] = 450
+new_game["gold"] = 150
+new_game["inventory"].append("health potion")
+
+# Save progress
+save_game(new_game)
+
+# Later... load the game back
+loaded_game = load_game()
+if loaded_game:
+    print(f"Welcome back, {loaded_game['player_name']}!")
+    print(f"You are level {loaded_game['level']}")
+    print(f"Inventory: {loaded_game['inventory']}")
+```
+</TerminalDemo>
+
+<StoryBox character="python_pete" mood="excited">
+This is **exactly** how real games save your progress! When you click "Save Game" in any video game, it's doing something very similar to this - converting the game state to a format like JSON and writing it to a file.
+
+When you click "Load Game", it reads that file and recreates your game state. Magic!
+</StoryBox>
+
+## What Can JSON Store?
+
+JSON can handle:
+- **Strings**: `"hello"`
+- **Numbers**: `42`, `3.14`
+- **Booleans**: `true`, `false`
+- **Lists**: `[1, 2, 3]`
+- **Dictionaries**: `{"key": "value"}`
+- **Nested structures**: Lists inside dictionaries inside lists!
+- **None/null**: `null`
+
+JSON **cannot** handle:
+- Functions
+- Custom objects (unless you convert them)
+- Sets or tuples (they become lists)
+
+<TerminalDemo>
+```python
+import json
+
+# This works great!
+complex_data = {
+    "users": [
+        {"name": "Alice", "scores": [100, 150, 200]},
+        {"name": "Bob", "scores": [120, 180, 210]}
+    ],
+    "game_settings": {
+        "difficulty": "hard",
+        "sound": True,
+        "music_volume": 0.8
+    }
+}
+
+with open("game_data.json", "w") as file:
+    json.dump(complex_data, file, indent=4)
+
+# Load it back - it's exactly the same!
+with open("game_data.json", "r") as file:
+    loaded_data = json.load(file)
+
+print(loaded_data["users"][0]["name"])  # Output: Alice
+```
+</TerminalDemo>
+
+## Practical Example: High Score System
+
+Let's build a high score system that saves multiple players:
+
+<TerminalDemo>
+```python
+import json
+
+def load_high_scores():
+    """Load high scores from file, or return empty list if no file"""
+    try:
+        with open("high_scores.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def save_high_scores(scores):
+    """Save high scores to file"""
+    with open("high_scores.json", "w") as file:
+        json.dump(scores, file, indent=4)
+
+def add_score(name, score):
+    """Add a new high score"""
+    scores = load_high_scores()
+    scores.append({"name": name, "score": score})
+
+    # Sort by score (highest first)
+    scores.sort(key=lambda x: x["score"], reverse=True)
+
+    # Keep only top 5
+    scores = scores[:5]
+
+    save_high_scores(scores)
+    print(f"Added {name}'s score of {score}!")
+
+def display_high_scores():
+    """Show all high scores"""
+    scores = load_high_scores()
+    if not scores:
+        print("No high scores yet!")
+        return
+
+    print("\n=== HIGH SCORES ===")
+    for i, entry in enumerate(scores, 1):
+        print(f"{i}. {entry['name']}: {entry['score']}")
+
+# Use the system
+add_score("Alex", 150)
+add_score("Sam", 230)
+add_score("Jordan", 175)
+add_score("Taylor", 290)
+add_score("Casey", 200)
+
+display_high_scores()
+
+# Output:
+# === HIGH SCORES ===
+# 1. Taylor: 290
+# 2. Sam: 230
+# 3. Casey: 200
+# 4. Jordan: 175
+# 5. Alex: 150
+```
+</TerminalDemo>
+
+<Challenge title="Build a Contact Book">
+Create a contact management system that:
+
+1. Stores contacts as a list of dictionaries (each with name, phone, email)
+2. Saves all contacts to a JSON file
+3. Has functions to:
+   - Add a new contact
+   - View all contacts
+   - Search for a contact by name
+   - Delete a contact
+4. Loads existing contacts when the program starts
+
+**Hint:** Each contact should be a dictionary like:
+```python
+{"name": "Alice", "phone": "555-1234", "email": "alice@email.com"}
+```
+
+<details>
+<summary>Solution</summary>
+
+```python
+import json
+
+CONTACTS_FILE = "contacts.json"
+
+def load_contacts():
+    """Load contacts from file"""
+    try:
+        with open(CONTACTS_FILE, "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def save_contacts(contacts):
+    """Save contacts to file"""
+    with open(CONTACTS_FILE, "w") as file:
+        json.dump(contacts, file, indent=4)
+
+def add_contact():
+    """Add a new contact"""
+    contacts = load_contacts()
+
+    name = input("Name: ")
+    phone = input("Phone: ")
+    email = input("Email: ")
+
+    contact = {
+        "name": name,
+        "phone": phone,
+        "email": email
+    }
+
+    contacts.append(contact)
+    save_contacts(contacts)
+    print(f"Added {name} to contacts!")
+
+def view_contacts():
+    """Display all contacts"""
+    contacts = load_contacts()
+
+    if not contacts:
+        print("No contacts yet!")
+        return
+
+    print("\n=== CONTACTS ===")
+    for contact in contacts:
+        print(f"Name: {contact['name']}")
+        print(f"Phone: {contact['phone']}")
+        print(f"Email: {contact['email']}")
+        print("-" * 30)
+
+def search_contact():
+    """Search for a contact by name"""
+    contacts = load_contacts()
+    search_name = input("Enter name to search: ").lower()
+
+    found = False
+    for contact in contacts:
+        if search_name in contact['name'].lower():
+            print(f"\nFound: {contact['name']}")
+            print(f"Phone: {contact['phone']}")
+            print(f"Email: {contact['email']}")
+            found = True
+
+    if not found:
+        print("No contact found!")
+
+# Main program
+while True:
+    print("\n1. Add contact")
+    print("2. View all contacts")
+    print("3. Search contact")
+    print("4. Quit")
+
+    choice = input("Choose: ")
+
+    if choice == "1":
+        add_contact()
+    elif choice == "2":
+        view_contacts()
+    elif choice == "3":
+        search_contact()
+    elif choice == "4":
+        print("Goodbye!")
+        break
+```
+</details>
+</Challenge>
+
+<Quiz
+  questions={[
+    {
+      question: "What does JSON stand for?",
+      options: [
+        "Just Some Online Notation",
+        "JavaScript Object Notation",
+        "Java Storage Object Network",
+        "JSON Simple Object Name"
+      ],
+      correctAnswer: 1,
+      explanation: "JSON stands for JavaScript Object Notation. Despite the name, it's used by many programming languages, not just JavaScript!"
+    },
+    {
+      question: "Which function saves Python data to a JSON file?",
+      options: [
+        "json.save()",
+        "json.write()",
+        "json.dump()",
+        "json.store()"
+      ],
+      correctAnswer: 2,
+      explanation: "json.dump() writes Python data structures to a file in JSON format. json.load() reads them back!"
+    },
+    {
+      question: "What parameter makes JSON output more readable?",
+      options: [
+        "pretty=True",
+        "format=4",
+        "indent=4",
+        "readable=True"
+      ],
+      correctAnswer: 2,
+      explanation: "The indent parameter adds nice formatting with proper indentation. indent=4 means 4 spaces per level."
+    },
+    {
+      question: "Which Python data type CANNOT be stored in JSON?",
+      options: [
+        "Lists",
+        "Dictionaries",
+        "Functions",
+        "Strings"
+      ],
+      correctAnswer: 2,
+      explanation: "JSON can store basic data types (strings, numbers, lists, dictionaries, booleans, null) but not functions or custom objects."
+    }
+  ]}
+/>
+
+<StoryBox character="python_pete" mood="proud">
+Incredible work! You now know how to make your programs **remember everything**. Whether it's game saves, user settings, high scores, or contact lists - you can save and load complex data structures with ease.
+
+This is a crucial skill for building real applications. Every app you use - games, social media, productivity tools - they all use data persistence in some form!
+
+Next up: we're putting EVERYTHING together to build your first complete project!
+</StoryBox>
+
+<NextLesson href="/python/24-first-project" />

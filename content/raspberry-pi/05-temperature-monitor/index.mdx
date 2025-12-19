@@ -1,0 +1,864 @@
+---
+title: "Temperature Monitor"
+track: "raspberry-pi"
+chapter: 1
+lesson: 5
+slug: "05-temperature-monitor"
+prerequisites: ["04-traffic-light"]
+estimatedTime: 40
+difficulty: "beginner"
+xpReward: 100
+objectives:
+  - Understand digital sensors and protocols
+  - Read temperature data with DHT11/DHT22 sensor
+  - Display sensor readings in Python
+  - Create temperature alert system
+  - Log data over time
+  - Build a real weather station
+nextLesson: null
+prevLesson: "04-traffic-light"
+---
+
+# Temperature Monitor: Reading the Real World!
+
+<StoryBox character="pi_princess">
+  Welcome to your most exciting lesson yet, maker! Today we're crossing a huge boundary - we're going to read REAL DATA from the physical world!
+
+  Up until now, we've controlled outputs (LEDs) and read simple inputs (buttons). But now we're reading an actual SENSOR that measures temperature and humidity!
+
+  This is where the Raspberry Pi truly shines - it can monitor weather, track environmental conditions, and gather scientific data. Let's build a real temperature monitoring system!
+</StoryBox>
+
+## What You'll Need
+
+### Components for This Lesson
+
+**Option 1: DHT11 Sensor** (Budget-friendly)
+- DHT11 Temperature & Humidity Sensor
+- Measures: 0-50°C (32-122°F), 20-80% humidity
+- Accuracy: ±2°C, ±5% humidity
+- Perfect for beginners!
+
+**Option 2: DHT22 Sensor** (More accurate)
+- DHT22 (AM2302) Temperature & Humidity Sensor
+- Measures: -40-80°C (-40-176°F), 0-100% humidity
+- Accuracy: ±0.5°C, ±2% humidity
+- Better for serious projects
+
+**Other Components:**
+- 3× LEDs (red, yellow, green) from previous lessons
+- 3× Resistors (220Ω or 330Ω)
+- Jumper wires
+- Breadboard
+- Optional: 10kΩ pull-up resistor (some sensors need it, some don't)
+
+<FunFact>
+  DHT stands for "Digital Humidity and Temperature"! These sensors are used in weather stations, thermostats, home automation systems, greenhouses, and even spacecraft! NASA uses similar sensors to monitor conditions on the International Space Station!
+</FunFact>
+
+## Understanding Digital Sensors
+
+### Analog vs Digital Sensors
+
+**Analog Sensors**:
+- Output varies continuously (like a dimmer switch)
+- Raspberry Pi CAN'T read analog directly (no ADC built-in)
+- Need additional hardware (ADC chip)
+
+**Digital Sensors** (like DHT11/DHT22):
+- Send data as digital signals (ones and zeros)
+- Communicate using protocols (like morse code for electronics)
+- Perfect for Raspberry Pi!
+
+### How the DHT Sensor Works
+
+Inside the DHT sensor:
+1. **Humidity sensor**: Measures moisture in the air
+2. **Thermistor**: Measures temperature
+3. **Microchip**: Converts readings to digital data
+4. **Output**: Sends data through one wire
+
+It's like a tiny weather station in one package!
+
+<StoryBox character="pi_princess">
+  The DHT sensor uses a protocol called "1-Wire" (technically it's more complex, but that's the idea). The Pi and sensor have a conversation:
+
+  Pi: "Hey, what's the temperature?"
+  Sensor: "01101011" (binary for temperature)
+  Pi: "Got it, thanks!"
+
+  This happens in milliseconds! The library we'll use handles all this communication for us.
+</StoryBox>
+
+## DHT Sensor Pinout
+
+The DHT sensor has 3-4 pins (depending on the model):
+
+**DHT11/DHT22 (3-pin module with built-in resistor):**
+- **VCC / +**: Power (3.3V or 5V)
+- **DATA**: Signal pin (connects to GPIO)
+- **GND / -**: Ground
+
+**DHT11/DHT22 (4-pin raw sensor):**
+- **Pin 1**: VCC (3.3-5V)
+- **Pin 2**: DATA
+- **Pin 3**: Not connected
+- **Pin 4**: GND
+
+If you have the 4-pin version, you need a 10kΩ resistor between VCC and DATA (pull-up resistor).
+
+<FunFact>
+  Pull-up resistors help with digital communication! They ensure the signal line stays at a known voltage when not in use. Think of it like having a default answer ready - without it, the line would "float" and give random readings!
+</FunFact>
+
+## Building the Circuit
+
+### Pin Assignments
+
+- **DHT Sensor VCC**: Physical Pin 2 (5V) or Pin 1 (3.3V)
+- **DHT Sensor DATA**: GPIO 4 (Physical Pin 7)
+- **DHT Sensor GND**: Physical Pin 6 (GND)
+- **Red LED**: GPIO 22 (Physical Pin 15) - Hot alert
+- **Yellow LED**: GPIO 27 (Physical Pin 13) - Normal
+- **Green LED**: GPIO 17 (Physical Pin 11) - Cold alert
+
+### Wiring Step-by-Step
+
+**TURN OFF YOUR PI FIRST!**
+
+1. **Mount DHT sensor on breadboard**
+   - Make note of which pin is which
+
+2. **Connect DHT power**
+   - VCC → 5V (Physical Pin 2)
+   - GND → Ground (Physical Pin 6)
+
+3. **Connect DHT data**
+   - DATA → GPIO 4 (Physical Pin 7)
+
+4. **Add LEDs** (from previous lessons)
+   - Red LED on GPIO 22 (with resistor)
+   - Yellow LED on GPIO 27 (with resistor)
+   - Green LED on GPIO 17 (with resistor)
+   - All LED cathodes to GND
+
+<TerminalDemo>
+{`# Check your pin layout
+pinout
+
+# Pins we're using:
+# Pin 1  - 3.3V Power (alternative)
+# Pin 2  - 5V Power (for DHT)
+# Pin 6  - GND (for DHT)
+# Pin 7  - GPIO 4 (DHT Data)
+# Pin 11 - GPIO 17 (Green LED)
+# Pin 13 - GPIO 27 (Yellow LED)
+# Pin 15 - GPIO 22 (Red LED)`}
+</TerminalDemo>
+
+<StoryBox character="pi_princess">
+  The DHT sensor can use either 3.3V or 5V power - both work fine! However, the DATA pin should still connect to a GPIO pin (which uses 3.3V logic). Most DHT sensors handle this automatically.
+
+  If you have a 3-pin module (with built-in resistor), you're all set! If you have the raw 4-pin sensor, add a 10kΩ resistor between VCC and DATA pins.
+</StoryBox>
+
+## Installing the Library
+
+We need to install the DHT sensor library:
+
+<TerminalDemo>
+{`# Update package list
+sudo apt-get update
+
+# Install required packages
+sudo apt-get install -y python3-pip python3-dev
+
+# Install DHT library (Adafruit library)
+sudo pip3 install adafruit-circuitpython-dht
+
+# Also need libgpiod library
+sudo apt-get install -y libgpiod2
+
+# Test installation
+python3 -c "import adafruit_dht; print('DHT library installed!')"
+# Output: DHT library installed!`}
+</TerminalDemo>
+
+## Reading Temperature: Basic Code
+
+Let's read the sensor!
+
+```python
+import adafruit_dht
+import board
+from time import sleep
+
+# Set up the DHT sensor on GPIO 4 (Pin 7)
+# Use DHT11 or DHT22 depending on your sensor
+sensor = adafruit_dht.DHT11(board.D4)  # For DHT11
+# sensor = adafruit_dht.DHT22(board.D4)  # For DHT22
+
+print("Temperature Monitor Started!")
+print("Reading sensor...")
+
+try:
+    while True:
+        try:
+            # Read temperature and humidity
+            temperature_c = sensor.temperature
+            humidity = sensor.humidity
+
+            # Convert to Fahrenheit
+            temperature_f = temperature_c * (9 / 5) + 32
+
+            # Display readings
+            print(f"Temperature: {temperature_c:.1f}°C / {temperature_f:.1f}°F")
+            print(f"Humidity: {humidity:.1f}%")
+            print("-" * 40)
+
+        except RuntimeError as err:
+            # DHT sensors sometimes fail to read
+            print(f"Reading error: {err}")
+
+        # Wait 2 seconds between readings
+        # (DHT sensors need time between reads)
+        sleep(2)
+
+except KeyboardInterrupt:
+    print("\nMonitor stopped")
+    sensor.exit()
+```
+
+Run this and watch real temperature data appear!
+
+<FunFact>
+  The DHT sensor can only be read every 2 seconds! If you try to read it faster, you'll get errors. This is because it needs time to measure and prepare the data. It's like asking someone a question - they need a moment to think before answering!
+</FunFact>
+
+## Adding LED Temperature Alerts
+
+Let's make LEDs show temperature ranges:
+
+```python
+import adafruit_dht
+import board
+from gpiozero import LED
+from time import sleep
+
+# Set up sensor
+sensor = adafruit_dht.DHT11(board.D4)
+
+# Set up LEDs
+red_led = LED(22)      # Hot alert
+yellow_led = LED(27)   # Normal
+green_led = LED(17)    # Cold alert
+
+def all_leds_off():
+    """Turn all LEDs off"""
+    red_led.off()
+    yellow_led.off()
+    green_led.off()
+
+def show_temperature_status(temp_c):
+    """Show LED based on temperature"""
+    all_leds_off()
+
+    if temp_c < 20:
+        # Cold - under 20°C (68°F)
+        green_led.on()
+        print("❄️  Status: COLD")
+    elif temp_c > 25:
+        # Hot - over 25°C (77°F)
+        red_led.on()
+        print("🔥 Status: HOT")
+    else:
+        # Normal - 20-25°C (68-77°F)
+        yellow_led.on()
+        print("😊 Status: COMFORTABLE")
+
+print("🌡️  Temperature Monitor with LED Alerts")
+print("=" * 50)
+
+try:
+    while True:
+        try:
+            temperature_c = sensor.temperature
+            humidity = sensor.humidity
+            temperature_f = temperature_c * (9 / 5) + 32
+
+            print(f"\n🌡️  Temperature: {temperature_c:.1f}°C / {temperature_f:.1f}°F")
+            print(f"💧 Humidity: {humidity:.1f}%")
+
+            # Show LED status
+            show_temperature_status(temperature_c)
+
+            print("-" * 50)
+
+        except RuntimeError as err:
+            print(f"Sensor error: {err}")
+
+        sleep(3)
+
+except KeyboardInterrupt:
+    print("\n\n👋 Temperature monitor stopped")
+    all_leds_off()
+    sensor.exit()
+```
+
+Now your LEDs show if it's hot, cold, or just right!
+
+<StoryBox character="pi_princess">
+  You've just built a real environmental monitoring system! This is the exact same principle used in:
+  - Home thermostats
+  - Server room monitors
+  - Greenhouse automation
+  - Weather stations
+  - Smart home systems
+
+  Companies pay thousands for systems that do exactly what you just built!
+</StoryBox>
+
+## Temperature Logger
+
+Let's save temperature readings to a file:
+
+```python
+import adafruit_dht
+import board
+from datetime import datetime
+from time import sleep
+
+sensor = adafruit_dht.DHT11(board.D4)
+
+# Create log file
+log_file = "/home/pi/temperature_log.txt"
+
+print(f"🌡️  Temperature Logger")
+print(f"📝 Saving to: {log_file}")
+print("=" * 50)
+
+try:
+    with open(log_file, "a") as f:
+        # Write header
+        f.write("\n" + "=" * 50 + "\n")
+        f.write(f"Logging started: {datetime.now()}\n")
+        f.write("=" * 50 + "\n")
+
+        while True:
+            try:
+                temperature_c = sensor.temperature
+                humidity = sensor.humidity
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+                # Create log entry
+                log_entry = f"{timestamp} | Temp: {temperature_c:.1f}°C | Humidity: {humidity:.1f}%"
+
+                # Write to file
+                f.write(log_entry + "\n")
+                f.flush()  # Make sure it's written immediately
+
+                # Also print to screen
+                print(log_entry)
+
+            except RuntimeError as err:
+                print(f"Sensor error: {err}")
+
+            sleep(60)  # Log every 60 seconds
+
+except KeyboardInterrupt:
+    print("\n\n📊 Logging stopped")
+    sensor.exit()
+```
+
+This creates a permanent record of temperature over time!
+
+<TerminalDemo>
+{`# View your temperature log
+cat /home/pi/temperature_log.txt
+
+# See the last 10 readings
+tail -10 /home/pi/temperature_log.txt
+
+# Count total readings
+wc -l /home/pi/temperature_log.txt`}
+</TerminalDemo>
+
+## Practice Challenges!
+
+<Challenge
+  id="rpi-05-temp-basic"
+  title="Temperature Monitor Master"
+  description="Build and customize your temperature monitor"
+  steps={[
+    {
+      command: "Read and display temperature in both C and F",
+      hint: "Fahrenheit = Celsius * 9/5 + 32"
+    },
+    {
+      command: "Create a 'feels hot' alert when temp > 28°C",
+      hint: "Use if statement and LED"
+    },
+    {
+      command: "Track maximum and minimum temperatures",
+      hint: "Use variables to store max/min values"
+    },
+    {
+      command: "Calculate and display average temperature",
+      hint: "Keep a list of readings and use sum()/len()"
+    }
+  ]}
+  xp={50}
+/>
+
+## Advanced: Statistics Dashboard
+
+Create a comprehensive temperature dashboard:
+
+```python
+import adafruit_dht
+import board
+from gpiozero import LED
+from time import sleep
+from datetime import datetime
+
+sensor = adafruit_dht.DHT11(board.D4)
+
+# LEDs for visual feedback
+status_led = LED(27)
+
+# Statistics tracking
+readings = []
+max_temp = float('-inf')
+min_temp = float('inf')
+start_time = datetime.now()
+
+def update_statistics(temp):
+    """Update temperature statistics"""
+    global max_temp, min_temp
+
+    readings.append(temp)
+
+    # Keep only last 20 readings
+    if len(readings) > 20:
+        readings.pop(0)
+
+    # Update max/min
+    if temp > max_temp:
+        max_temp = temp
+    if temp < min_temp:
+        min_temp = temp
+
+def display_dashboard(temp, humidity):
+    """Display comprehensive dashboard"""
+    # Clear screen (for cleaner output)
+    print("\n" * 2)
+    print("=" * 60)
+    print("🌡️  TEMPERATURE MONITORING DASHBOARD".center(60))
+    print("=" * 60)
+
+    # Current readings
+    print(f"\n📊 CURRENT CONDITIONS:")
+    print(f"   Temperature: {temp:.1f}°C / {temp * 9/5 + 32:.1f}°F")
+    print(f"   Humidity: {humidity:.1f}%")
+
+    # Statistics
+    if len(readings) > 0:
+        avg_temp = sum(readings) / len(readings)
+        print(f"\n📈 STATISTICS:")
+        print(f"   Average: {avg_temp:.1f}°C")
+        print(f"   Maximum: {max_temp:.1f}°C")
+        print(f"   Minimum: {min_temp:.1f}°C")
+        print(f"   Range: {max_temp - min_temp:.1f}°C")
+        print(f"   Readings: {len(readings)}")
+
+    # Runtime
+    runtime = datetime.now() - start_time
+    print(f"\n⏱️  UPTIME: {runtime.seconds // 60} minutes")
+
+    print("=" * 60)
+
+print("🚀 Starting Advanced Temperature Monitor...")
+print("📊 Dashboard will update every 5 seconds")
+
+try:
+    while True:
+        try:
+            # Blink LED to show reading
+            status_led.on()
+
+            temperature_c = sensor.temperature
+            humidity = sensor.humidity
+
+            # Update statistics
+            update_statistics(temperature_c)
+
+            # Display dashboard
+            display_dashboard(temperature_c, humidity)
+
+            status_led.off()
+
+        except RuntimeError as err:
+            print(f"⚠️  Sensor error: {err}")
+
+        sleep(5)
+
+except KeyboardInterrupt:
+    print("\n\n👋 Dashboard stopped")
+    print(f"📊 Total readings collected: {len(readings)}")
+    status_led.off()
+    sensor.exit()
+```
+
+This creates a professional-looking dashboard!
+
+<FunFact>
+  Weather stations collect temperature data exactly like this! The National Weather Service has thousands of stations that log temperature every minute. Over time, this data reveals patterns, trends, and climate changes. Your little project is doing real science!
+</FunFact>
+
+## Heat Index Calculator
+
+Let's calculate how hot it FEELS (combining temperature and humidity):
+
+```python
+import adafruit_dht
+import board
+from time import sleep
+
+sensor = adafruit_dht.DHT11(board.D4)
+
+def calculate_heat_index(temp_f, humidity):
+    """
+    Calculate heat index (how hot it feels)
+    Heat index combines temperature and humidity
+    """
+    # Simplified heat index formula
+    hi = 0.5 * (temp_f + 61.0 + ((temp_f - 68.0) * 1.2) + (humidity * 0.094))
+
+    # If it's hot enough, use more complex formula
+    if hi > 80:
+        hi = (-42.379 +
+              2.04901523 * temp_f +
+              10.14333127 * humidity -
+              0.22475541 * temp_f * humidity -
+              6.83783e-3 * temp_f**2 -
+              5.481717e-2 * humidity**2 +
+              1.22874e-3 * temp_f**2 * humidity +
+              8.5282e-4 * temp_f * humidity**2 -
+              1.99e-6 * temp_f**2 * humidity**2)
+
+    return hi
+
+def get_heat_index_description(hi):
+    """Get description of heat index danger level"""
+    if hi < 80:
+        return "😊 Safe - No heat danger"
+    elif hi < 90:
+        return "⚠️  Caution - Fatigue possible with prolonged exposure"
+    elif hi < 105:
+        return "🔶 Extreme Caution - Heat exhaustion possible"
+    elif hi < 130:
+        return "🔴 Danger - Heat exhaustion likely, heat stroke possible"
+    else:
+        return "🚨 Extreme Danger - Heat stroke imminent!"
+
+print("🌡️  Heat Index Monitor")
+print("=" * 60)
+
+try:
+    while True:
+        try:
+            temp_c = sensor.temperature
+            humidity = sensor.humidity
+            temp_f = temp_c * (9 / 5) + 32
+
+            # Calculate heat index
+            heat_index = calculate_heat_index(temp_f, humidity)
+            description = get_heat_index_description(heat_index)
+
+            print(f"\n🌡️  Temperature: {temp_c:.1f}°C / {temp_f:.1f}°F")
+            print(f"💧 Humidity: {humidity:.1f}%")
+            print(f"🔥 Heat Index: {heat_index:.1f}°F")
+            print(f"   {description}")
+            print("-" * 60)
+
+        except RuntimeError as err:
+            print(f"Error: {err}")
+
+        sleep(3)
+
+except KeyboardInterrupt:
+    print("\n👋 Heat index monitor stopped")
+    sensor.exit()
+```
+
+Now you know how hot it REALLY feels!
+
+<StoryBox character="pi_princess">
+  The heat index is super important! At 100°F with 60% humidity, it can FEEL like 120°F! This is why humid days feel so much worse than dry heat. Your body cools itself by sweating, but when humidity is high, sweat can't evaporate - so you can't cool down!
+
+  Weather services use heat index to issue heat warnings. You're calculating the same thing they do!
+</StoryBox>
+
+## Data Visualization
+
+Create a simple text-based temperature graph:
+
+```python
+import adafruit_dht
+import board
+from time import sleep
+
+sensor = adafruit_dht.DHT11(board.D4)
+
+# Store last 10 readings
+temperature_history = []
+
+def draw_temperature_bar(temp, min_temp=15, max_temp=35):
+    """Draw a simple bar graph of temperature"""
+    # Calculate bar length (0-50 characters)
+    bar_length = int((temp - min_temp) / (max_temp - min_temp) * 50)
+    bar_length = max(0, min(50, bar_length))  # Clamp between 0-50
+
+    bar = "█" * bar_length
+    print(f"{temp:5.1f}°C | {bar}")
+
+print("🌡️  Temperature Graph")
+print("=" * 60)
+
+try:
+    while True:
+        try:
+            temp = sensor.temperature
+
+            # Add to history
+            temperature_history.append(temp)
+            if len(temperature_history) > 10:
+                temperature_history.pop(0)
+
+            # Clear and redraw
+            print("\n" * 3)
+            print("📊 Last 10 Temperature Readings:")
+            print("-" * 60)
+
+            for t in temperature_history:
+                draw_temperature_bar(t)
+
+            print("-" * 60)
+
+        except RuntimeError as err:
+            print(f"Error: {err}")
+
+        sleep(5)
+
+except KeyboardInterrupt:
+    print("\n👋 Graph stopped")
+    sensor.exit()
+```
+
+Watch temperature trends in real-time!
+
+## Quiz Time!
+
+<Quiz questions={[
+  {
+    question: "Why can't Raspberry Pi read analog sensors directly?",
+    options: ["It's too slow", "It doesn't have a built-in ADC (Analog to Digital Converter)", "Analog sensors are old technology", "It can read them just fine"],
+    correct: 1,
+    explanation: "The Raspberry Pi doesn't have a built-in ADC chip, so it can't read continuously varying (analog) signals. It needs an external ADC or digital sensors like the DHT!"
+  },
+  {
+    question: "Why must we wait 2 seconds between DHT sensor readings?",
+    options: ["To save power", "The sensor needs time to measure and prepare data", "It makes the program slower", "There's no reason"],
+    correct: 1,
+    explanation: "The DHT sensor needs about 2 seconds to physically measure temperature and humidity and prepare the digital data. Reading faster causes errors!"
+  },
+  {
+    question: "What is the heat index?",
+    options: ["Just temperature", "Temperature and humidity combined to show how hot it feels", "Only humidity", "The danger level"],
+    correct: 1,
+    explanation: "Heat index combines temperature and humidity to show how hot it FEELS. High humidity makes hot temperatures feel even worse because sweat can't evaporate!"
+  },
+  {
+    question: "What does sensor.exit() do?",
+    options: ["Breaks the sensor", "Properly closes the sensor connection", "Restarts the program", "Nothing"],
+    correct: 1,
+    explanation: "sensor.exit() properly closes the connection to the sensor, freeing up resources. It's good practice to call this when your program ends!"
+  }
+]} />
+
+## Troubleshooting
+
+### "RuntimeError: Timed out waiting for sensor"
+
+This is the most common DHT error! Solutions:
+- Check wiring (especially DATA pin to GPIO 4)
+- Verify power connections (VCC and GND)
+- Add a 10kΩ pull-up resistor if using raw sensor
+- Try a different GPIO pin
+- Wait longer between readings (3-5 seconds)
+- The sensor might be faulty - try a different one
+
+### "RuntimeError: Checksum did not validate"
+
+Data transmission error:
+- Use shorter wires (long wires cause interference)
+- Keep wires away from motors or other noisy electronics
+- Add pull-up resistor if not present
+- Try again - occasional errors are normal
+
+### Readings Seem Wrong
+
+- DHT11 is less accurate than DHT22 (±2°C is normal)
+- Let sensor warm up for 1-2 minutes
+- Sensor might be affected by Pi's heat - move it away
+- Compare with another thermometer to verify
+
+### "ModuleNotFoundError: No module named 'adafruit_dht'"
+
+Library not installed:
+```bash
+sudo pip3 install adafruit-circuitpython-dht
+sudo apt-get install libgpiod2
+```
+
+<StoryBox character="pi_princess">
+  DHT sensors can be finicky! Don't get discouraged if you get occasional errors - even professional systems deal with sensor glitches. The key is proper error handling (try/except blocks) and patience!
+
+  In real systems, engineers use multiple sensors and average the readings, or throw out obvious errors. This makes the system more reliable!
+</StoryBox>
+
+## Real-World Applications
+
+Temperature and humidity monitoring is used in:
+
+- **Smart Homes**: Thermostats, HVAC control
+- **Weather Stations**: Data collection, forecasting
+- **Server Rooms**: Prevent overheating of computers
+- **Greenhouses**: Maintain optimal growing conditions
+- **Food Storage**: Ensure safe temperatures
+- **Museums**: Protect artifacts from damage
+- **Scientific Research**: Environmental studies
+- **Industrial Monitoring**: Manufacturing processes
+- **Agriculture**: Monitor crop conditions
+- **Space Exploration**: Life support systems
+
+Your little project has HUGE real-world applications!
+
+<FunFact>
+  The coldest temperature ever recorded on Earth was -89.2°C (-128.6°F) in Antarctica! The hottest was 56.7°C (134°F) in Death Valley, California. Your DHT22 could measure most places on Earth (except the extreme record holders)!
+</FunFact>
+
+## Project Extension Ideas
+
+Take your temperature monitor further:
+
+1. **Alert System**: Send email/text when temperature exceeds threshold
+2. **Web Dashboard**: Display readings on a web page
+3. **Database Storage**: Save readings to SQLite database
+4. **Multiple Sensors**: Monitor different rooms
+5. **Fan Control**: Turn on a fan when it gets too hot
+6. **Graphing**: Create actual line graphs with matplotlib
+7. **Weather Prediction**: Detect pressure changes (with additional sensor)
+8. **Data Analysis**: Find daily temperature patterns
+9. **Remote Monitoring**: Access readings from your phone
+10. **Smart Thermostat**: Control heating/cooling automatically
+
+## What You've Learned
+
+Today you mastered:
+
+- Understanding digital sensors
+- Reading temperature and humidity data
+- Converting between Celsius and Fahrenheit
+- Creating alert systems
+- Logging data over time
+- Calculating heat index
+- Error handling with sensors
+- Building professional monitoring systems
+- Data visualization basics
+
+<StoryBox character="pi_princess">
+  YOU DID IT! You've completed your first five Raspberry Pi projects!
+
+  Look at your journey:
+  1. Set up your Pi from scratch
+  2. Made an LED blink with code
+  3. Read button input and created interaction
+  4. Controlled multiple LEDs in complex patterns
+  5. Read REAL DATA from sensors!
+
+  You've learned the fundamentals of hardware programming! You can control outputs, read inputs, manage timing, handle multiple components, and gather real-world data. These are the building blocks of EVERY electronics project!
+
+  You're not a beginner anymore - you're a MAKER! You have the skills to build real projects:
+  - Weather stations
+  - Home automation
+  - Robots
+  - Games
+  - Art installations
+  - Scientific instruments
+
+  The only limit is your imagination!
+
+  Keep experimenting, keep building, and most importantly - keep having fun! The world needs more makers like you!
+
+  Until next time, happy making! 🌡️ 💡 🤖
+</StoryBox>
+
+## Your Maker Journey
+
+Here's what you've accomplished:
+
+| Lesson | Skill Learned | XP Earned |
+|--------|---------------|-----------|
+| 1. Pi Setup | System setup, safety, GPIO basics | 75 XP |
+| 2. LED Blinker | Output control, circuits, Python GPIO | 100 XP |
+| 3. Button Input | Input reading, event programming | 100 XP |
+| 4. Traffic Light | Multi-component control, state machines | 100 XP |
+| 5. Temperature Monitor | Sensor reading, data logging | 100 XP |
+| **TOTAL** | **Hardware Programming Fundamentals** | **475 XP** |
+
+## Keep Learning!
+
+### Next Steps:
+
+- **Add more sensors**: Motion sensors, light sensors, distance sensors
+- **Learn about I2C and SPI**: Advanced communication protocols
+- **Try motor control**: Make things move!
+- **Build a robot**: Combine everything you've learned
+- **Create IoT projects**: Connect to the internet
+- **Learn PCB design**: Make your own circuit boards
+
+### Resources:
+
+- Raspberry Pi Official Projects: https://projects.raspberrypi.org/
+- GPIO Zero Documentation: https://gpiozero.readthedocs.io/
+- Adafruit Learn: https://learn.adafruit.com/
+- Maker Forums: Share your projects and get help!
+
+## Save Your Code!
+
+<TerminalDemo>
+{`# Create final project file
+nano ~/pi-projects/temperature_monitor.py
+
+# Make it executable
+chmod +x ~/pi-projects/temperature_monitor.py
+
+# Run on startup (optional)
+# Edit: sudo nano /etc/rc.local
+# Add: python3 /home/pi/pi-projects/temperature_monitor.py &`}
+</TerminalDemo>
+
+<StoryBox character="pi_princess">
+  Remember: Every expert was once a beginner. You've taken your first steps into a world of infinite possibilities!
+
+  Share your projects, help other beginners, and never stop learning. The maker community is all about collaboration and creativity!
+
+  Now go build something AMAZING! 🚀
+</StoryBox>
+
+<NextLesson
+  track="raspberry-pi"
+  lesson={null}
+  teaser="Congratulations! You've completed the Raspberry Pi basics track. Keep exploring and building!"
+/>

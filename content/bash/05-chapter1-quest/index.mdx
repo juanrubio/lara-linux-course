@@ -1,0 +1,626 @@
+---
+title: "Quest: Automation Begins"
+track: "bash"
+chapter: 1
+lesson: 5
+slug: "05-chapter1-quest"
+prerequisites: ["04-running-scripts"]
+estimatedTime: 30
+difficulty: "beginner"
+xpReward: 100
+objectives:
+  - Build a complete greeting automation script
+  - Apply all Chapter 1 Bash concepts
+  - Earn your first Bash quest badge
+nextLesson: "06-user-input"
+prevLesson: "04-running-scripts"
+---
+
+# Quest: Automation Begins
+
+<StoryBox character="bash_betty">
+  Alright, Script Wizard! This is YOUR moment!
+
+  The Raspberry Pi Kingdom needs an automated greeting system that welcomes users, displays important information, and helps manage daily tasks!
+
+  You'll use EVERYTHING you've learned:
+  - Shell scripts with the shebang line
+  - Variables to store information
+  - Echo to display output
+  - Commands to gather system info
+  - Making scripts executable!
+
+  Complete this quest and you'll earn the **Bash Pioneer** badge! Let's automate something AMAZING!
+</StoryBox>
+
+## Your Mission
+
+Build a smart greeting script called `welcome.sh` that:
+1. Displays a personalized welcome message
+2. Shows system information
+3. Displays useful daily information
+4. Looks professional and polished
+
+### Quest Objectives:
+
+1. Create a greeting script with variables
+2. Add system information displays
+3. Include date and time
+4. Make it executable and run it
+
+## Part 1: The Basic Greeting
+
+Let's start with a simple welcome message!
+
+<Challenge
+  id="quest1-basic-greeting"
+  title="Basic Greeting"
+  description="Create a script that greets the user"
+  steps={[
+    {
+      command: 'nano welcome.sh',
+      hint: "Create the script file"
+    },
+    {
+      command: '#!/bin/bash',
+      hint: "Start with the shebang"
+    },
+    {
+      command: 'echo "Welcome to the Raspberry Pi Kingdom!"',
+      hint: "Add a welcome message"
+    },
+    {
+      command: 'username=$(whoami)',
+      hint: "Get the current username"
+    },
+    {
+      command: 'echo "Hello, $username!"',
+      hint: "Greet the user by name"
+    },
+    {
+      command: 'Save the file',
+      hint: "Ctrl+O, Enter, Ctrl+X"
+    },
+    {
+      command: 'chmod +x welcome.sh',
+      hint: "Make it executable"
+    },
+    {
+      command: './welcome.sh',
+      hint: "Run your script!"
+    }
+  ]}
+  xp={30}
+/>
+
+### Your Script Should Show:
+<TerminalDemo>
+{`$ ./welcome.sh
+Welcome to the Raspberry Pi Kingdom!
+Hello, pi!`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  Great start! Now let's add more personality and information!
+</StoryBox>
+
+## Part 2: Adding Personal Information
+
+Let's make it more personalized with variables!
+
+```bash
+#!/bin/bash
+
+# Personal Information Variables
+user_name=$(whoami)
+computer_name=$(hostname)
+current_dir=$(pwd)
+
+# Display greeting
+echo "=================================="
+echo "   RASPBERRY PI KINGDOM"
+echo "   Welcome Portal"
+echo "=================================="
+echo ""
+echo "Greetings, $user_name!"
+echo "You are logged into: $computer_name"
+echo "Current location: $current_dir"
+echo ""
+```
+
+<Challenge
+  id="quest1-personal-info"
+  title="Personal Information Display"
+  description="Add personal and system variables to your script"
+  steps={[
+    {
+      command: 'Add user_name variable',
+      hint: "user_name=$(whoami)"
+    },
+    {
+      command: 'Add computer_name variable',
+      hint: "computer_name=$(hostname)"
+    },
+    {
+      command: 'Add current_dir variable',
+      hint: "current_dir=$(pwd)"
+    },
+    {
+      command: 'Display all variables with echo',
+      hint: "Use $variable_name in your echo statements"
+    }
+  ]}
+  xp={25}
+/>
+
+## Part 3: Date and Time Information
+
+Let's add date and time displays!
+
+```bash
+#!/bin/bash
+
+# ... previous code ...
+
+# Date and Time Variables
+current_date=$(date +"%A, %B %d, %Y")
+current_time=$(date +"%I:%M %p")
+day_of_week=$(date +%A)
+
+echo "=================================="
+echo "   DATE & TIME"
+echo "=================================="
+echo ""
+echo "📅 Today is: $current_date"
+echo "⏰ Current time: $current_time"
+echo "📆 Day: $day_of_week"
+echo ""
+```
+
+<FunFact>
+  The date command has LOTS of formatting options! %A is day name, %B is month name, %Y is year. You can create any date format you want!
+</FunFact>
+
+## Part 4: System Status
+
+Add useful system information!
+
+```bash
+#!/bin/bash
+
+# ... previous code ...
+
+# System Status Variables
+disk_usage=$(df -h / | tail -1 | awk '{print $5}')
+memory_free=$(free -h | grep Mem | awk '{print $4}')
+uptime_info=$(uptime -p)
+
+echo "=================================="
+echo "   SYSTEM STATUS"
+echo "=================================="
+echo ""
+echo "💾 Disk usage: $disk_usage"
+echo "💻 Free memory: $memory_free"
+echo "⚡ Uptime: $uptime_info"
+echo ""
+```
+
+<Challenge
+  id="quest1-system-status"
+  title="System Status Display"
+  description="Add system information to your script"
+  steps={[
+    {
+      command: 'Add disk usage variable',
+      hint: 'disk_usage=$(df -h / | tail -1 | awk \'{print $5}\')'
+    },
+    {
+      command: 'Add memory info variable',
+      hint: 'memory_free=$(free -h | grep Mem | awk \'{print $4}\')'
+    },
+    {
+      command: 'Add uptime variable',
+      hint: "uptime_info=$(uptime -p)"
+    },
+    {
+      command: 'Display system status',
+      hint: "Use echo to display all variables"
+    }
+  ]}
+  xp={25}
+/>
+
+<StoryBox character="bash_betty">
+  Looking awesome! Now let's add a motivational message and some fun calculations!
+</StoryBox>
+
+## Part 5: Fun Calculations
+
+Let's add some interesting calculated information!
+
+```bash
+#!/bin/bash
+
+# ... previous code ...
+
+# Fun Calculations
+days_in_year=365
+current_day=$(date +%j)
+days_remaining=$((days_in_year - current_day))
+weeks_remaining=$((days_remaining / 7))
+
+echo "=================================="
+echo "   YEAR PROGRESS"
+echo "=================================="
+echo ""
+echo "📊 Day $current_day of $days_in_year"
+echo "⏳ Days remaining: $days_remaining"
+echo "📅 Weeks remaining: $weeks_remaining"
+echo ""
+```
+
+## Complete Quest Script
+
+Here's the full script - your masterpiece!
+
+```bash
+#!/bin/bash
+
+# ===================================
+# WELCOME SCRIPT
+# Automated Greeting System
+# Created by: [Your Name]
+# ===================================
+
+# Clear the screen for a fresh start
+clear
+
+# Personal Information Variables
+user_name=$(whoami)
+computer_name=$(hostname)
+current_dir=$(pwd)
+
+# Date and Time Variables
+current_date=$(date +"%A, %B %d, %Y")
+current_time=$(date +"%I:%M %p")
+day_of_week=$(date +%A)
+day_number=$(date +%j)
+
+# System Status Variables
+disk_usage=$(df -h / | tail -1 | awk '{print $5}')
+memory_free=$(free -h | grep Mem | awk '{print $4}')
+uptime_info=$(uptime -p)
+
+# Fun Calculations
+days_in_year=365
+days_remaining=$((days_in_year - day_number))
+weeks_remaining=$((days_remaining / 7))
+percent_complete=$(((day_number * 100) / days_in_year))
+
+# Display the Welcome Screen
+echo "╔════════════════════════════════════════════╗"
+echo "║     RASPBERRY PI KINGDOM                   ║"
+echo "║     Welcome Portal v1.0                    ║"
+echo "╚════════════════════════════════════════════╝"
+echo ""
+
+# Personal Greeting
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "   👋 WELCOME BACK, $user_name!"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "🖥️  Computer: $computer_name"
+echo "📂 Location: $current_dir"
+echo ""
+
+# Date and Time
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "   📅 DATE & TIME"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "Today is: $current_date"
+echo "Time: $current_time"
+echo ""
+
+# System Status
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "   💻 SYSTEM STATUS"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "💾 Disk usage: $disk_usage"
+echo "🧠 Free memory: $memory_free"
+echo "⚡ System uptime: $uptime_info"
+echo ""
+
+# Year Progress
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "   📊 YEAR PROGRESS"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "Day $day_number of $days_in_year ($percent_complete% complete)"
+echo "Days remaining in year: $days_remaining"
+echo "Weeks remaining: $weeks_remaining"
+echo ""
+
+# Daily Motivation
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "   💪 DAILY MOTIVATION"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "✨ Goals for today:"
+echo "   • Learn something new"
+echo "   • Build something awesome"
+echo "   • Share your knowledge"
+echo ""
+
+# Closing
+echo "╔════════════════════════════════════════════╗"
+echo "║   Have an AMAZING coding day! 🚀           ║"
+echo "╚════════════════════════════════════════════╝"
+echo ""
+```
+
+Save this, make it executable, and run it!
+
+<TerminalDemo>
+{`$ chmod +x welcome.sh
+$ ./welcome.sh`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  INCREDIBLE! Look at what you've built! This is a professional-quality automation script!
+
+  You've combined variables, commands, calculations, and formatting into one beautiful program!
+</StoryBox>
+
+## Bonus Challenge: Customize Your Script!
+
+Make it YOUR OWN! Try adding:
+
+### Ideas to Try:
+
+1. **Weather Check** (if you have internet)
+   ```bash
+   weather=$(curl -s wttr.in/?format=3)
+   echo "🌤️  $weather"
+   ```
+
+2. **File Counter**
+   ```bash
+   file_count=$(ls -1 | wc -l)
+   echo "📁 Files in current directory: $file_count"
+   ```
+
+3. **Random Motivational Messages**
+   ```bash
+   echo "💡 Tip of the day: Practice makes perfect!"
+   ```
+
+4. **Countdown to Birthday**
+   ```bash
+   # Calculate days until your birthday!
+   birthday_day=150  # Change to your day of year
+   days_until=$((birthday_day - day_number))
+   echo "🎂 Days until birthday: $days_until"
+   ```
+
+5. **Add Colors** (Advanced!)
+   ```bash
+   RED='\033[0;31m'
+   GREEN='\033[0;32m'
+   BLUE='\033[0;34m'
+   NC='\033[0m' # No Color
+
+   echo -e "${GREEN}This text is green!${NC}"
+   echo -e "${BLUE}This text is blue!${NC}"
+   ```
+
+## Make it Run Automatically!
+
+Want this to run every time you open the terminal? Add this line to your `~/.bashrc` file:
+
+```bash
+~/welcome.sh
+```
+
+Now it'll greet you every time!
+
+## Final Quiz Challenge!
+
+<StoryBox character="bash_betty">
+  Before you claim your badge, prove your Bash mastery!
+</StoryBox>
+
+<Quiz questions={[
+  {
+    question: "What does #!/bin/bash do?",
+    options: ["Comments out the line", "Tells Linux to use Bash", "Creates a variable", "Displays text"],
+    correct: 1,
+    explanation: "The shebang tells Linux which interpreter to use!"
+  },
+  {
+    question: "How do you make a script executable?",
+    options: ["chmod +x script.sh", "execute script.sh", "run script.sh", "bash script.sh"],
+    correct: 0,
+    explanation: "chmod +x adds execute permission!"
+  },
+  {
+    question: "What does $(whoami) do?",
+    options: ["Displays 'whoami'", "Runs whoami and captures output", "Creates a variable called whoami", "Deletes the user"],
+    correct: 1,
+    explanation: "$() runs a command and captures its output for use in a variable!"
+  },
+  {
+    question: "How do you use a variable in Bash?",
+    options: ["variable", "$variable", "@variable", "&variable"],
+    correct: 1,
+    explanation: "Use $ before the variable name to get its value!"
+  },
+  {
+    question: "How do you run an executable script?",
+    options: ["script.sh", "bash script.sh", "./script.sh", "run script.sh"],
+    correct: 2,
+    explanation: "./ runs the script in the current directory!"
+  },
+  {
+    question: "What's the difference between single and double quotes?",
+    options: ["No difference", "Double quotes allow variable expansion", "Single quotes are faster", "Double quotes are for numbers"],
+    correct: 1,
+    explanation: "Double quotes expand variables, single quotes treat everything as literal text!"
+  }
+]} />
+
+## Real-World Applications
+
+Your new skills can be used for:
+
+### System Administration
+- Daily backup scripts
+- Server health monitoring
+- Automated maintenance tasks
+- System report generation
+
+### Personal Productivity
+- Morning reminder scripts
+- Automated file organization
+- Quick information displays
+- Custom command shortcuts
+
+### Development
+- Build automation
+- Test running scripts
+- Environment setup
+- Deployment automation
+
+<FunFact>
+  Many DevOps engineers have collections of hundreds of shell scripts they use every day! Some companies have entire teams managing automation scripts!
+</FunFact>
+
+## Quest Complete!
+
+<StoryBox character="bash_betty">
+  YOU. DID. IT! 🎉
+
+  You've completed your first Bash quest and built a REAL automation tool!
+
+  Look at everything you accomplished:
+  - ✅ Created a complete shell script from scratch
+  - ✅ Used variables to store dynamic information
+  - ✅ Captured command output
+  - ✅ Performed calculations
+  - ✅ Made the script executable
+  - ✅ Created professional, formatted output
+  - ✅ Built something actually USEFUL!
+
+  You're not just learning Bash - you're USING it to automate real tasks! That's what being a script wizard is all about!
+
+  The Raspberry Pi Kingdom thanks you for your service! You've earned the title of **Bash Pioneer**!
+</StoryBox>
+
+## Rewards Earned
+
+- **XP:** +100
+- **Badge:** Bash Pioneer
+- **Title:** Script Wizard
+- **Unlocked:** Chapter 2 - Interactive Scripts
+
+## Skills Mastered
+
+| Skill | What You Learned |
+|-------|------------------|
+| Shell Scripts | Creating .sh files with commands |
+| Shebang | #!/bin/bash first line |
+| Variables | Storing and using data |
+| Command Substitution | $() to capture output |
+| Math | $(( )) for calculations |
+| Permissions | chmod +x for executable |
+| Execution | Running with ./ |
+| Echo | Displaying information |
+
+## Your Bash Journey
+
+Here's what you mastered in Chapter 1:
+
+1. ✅ **What is a Shell Script** - Understanding automation
+2. ✅ **Your First Script** - Creating .sh files
+3. ✅ **Variables** - Storing information
+4. ✅ **Running Scripts** - Making them executable
+5. ✅ **Quest Complete** - Building a real tool!
+
+## Code Achievements
+
+```bash
+#!/bin/bash
+# You are now a Bash Pioneer!
+
+status="Quest Complete"
+badge="Bash Pioneer"
+level=1
+scripts_created=5
+
+echo "╔════════════════════════════════╗"
+echo "║    CONGRATULATIONS!            ║"
+echo "╚════════════════════════════════╝"
+echo ""
+echo "Status: $status"
+echo "Badge: $badge"
+echo "Level: $level"
+echo "Scripts Created: $scripts_created"
+echo ""
+echo "Ready for Chapter 2: YES!"
+```
+
+<StoryBox character="bash_betty">
+  Chapter 1 is complete, but your automation journey is just beginning!
+
+  In Chapter 2, you'll learn how to make your scripts INTERACTIVE - accepting user input, making decisions, and responding to different situations!
+
+  Imagine scripts that ask questions, make choices, and adapt to what users need. That's what's coming next!
+
+  Take a break, show off your welcome.sh script to friends and family, and I'll see you in Chapter 2!
+</StoryBox>
+
+## Keep Building!
+
+The best way to master Bash is to PRACTICE! Try these:
+
+1. **Modify your welcome.sh script**
+   - Add your own information
+   - Change the formatting
+   - Add new sections
+   - Make it unique to you!
+
+2. **Create new scripts**
+   - File organizer
+   - Homework tracker
+   - Project info display
+   - System checker
+
+3. **Combine with Python**
+   - Call Python scripts from Bash
+   - Use Bash to organize your Python projects
+   - Build automation pipelines!
+
+4. **Share your work**
+   - Show friends and family
+   - Help classmates learn
+   - Create scripts for teachers
+   - Build tools for your community!
+
+## Pro Tips for Chapter 2
+
+Get ready for the next chapter by thinking about:
+- How can scripts ask for user input?
+- How can scripts make decisions based on information?
+- How can scripts repeat actions multiple times?
+- How can you make scripts even more powerful?
+
+All of this and MORE coming in Chapter 2!
+
+Remember: Every expert script wizard started exactly where you are now. The difference is they kept learning, kept building, and kept automating!
+
+<NextLesson
+  track="bash"
+  lesson="06-user-input"
+  teaser="Make your scripts interactive - learn to accept user input and create dynamic programs!"
+/>

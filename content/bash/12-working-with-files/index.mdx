@@ -1,0 +1,479 @@
+---
+title: "Working with Files"
+track: "bash"
+chapter: 3
+lesson: 12
+slug: "12-working-with-files"
+prerequisites: ["11-functions"]
+estimatedTime: 25
+difficulty: "intermediate"
+xpReward: 50
+objectives:
+  - Master file test operators in bash
+  - Learn to check if files and directories exist
+  - Read file contents in scripts
+  - Handle files safely with conditional checks
+nextLesson: "13-text-processing"
+prevLesson: "11-functions"
+---
+
+# Working with Files
+
+<StoryBox character="bash_betty">
+  Welcome back, script wizard! Now that you can create functions, let's learn how to work with the most important thing in Linux: FILES!
+
+  Every script you'll ever write will probably need to check files, read files, or create files. Today, you'll master the art of file manipulation!
+</StoryBox>
+
+## Why File Tests Matter
+
+Imagine you wrote a script that tries to delete a file... but the file doesn't exist! CRASH! Or worse, you try to read a directory like it's a file. DISASTER!
+
+That's why we need **file tests** - they let us check things about files BEFORE we try to use them.
+
+<FunFact>
+  In Linux, EVERYTHING is a file! Even directories, devices, and network connections are treated as files. That's why file operations are so important!
+</FunFact>
+
+## The Test Command
+
+Bash has a special way to test conditions using square brackets: `[ ]`
+
+```bash
+# These two are the same:
+test -f myfile.txt
+[ -f myfile.txt ]
+
+# Most people use square brackets
+if [ -f myfile.txt ]; then
+    echo "File exists!"
+fi
+```
+
+<StoryBox character="bash_betty">
+  Think of square brackets like asking a yes/no question: "Does this file exist?" The answer is either true or false!
+</StoryBox>
+
+## Essential File Test Operators
+
+Here are the most useful file tests you'll use all the time:
+
+<TerminalDemo>
+{`# Does the file exist?
+[ -e filename ]
+
+# Is it a regular file (not a directory)?
+[ -f filename ]
+
+# Is it a directory?
+[ -d dirname ]
+
+# Is the file readable?
+[ -r filename ]
+
+# Is the file writable?
+[ -w filename ]
+
+# Is the file executable?
+[ -x filename ]
+
+# Does the file exist and have size > 0?
+[ -s filename ]`}
+</TerminalDemo>
+
+## Checking If a File Exists
+
+The most common file test is checking if a file exists:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+FILE="data.txt"
+
+if [ -e "$FILE" ]; then
+    echo "✓ $FILE exists!"
+else
+    echo "✗ $FILE does not exist"
+fi
+
+# Output depends on whether data.txt exists`}
+</TerminalDemo>
+
+**Important:** Always put quotes around your variables in tests! `"$FILE"` not `$FILE`
+
+## File vs Directory
+
+Let's check if something is a file or a directory:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+NAME="documents"
+
+if [ -f "$NAME" ]; then
+    echo "$NAME is a file"
+elif [ -d "$NAME" ]; then
+    echo "$NAME is a directory"
+else
+    echo "$NAME doesn't exist"
+fi`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  Why do we need both -e and -f?
+
+  -e checks if ANYTHING exists (file, directory, etc)
+  -f checks if it's specifically a REGULAR FILE
+
+  It's like asking "Is there something there?" vs "Is there a BOOK there?"
+</StoryBox>
+
+## Checking File Permissions
+
+Before you try to read, write, or execute a file, check if you have permission!
+
+<TerminalDemo>
+{`#!/bin/bash
+
+FILE="script.sh"
+
+if [ -r "$FILE" ]; then
+    echo "✓ Can read $FILE"
+else
+    echo "✗ Cannot read $FILE"
+fi
+
+if [ -w "$FILE" ]; then
+    echo "✓ Can write to $FILE"
+else
+    echo "✗ Cannot write to $FILE"
+fi
+
+if [ -x "$FILE" ]; then
+    echo "✓ Can execute $FILE"
+else
+    echo "✗ Cannot execute $FILE"
+fi`}
+</TerminalDemo>
+
+## Checking File Size
+
+See if a file has content (size > 0):
+
+<TerminalDemo>
+{`#!/bin/bash
+
+FILE="data.txt"
+
+if [ -s "$FILE" ]; then
+    echo "$FILE exists and has content"
+else
+    echo "$FILE is empty or doesn't exist"
+fi`}
+</TerminalDemo>
+
+## Practice: Safe File Checker
+
+<Challenge
+  id="ch3-file-checker"
+  title="Create a File Safety Checker"
+  description="Write a script that safely checks a file before using it"
+  steps={[
+    {
+      command: "#!/bin/bash",
+      hint: "Start with shebang"
+    },
+    {
+      command: "FILE=\"mydata.txt\"",
+      hint: "Set the filename to check"
+    },
+    {
+      command: "if [ ! -e \"$FILE\" ]; then\n    echo \"Error: $FILE does not exist!\"\n    exit 1\nfi",
+      hint: "Check if file exists, exit if not"
+    },
+    {
+      command: "if [ ! -f \"$FILE\" ]; then\n    echo \"Error: $FILE is not a regular file!\"\n    exit 1\nfi",
+      hint: "Make sure it's a file, not a directory"
+    },
+    {
+      command: "if [ ! -r \"$FILE\" ]; then\n    echo \"Error: Cannot read $FILE!\"\n    exit 1\nfi",
+      hint: "Check if we have read permission"
+    },
+    {
+      command: "echo \"All checks passed! Safe to use $FILE\"",
+      hint: "Success message"
+    }
+  ]}
+  xp={40}
+  badge="file_guardian"
+/>
+
+<FunFact>
+  The exclamation mark (!) means "not". So `[ ! -f "$FILE" ]` means "if the file does NOT exist". It's like saying "if NOT true" which is the same as "if false"!
+</FunFact>
+
+## Reading Files in Scripts
+
+Once you know a file exists, you can read it! There are several ways:
+
+### Method 1: Using cat in a loop
+
+<TerminalDemo>
+{`#!/bin/bash
+
+FILE="names.txt"
+
+if [ -f "$FILE" ]; then
+    echo "Reading $FILE:"
+    cat "$FILE"
+else
+    echo "File not found!"
+fi`}
+</TerminalDemo>
+
+### Method 2: Reading line by line
+
+<TerminalDemo>
+{`#!/bin/bash
+
+FILE="data.txt"
+
+if [ -f "$FILE" ]; then
+    while IFS= read -r line; do
+        echo "Line: $line"
+    done < "$FILE"
+fi`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  Reading line by line is super powerful! You can process each line individually - perfect for log files, lists of names, or any text data!
+
+  The `IFS= read -r` might look weird, but it's the proper way to read files. It preserves spaces and special characters exactly as they are.
+</StoryBox>
+
+### Method 3: Reading into a variable
+
+<TerminalDemo>
+{`#!/bin/bash
+
+FILE="message.txt"
+
+if [ -f "$FILE" ]; then
+    CONTENT=$(cat "$FILE")
+    echo "File contains:"
+    echo "$CONTENT"
+fi`}
+</TerminalDemo>
+
+## Counting Lines in a File
+
+<TerminalDemo>
+{`#!/bin/bash
+
+FILE="data.txt"
+
+if [ -f "$FILE" ]; then
+    LINES=$(wc -l < "$FILE")
+    echo "$FILE has $LINES lines"
+fi`}
+</TerminalDemo>
+
+## Creating Files Safely
+
+Always check if a file exists before creating it (to avoid overwriting):
+
+<TerminalDemo>
+{`#!/bin/bash
+
+FILE="output.txt"
+
+if [ -e "$FILE" ]; then
+    echo "Warning: $FILE already exists!"
+    echo "Do you want to overwrite it? (yes/no)"
+    read answer
+    if [ "$answer" != "yes" ]; then
+        echo "Cancelled."
+        exit 0
+    fi
+fi
+
+echo "Creating $FILE..."
+echo "Hello, World!" > "$FILE"
+echo "Done!"`}
+</TerminalDemo>
+
+## Multiple File Tests
+
+You can combine tests with && (and) or || (or):
+
+<TerminalDemo>
+{`#!/bin/bash
+
+FILE="script.sh"
+
+# Check if file exists AND is readable
+if [ -f "$FILE" ] && [ -r "$FILE" ]; then
+    echo "$FILE exists and is readable"
+fi
+
+# Check if file exists OR directory exists
+if [ -f "file.txt" ] || [ -d "folder" ]; then
+    echo "Either file.txt or folder exists"
+fi`}
+</TerminalDemo>
+
+## Complete File Operations Example
+
+Here's a practical script that uses everything:
+
+<TerminalDemo>
+{`#!/bin/bash
+
+# Function to check and read a file
+process_file() {
+    local file=$1
+
+    echo "Processing: $file"
+    echo "------------------------"
+
+    # Check if exists
+    if [ ! -e "$file" ]; then
+        echo "✗ File does not exist"
+        return 1
+    fi
+
+    # Check if it's a file
+    if [ ! -f "$file" ]; then
+        echo "✗ Not a regular file"
+        return 1
+    fi
+
+    # Check if readable
+    if [ ! -r "$file" ]; then
+        echo "✗ Cannot read file"
+        return 1
+    fi
+
+    # Check if empty
+    if [ ! -s "$file" ]; then
+        echo "⚠ File is empty"
+        return 0
+    fi
+
+    # All good! Read and display
+    echo "✓ File is valid"
+    echo "Content:"
+    cat "$file"
+
+    # Show file info
+    lines=$(wc -l < "$file")
+    echo ""
+    echo "Total lines: $lines"
+}
+
+# Use the function
+process_file "mydata.txt"`}
+</TerminalDemo>
+
+## Quick Reference Table
+
+| Test | What It Checks |
+|------|----------------|
+| `-e file` | File exists (any type) |
+| `-f file` | Is a regular file |
+| `-d file` | Is a directory |
+| `-r file` | Is readable |
+| `-w file` | Is writable |
+| `-x file` | Is executable |
+| `-s file` | Has size > 0 (not empty) |
+| `-L file` | Is a symbolic link |
+| `file1 -nt file2` | file1 is newer than file2 |
+| `file1 -ot file2` | file1 is older than file2 |
+
+<FunFact>
+  You can even compare files! Use `-nt` (newer than) or `-ot` (older than) to check which file was modified more recently. Great for backup scripts!
+</FunFact>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does [ -f myfile.txt ] check?",
+    options: ["If myfile.txt is a function", "If myfile.txt is a regular file", "If myfile.txt is full", "If myfile.txt is a folder"],
+    correct: 1,
+    explanation: "The -f operator checks if something is a regular file (not a directory or special file)."
+  },
+  {
+    question: "What's the difference between -e and -f?",
+    options: ["-e is newer", "-e checks any existence, -f checks for regular files only", "They're the same", "-f is faster"],
+    correct: 1,
+    explanation: "-e checks if ANYTHING exists (file, directory, link, etc), while -f specifically checks for regular files only."
+  },
+  {
+    question: "Why should you use quotes around variables in tests?",
+    options: ["It's faster", "It looks nicer", "To handle filenames with spaces safely", "It's not necessary"],
+    correct: 2,
+    explanation: "Quotes prevent problems when filenames contain spaces or special characters. Always use [ -f \"$FILE\" ] not [ -f $FILE ]!"
+  },
+  {
+    question: "What does [ -s myfile.txt ] check?",
+    options: ["If file is a script", "If file is small", "If file exists and has size > 0", "If file is secure"],
+    correct: 2,
+    explanation: "The -s operator checks if a file exists AND has content (size greater than zero). Perfect for checking if a file is empty!"
+  }
+]} />
+
+## Challenge: Build a File Validator
+
+<Challenge
+  id="ch3-file-validator"
+  title="Complete File Validation System"
+  description="Create a script that thoroughly validates files"
+  steps={[
+    {
+      command: "# Create validate.sh",
+      hint: "Write a comprehensive file validator"
+    },
+    {
+      command: "validate_file() {\n    # Add all safety checks\n}",
+      hint: "Create a function that checks: exists, is file, readable, not empty"
+    },
+    {
+      command: "# Test with multiple files",
+      hint: "Call validate_file for different test cases"
+    },
+    {
+      command: "# Show appropriate messages for each check",
+      hint: "Use echo to show what passed and what failed"
+    }
+  ]}
+  xp={50}
+  badge="file_master"
+/>
+
+## What You've Learned
+
+You now know how to:
+- Use file test operators (-e, -f, -d, -r, -w, -x, -s)
+- Check if files exist before using them
+- Read files safely in scripts
+- Validate files with multiple conditions
+- Handle file errors gracefully
+
+<StoryBox character="bash_betty">
+  Excellent work! You're becoming a file manipulation expert!
+
+  Being able to safely check and work with files is one of the most important skills in bash scripting. Most scripts fail because they don't check if files exist first!
+
+  You're now writing PROFESSIONAL quality scripts that handle errors properly!
+</StoryBox>
+
+## What's Next?
+
+Now that you can work with files, it's time to learn how to process and manipulate text!
+
+<NextLesson
+  track="bash"
+  lesson="13-text-processing"
+  teaser="Master echo, printf, and text manipulation to create beautiful output!"
+/>

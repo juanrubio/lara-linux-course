@@ -1,0 +1,223 @@
+---
+title: "Reading Files"
+track: "linux"
+chapter: 3
+lesson: 11
+slug: "11-reading-files"
+prerequisites: ["10-chapter2-quest"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Learn to read file contents with cat
+  - Navigate long files with less and more
+  - View file beginnings with head
+  - View file endings with tail
+nextLesson: "12-searching-content"
+prevLesson: "10-chapter2-quest"
+---
+
+# Reading Files
+
+<StoryBox character="pixel_the_penguin">
+  Welcome to Chapter 3! So far, you've learned to navigate and organize files, but now comes the exciting part - reading what's INSIDE them!
+
+  Imagine having a library full of books but never opening them. That's what your file system is like until you learn these reading commands!
+
+  Let me show you the tools every Linux expert uses to peek inside files!
+</StoryBox>
+
+## Why Read Files?
+
+Files contain all sorts of interesting information:
+- **Configuration files** tell programs how to behave
+- **Log files** record what happened on your system
+- **Text files** store notes, code, and data
+- **Scripts** contain commands you can run
+
+Being able to read files quickly is a superpower in Linux!
+
+## The Cat Command
+
+The `cat` command is your basic file reader. It displays the entire contents of a file!
+
+<TerminalDemo>
+cat story.txt
+</TerminalDemo>
+
+**What cat does:**
+- Prints the entire file to your screen
+- Good for short files
+- Name comes from "concatenate" (it can join files too!)
+
+<FunFact>
+  The cat command can do more than read ONE file! Try `cat file1.txt file2.txt` to read multiple files at once!
+</FunFact>
+
+### Creating a Test File
+
+Let's create a file to practice with:
+
+<TerminalDemo>
+echo "Hello from the Digital Kingdom!" > greeting.txt
+cat greeting.txt
+</TerminalDemo>
+
+The `>` symbol creates a file and puts text in it. We'll learn more about this later!
+
+## The Less Command
+
+When files are too long for `cat`, use `less`! It's like having a book you can flip through.
+
+<TerminalDemo>
+less longfile.txt
+</TerminalDemo>
+
+**Less Controls:**
+- **Spacebar** - Move down one page
+- **b** - Move back one page
+- **Arrow keys** - Move line by line
+- **/** - Search for text (type word and hit Enter)
+- **q** - Quit and return to terminal
+
+<StoryBox character="commander_byte">
+  Pro tip: `less` is called "less" because the old command was called "more", and "less is more"! Programmers love their jokes!
+</StoryBox>
+
+## The More Command
+
+`more` is similar to `less` but older and simpler:
+
+<TerminalDemo>
+more longfile.txt
+</TerminalDemo>
+
+**More Controls:**
+- **Spacebar** - Next page
+- **Enter** - Next line
+- **q** - Quit
+
+Most people prefer `less` because it has more features (ironically!).
+
+## The Head Command
+
+Want to peek at just the BEGINNING of a file? Use `head`!
+
+<TerminalDemo>
+head myfile.txt
+</TerminalDemo>
+
+By default, it shows the first **10 lines**. Want more or less?
+
+<TerminalDemo>
+head -n 5 myfile.txt    # Shows first 5 lines
+head -n 20 myfile.txt   # Shows first 20 lines
+</TerminalDemo>
+
+<FunFact>
+  `head` is perfect for checking configuration files or seeing what a data file contains without loading the whole thing!
+</FunFact>
+
+## The Tail Command
+
+`tail` is the opposite of `head` - it shows the END of a file!
+
+<TerminalDemo>
+tail myfile.txt         # Last 10 lines
+tail -n 5 myfile.txt    # Last 5 lines
+</TerminalDemo>
+
+### Super Power: Following Files
+
+The coolest feature of `tail` is `-f` (follow):
+
+<TerminalDemo>
+tail -f logfile.txt
+</TerminalDemo>
+
+This keeps watching the file and shows NEW lines as they appear! Perfect for watching logs in real-time. Press `Ctrl+C` to stop.
+
+<StoryBox character="pixel_the_penguin">
+  System administrators use `tail -f` ALL THE TIME to watch what's happening on their servers. It's like having X-ray vision for your system!
+</StoryBox>
+
+## Command Comparison
+
+| Command | Best For | Quick Description |
+|---------|----------|-------------------|
+| `cat` | Short files | Shows entire file |
+| `less` | Long files | Page through file (best controls) |
+| `more` | Long files | Page through file (simpler) |
+| `head` | File starts | First few lines |
+| `tail` | File ends | Last few lines |
+| `tail -f` | Live logs | Watch file changes |
+
+## Practice Time!
+
+<Challenge
+  id="reading-practice"
+  title="File Reading Master"
+  description="Practice reading files with different commands"
+  steps={[
+    { command: "echo 'Line 1' > practice.txt", hint: "Create a file" },
+    { command: "echo 'Line 2' >> practice.txt", hint: "Add another line (>> appends)" },
+    { command: "echo 'Line 3' >> practice.txt", hint: "Add one more" },
+    { command: "cat practice.txt", hint: "Read the whole file" },
+    { command: "head -n 2 practice.txt", hint: "Show first 2 lines" },
+    { command: "tail -n 1 practice.txt", hint: "Show last line" }
+  ]}
+  xp={30}
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "Which command shows the entire contents of a file?",
+    options: ["cat", "dog", "read", "show"],
+    correct: 0,
+    explanation: "cat displays the complete file contents to your screen!"
+  },
+  {
+    question: "How do you quit out of 'less'?",
+    options: ["Press Escape", "Type exit", "Press q", "Ctrl+Q"],
+    correct: 2,
+    explanation: "Just press 'q' to quit less and return to the terminal!"
+  },
+  {
+    question: "What does 'head -n 5 file.txt' do?",
+    options: [
+      "Shows the last 5 lines",
+      "Shows the first 5 lines",
+      "Shows line 5 only",
+      "Deletes 5 lines"
+    ],
+    correct: 1,
+    explanation: "head with -n 5 shows the first 5 lines of the file!"
+  },
+  {
+    question: "Which command lets you watch a file for new content in real-time?",
+    options: ["cat -f", "less -f", "tail -f", "head -f"],
+    correct: 2,
+    explanation: "tail -f follows the file and shows new lines as they appear!"
+  }
+]} />
+
+## What You Learned
+
+You now know how to:
+- Display entire files with `cat`
+- Page through long files with `less` and `more`
+- Peek at file beginnings with `head`
+- Check file endings with `tail`
+- Watch files in real-time with `tail -f`
+
+<StoryBox character="pixel_the_penguin">
+  Awesome job! You can now read files like a pro! Next up, we'll learn how to SEARCH inside files to find exactly what you're looking for!
+</StoryBox>
+
+<NextLesson
+  track="linux"
+  lesson="12-searching-content"
+  teaser="Learn to search for text inside files with grep and find!"
+/>

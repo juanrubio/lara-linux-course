@@ -1,0 +1,372 @@
+---
+title: "Quest: Number Guessing Game"
+track: "python"
+chapter: 2
+lesson: 10
+slug: "10-chapter2-quest"
+prerequisites: ["09-comparisons-logic"]
+estimatedTime: 30
+difficulty: "beginner"
+xpReward: 100
+objectives:
+  - Build a complete interactive game
+  - Apply strings, input, conditionals, and logic
+  - Practice problem-solving and debugging
+  - Earn your Chapter 2 Quest Badge
+nextLesson: "11-loops-intro"
+prevLesson: "09-comparisons-logic"
+---
+
+# Quest: Number Guessing Game
+
+<StoryBox character="python_pete">
+  Congratulations, code champion! You've learned SO much in Chapter 2:
+  - Working with strings
+  - Getting user input
+  - Making decisions with if-else
+  - Using logical operators
+
+  Now it's time for your QUEST! You're going to build a real game - a Number Guessing Game!
+
+  The computer will pick a secret number, and the player has to guess it. You'll give them hints to help them find it. This is going to be AWESOME!
+</StoryBox>
+
+## The Quest Mission
+
+Build a Number Guessing Game with these features:
+
+1. The secret number is between 1 and 20
+2. The player gets multiple guesses
+3. After each guess, give hints: "Too high!", "Too low!", or "Correct!"
+4. Keep track of how many guesses they've made
+5. Make it fun with colorful messages!
+
+<FunFact>
+  Number guessing games are a classic! They teach the concept of "binary search" - a super efficient way to find things that programmers use all the time!
+</FunFact>
+
+## Part 1: Setting Up the Game
+
+Let's start by creating the game structure and getting the first guess.
+
+<Challenge
+  id="quest2-part1"
+  title="Game Setup"
+  description="Create the welcome message and get the secret number"
+  steps={[
+    {
+      command: 'print("=" * 40)',
+      hint: "Create a decorative line"
+    },
+    {
+      command: 'print("🎮 WELCOME TO THE GUESSING GAME! 🎮")',
+      hint: "Show a welcome message"
+    },
+    {
+      command: 'print("=" * 40)',
+      hint: "Create another decorative line"
+    },
+    {
+      command: 'print("\\nI\\'m thinking of a number between 1 and 20.")',
+      hint: "Explain the game rules"
+    },
+    {
+      command: 'print("Can you guess what it is?\\n")',
+      hint: "Ask the player to guess"
+    },
+    {
+      command: 'secret_number = 7',
+      hint: "Set the secret number (we'll use 7 for testing)"
+    }
+  ]}
+  xp={20}
+/>
+
+<StoryBox character="python_pete">
+  Great start! We're using 7 as our secret number for now. Later, you'll learn how to make the computer pick a random number!
+
+  Notice how we used `print("=" * 40)` to create a decorative line? That's 40 equal signs in a row - cool, right?
+</StoryBox>
+
+## Part 2: Getting the First Guess
+
+Now let's get the player's first guess and check if it's correct!
+
+<Challenge
+  id="quest2-part2"
+  title="First Guess"
+  description="Get user input and check if they guessed correctly"
+  steps={[
+    {
+      command: 'guess_count = 1',
+      hint: "Start counting guesses"
+    },
+    {
+      command: 'guess = int(input("Guess #1: "))',
+      hint: "Get the first guess and convert to number"
+    },
+    {
+      command: 'if guess == secret_number:\n    print("🎉 CORRECT! You got it!")\nelse:\n    print("❌ Wrong! Try again!")',
+      hint: "Check if the guess is correct"
+    }
+  ]}
+  xp={20}
+/>
+
+## Part 3: Adding Helpful Hints
+
+Let's make it more helpful by telling the player if their guess is too high or too low!
+
+<Challenge
+  id="quest2-part3"
+  title="Smart Hints"
+  description="Give the player hints about their guess"
+  steps={[
+    {
+      command: 'guess = int(input("Guess #1: "))',
+      hint: "Get the guess"
+    },
+    {
+      command: 'if guess == secret_number:\n    print("🎉 CORRECT! You won!")\nelif guess > secret_number:\n    print("📉 Too high! Try a smaller number.")\nelse:\n    print("📈 Too low! Try a bigger number.")',
+      hint: "Give specific hints based on the guess"
+    }
+  ]}
+  xp={30}
+/>
+
+<StoryBox character="python_pete">
+  Excellent! Now players get real feedback! This uses the `elif` statement to check three possibilities:
+  1. Guess equals the secret (WIN!)
+  2. Guess is higher than the secret (too high)
+  3. Guess is lower than the secret (too low)
+</StoryBox>
+
+## Part 4: Multiple Guesses
+
+Let's give the player three chances to guess the number!
+
+<Challenge
+  id="quest2-part4"
+  title="Three Chances"
+  description="Allow three guesses with hints"
+  steps={[
+    {
+      command: 'guess_count = 0\nmax_guesses = 3',
+      hint: "Track guesses and set maximum"
+    },
+    {
+      command: 'guess1 = int(input("Guess #1: "))\nguess_count = 1\nif guess1 == secret_number:\n    print("🎉 You won in " + str(guess_count) + " guess!")\nelif guess1 > secret_number:\n    print("📉 Too high!")\nelse:\n    print("📈 Too low!")',
+      hint: "Handle first guess"
+    },
+    {
+      command: 'if guess1 != secret_number:\n    guess2 = int(input("\\nGuess #2: "))\n    guess_count = 2\n    if guess2 == secret_number:\n        print("🎉 You won in " + str(guess_count) + " guesses!")\n    elif guess2 > secret_number:\n        print("📉 Too high!")\n    else:\n        print("📈 Too low!")',
+      hint: "Handle second guess if first was wrong"
+    }
+  ]}
+  xp={30}
+/>
+
+## Complete Game Code
+
+Here's the complete game putting it all together! Type this into a Python file:
+
+<TerminalDemo>
+{`# Number Guessing Game - Complete Version
+print("=" * 40)
+print("🎮 WELCOME TO THE GUESSING GAME! 🎮")
+print("=" * 40)
+print("\\nI'm thinking of a number between 1 and 20.")
+print("You have 3 chances to guess it!\\n")
+
+# Set up the game
+secret_number = 7
+guess_count = 0
+max_guesses = 3
+won = False
+
+# Guess 1
+guess = int(input("Guess #1: "))
+guess_count = 1
+
+if guess == secret_number:
+    print("🎉 AMAZING! You got it on the first try!")
+    won = True
+elif guess > secret_number:
+    print("📉 Too high! Try again.")
+else:
+    print("📈 Too low! Try again.")
+
+# Guess 2 (only if first guess was wrong)
+if not won and guess_count < max_guesses:
+    guess = int(input("\\nGuess #2: "))
+    guess_count = 2
+
+    if guess == secret_number:
+        print("🎉 CORRECT! You won in " + str(guess_count) + " guesses!")
+        won = True
+    elif guess > secret_number:
+        print("📉 Too high! One more try!")
+    else:
+        print("📈 Too low! One more try!")
+
+# Guess 3 (only if still haven't won)
+if not won and guess_count < max_guesses:
+    guess = int(input("\\nGuess #3 (last chance!): "))
+    guess_count = 3
+
+    if guess == secret_number:
+        print("🎉 CORRECT! You won in " + str(guess_count) + " guesses!")
+        won = True
+    else:
+        print("❌ Sorry, you're out of guesses!")
+        print("The secret number was " + str(secret_number))
+
+# Final message
+print("\\n" + "=" * 40)
+if won:
+    print("🏆 VICTORY! You're a guessing master!")
+else:
+    print("Better luck next time!")
+print("=" * 40)`}
+</TerminalDemo>
+
+## Testing Your Game
+
+Test your game with different scenarios:
+
+1. **Win on first try**: Guess 7 immediately
+2. **Win on second try**: Guess 10, then 7
+3. **Win on third try**: Guess 15, then 10, then 7
+4. **Lose the game**: Guess 1, then 2, then 3 (all wrong)
+
+<StoryBox character="python_pete">
+  Testing is SUPER important! Professional programmers spend lots of time testing their code to make sure it works in all situations. Try to break your game - that's how you make it better!
+</StoryBox>
+
+## Challenge: Enhance Your Game!
+
+Ready for extra credit? Try adding these features:
+
+### Enhancement 1: Better Range Hints
+Instead of just "too high" or "too low", give more specific hints:
+- If guess is within 3 of the secret: "You're getting warm!"
+- If guess is far away: "You're cold!"
+
+### Enhancement 2: Input Validation
+Check if the player's guess is between 1 and 20:
+```python
+if guess < 1 or guess > 20:
+    print("Hey! That's not between 1 and 20!")
+```
+
+### Enhancement 3: Play Again Option
+At the end, ask if they want to play again!
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "Why do we use int(input()) in the guessing game?",
+    options: ["To make input faster", "To convert string input to a number", "To validate the input", "To make it look professional"],
+    correct: 1,
+    explanation: "input() always returns a string. We use int() to convert it to a number so we can compare it with our secret number!"
+  },
+  {
+    question: "What does 'elif' do in the guessing game?",
+    options: ["Ends the program", "Checks another condition if the first was false", "Creates a loop", "Stores a variable"],
+    correct: 1,
+    explanation: "elif (else if) checks another condition when the previous if was false. It's perfect for checking multiple possibilities!"
+  },
+  {
+    question: "Why do we use 'guess > secret_number' instead of 'guess >= secret_number'?",
+    options: ["It's faster", "They're the same thing", "We already checked equality with ==", "It's required by Python"],
+    correct: 2,
+    explanation: "Since we already checked if guess == secret_number with if, we know they're not equal. So > is enough - we don't need >= !"
+  },
+  {
+    question: "What does 'won = False' do?",
+    options: ["Makes the player lose", "Creates a flag to track game state", "Ends the game", "Resets the game"],
+    correct: 1,
+    explanation: "It's a boolean flag that tracks whether the player has won. We check this to decide if they should keep guessing!"
+  }
+]} />
+
+## Quest Complete!
+
+<StoryBox character="python_pete">
+  INCREDIBLE WORK! You've built a complete, working game!
+
+  You've demonstrated mastery of:
+  - **Strings**: Creating messages and combining text
+  - **Input**: Getting data from the player
+  - **Type Conversion**: Using int() to work with numbers
+  - **If-Else**: Making decisions based on guesses
+  - **Comparisons**: Checking if numbers are equal, greater, or less
+  - **Logic**: Tracking game state with boolean flags
+
+  You're not just learning Python - you're CREATING with it! That's what being a real programmer is all about!
+</StoryBox>
+
+## Rewards Earned
+
+- **XP:** +100
+- **Badge:** Decision Making Master
+- **Title Unlocked:** "The Guesser"
+- **Unlocked:** Chapter 3 - Loops and Repetition
+
+## Skills Mastered
+
+| Skill | What You Learned |
+|-------|------------------|
+| **String Manipulation** | Concatenation, multiplication, special characters |
+| **User Interaction** | input() function, prompts, responses |
+| **Type Conversion** | int(), str(), handling different data types |
+| **Conditionals** | if, elif, else statements |
+| **Comparisons** | ==, !=, >, <, >=, <= operators |
+| **Logic** | and, or, not operators |
+| **Variables** | Tracking state, counters, flags |
+| **Problem Solving** | Breaking big problems into steps |
+
+## What You Built
+
+You created a complete interactive game that:
+- Welcomes the player with style
+- Accepts and validates user input
+- Makes intelligent decisions
+- Gives helpful feedback
+- Tracks game state
+- Determines win/lose conditions
+- Provides a satisfying ending
+
+This is REAL programming! You should be proud!
+
+## What's Next?
+
+You've conquered Chapter 2, but your journey is far from over! In Chapter 3, you'll learn about **LOOPS** - how to make your code repeat actions automatically.
+
+Imagine not having to write three separate guess blocks - what if you could tell Python "Keep asking for guesses until they get it right"? That's the power of loops!
+
+<NextLesson
+  track="python"
+  lesson="11-loops-intro"
+  teaser="Learn to make your code repeat itself with the magic of loops!"
+/>
+
+## Bonus Challenge
+
+Want to keep improving your game? Try these advanced features:
+
+1. **Score System**: Award points based on how many guesses it took
+2. **Difficulty Levels**: Let players choose easy (1-10), medium (1-20), or hard (1-50)
+3. **Hint System**: Let players use a "hint" that narrows down the range
+4. **Statistics**: Track total games played, wins, and average guesses
+
+Save your game file - you'll make it even better once you learn loops!
+
+<StoryBox character="python_pete">
+  Remember: Every expert programmer started exactly where you are now. The difference? They kept coding, kept learning, and kept building!
+
+  You're doing AMAZING! Take a break, grab a snack, and get ready for Chapter 3. The adventure continues!
+
+  Happy Coding! 🐍✨
+</StoryBox>

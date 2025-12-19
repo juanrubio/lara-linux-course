@@ -1,0 +1,338 @@
+---
+title: "For Loops"
+track: "python"
+chapter: 3
+lesson: 12
+slug: "12-for-loops"
+prerequisites: ["11-lists"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand what loops are and why they're powerful
+  - Use for loops to iterate over lists
+  - Master the range() function
+  - Avoid repetitive code
+nextLesson: "13-while-loops"
+prevLesson: "11-lists"
+---
+
+# For Loops: Automate Everything!
+
+<StoryBox character="python_pete">
+  Alright code warrior, it's time to learn one of the MOST POWERFUL tools in all of programming!
+
+  Imagine you have to write "I will learn Python" 100 times. Would you really type it 100 times? NO WAY! That's what loops are for!
+
+  Loops let you repeat actions automatically. It's like having a robot helper that can do boring tasks for you!
+</StoryBox>
+
+## What's a Loop?
+
+A **loop** is code that repeats itself. Instead of writing the same code over and over, you write it ONCE and tell Python "do this X times!"
+
+Think of it like:
+- Brushing your teeth: You move the brush back and forth many times
+- Jumping rope: You jump over and over
+- Eating cereal: Spoonful after spoonful until the bowl is empty
+
+In programming, we loop through lists, numbers, and more!
+
+<FunFact>
+  Without loops, Instagram would need to write separate code for EVERY photo in your feed! Instead, they use a loop: "For each photo, display it on screen." One loop handles millions of photos!
+</FunFact>
+
+## Your First For Loop
+
+The `for` loop goes through each item in a list, one at a time:
+
+<TerminalDemo>
+{`favorite_snacks = ["pizza", "cookies", "ice cream", "chips"]
+
+for snack in favorite_snacks:
+    print(f"I love {snack}!")
+
+# Output:
+# I love pizza!
+# I love cookies!
+# I love ice cream!
+# I love chips!`}
+</TerminalDemo>
+
+Let's break this down:
+- `for` - starts the loop
+- `snack` - a temporary variable that holds each item
+- `in favorite_snacks` - tells Python which list to loop through
+- The indented code runs for EACH item
+
+<StoryBox character="python_pete">
+  See that indentation? That's SUPER important! Python uses spaces to know what code belongs inside the loop.
+
+  No spaces = not part of the loop
+  Indented = part of the loop
+
+  Most programmers use 4 spaces (or press Tab once).
+</StoryBox>
+
+## The Magic of For Loops
+
+Here's why for loops are amazing. Without a loop:
+
+<TerminalDemo>
+{`# The boring way (yuck!)
+print("Welcome student 1!")
+print("Welcome student 2!")
+print("Welcome student 3!")
+print("Welcome student 4!")
+print("Welcome student 5!")
+# ... imagine doing this for 100 students!`}
+</TerminalDemo>
+
+With a loop:
+
+<TerminalDemo>
+{`# The smart way!
+students = ["Alex", "Sam", "Jordan", "Taylor", "Riley"]
+
+for student in students:
+    print(f"Welcome {student}!")
+
+# Output:
+# Welcome Alex!
+# Welcome Sam!
+# Welcome Jordan!
+# Welcome Taylor!
+# Welcome Riley!`}
+</TerminalDemo>
+
+ONE loop handles 5 students, 100 students, or 1,000 students. That's the power!
+
+## Looping Through Numbers with range()
+
+What if you want to repeat something a specific number of times? Use `range()`!
+
+<TerminalDemo>
+{`# Print numbers 0 to 4
+for number in range(5):
+    print(number)
+
+# Output:
+# 0
+# 1
+# 2
+# 3
+# 4`}
+</TerminalDemo>
+
+**Important:** `range(5)` gives you 5 numbers, but starting from 0! So you get 0, 1, 2, 3, 4.
+
+### Range with Start and Stop
+
+You can control where range starts and stops:
+
+<TerminalDemo>
+{`# Count from 1 to 5
+for num in range(1, 6):
+    print(num)
+
+# Output:
+# 1
+# 2
+# 3
+# 4
+# 5
+
+# Why 6? Because range stops BEFORE the end number!`}
+</TerminalDemo>
+
+### Range with Steps
+
+You can even skip numbers!
+
+<TerminalDemo>
+{`# Count by 2s from 0 to 10
+for num in range(0, 11, 2):
+    print(num)
+
+# Output:
+# 0
+# 2
+# 4
+# 6
+# 8
+# 10
+
+# The 2 at the end means "step by 2"`}
+</TerminalDemo>
+
+<FunFact>
+  The range() function doesn't actually create a list - it creates a special object that generates numbers as needed. This saves memory when you're counting to a million!
+</FunFact>
+
+## Nested Loops: Loops Inside Loops!
+
+You can put loops inside other loops! This is called **nesting**:
+
+<TerminalDemo>
+{`# Print a multiplication table
+for i in range(1, 4):
+    for j in range(1, 4):
+        result = i * j
+        print(f"{i} x {j} = {result}")
+    print("---")  # Separator
+
+# Output:
+# 1 x 1 = 1
+# 1 x 2 = 2
+# 1 x 3 = 3
+# ---
+# 2 x 1 = 2
+# 2 x 2 = 4
+# 2 x 3 = 6
+# ---
+# 3 x 1 = 3
+# 3 x 2 = 6
+# 3 x 3 = 9
+# ---`}
+</TerminalDemo>
+
+For each number in the outer loop, the inner loop runs completely!
+
+## Doing Math with Loops
+
+Loops are perfect for calculations:
+
+<TerminalDemo>
+{`# Add up all numbers from 1 to 10
+total = 0
+for number in range(1, 11):
+    total = total + number
+    print(f"Current total: {total}")
+
+print(f"Final sum: {total}")
+
+# Output:
+# Current total: 1
+# Current total: 3
+# Current total: 6
+# ... (and so on)
+# Final sum: 55`}
+</TerminalDemo>
+
+## Using the Index Too
+
+Sometimes you need both the item AND its position. Use `enumerate()`!
+
+<TerminalDemo>
+{`pokemon = ["Pikachu", "Charizard", "Bulbasaur"]
+
+for index, name in enumerate(pokemon):
+    print(f"#{index + 1}: {name}")
+
+# Output:
+# #1: Pikachu
+# #2: Charizard
+# #3: Bulbasaur`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  The enumerate() function is super handy! It gives you both the index (position) and the value (item) at the same time.
+
+  We add 1 to the index because most humans prefer counting from 1, not 0!
+</StoryBox>
+
+## Practice Time!
+
+<Challenge
+  id="ch3-for-loops"
+  title="Loop Master"
+  description="Practice using for loops to automate repetitive tasks"
+  steps={[
+    {
+      command: "Create a list of 4 favorite movies and print each one",
+      hint: "Use a for loop: for movie in movies:"
+    },
+    {
+      command: "Print numbers 1 to 10 using range()",
+      hint: "for i in range(1, 11):"
+    },
+    {
+      command: "Calculate the sum of numbers 1 to 20",
+      hint: "Start with total = 0, then add each number in the loop"
+    },
+    {
+      command: "Print your name 5 times using a loop",
+      hint: "for i in range(5): print('Your Name')"
+    }
+  ]}
+  xp={35}
+/>
+
+## Real-World Uses
+
+For loops are used EVERYWHERE:
+
+- **Netflix**: Loop through all movies to show you recommendations
+- **Instagram**: Loop through photos to display your feed
+- **Games**: Loop through all enemies to move them
+- **Email**: Loop through contacts to send group messages
+- **Music apps**: Loop through playlist to play songs
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does this loop do? for i in range(3):",
+    options: ["Runs 3 times", "Runs 4 times", "Creates a list", "Prints 3"],
+    correct: 0,
+    explanation: "range(3) generates 0, 1, 2 - that's 3 numbers, so the loop runs 3 times!"
+  },
+  {
+    question: "In 'for fruit in fruits:', what is 'fruit'?",
+    options: ["The whole list", "Each item one at a time", "The first item only", "The last item"],
+    correct: 1,
+    explanation: "The variable 'fruit' holds each item in the list, one at a time, as the loop runs!"
+  },
+  {
+    question: "What's the output of: for i in range(2, 5): print(i)",
+    options: ["2 3 4", "2 3 4 5", "3 4 5", "2 4"],
+    correct: 0,
+    explanation: "range(2, 5) generates 2, 3, 4 - it stops BEFORE 5!"
+  },
+  {
+    question: "Why is indentation important in for loops?",
+    options: ["It looks nice", "Python requires it to know what's in the loop", "It's optional", "It makes code run faster"],
+    correct: 1,
+    explanation: "Python uses indentation to know which code belongs inside the loop. No indent = not in loop!"
+  }
+]} />
+
+## Loop Cheat Sheet
+
+| Code | What It Does | Example |
+|------|--------------|---------|
+| `for item in list:` | Loop through list | `for game in games:` |
+| `range(n)` | Numbers 0 to n-1 | `range(5)` → 0,1,2,3,4 |
+| `range(start, stop)` | Numbers from start to stop-1 | `range(1, 6)` → 1,2,3,4,5 |
+| `range(start, stop, step)` | Numbers with custom step | `range(0, 10, 2)` → 0,2,4,6,8 |
+| `enumerate(list)` | Get index and item | `for i, item in enumerate(list):` |
+
+<StoryBox character="python_pete">
+  Congratulations! You've unlocked one of the most powerful skills in programming!
+
+  For loops let you automate repetitive tasks, process lists of data, and write code that scales from 10 items to 10 million items!
+
+  But wait... what if you don't know HOW MANY times to loop? What if you need to keep going until something happens?
+
+  That's where WHILE loops come in. Let's learn about them next!
+</StoryBox>
+
+## What's Next?
+
+Ready to learn another type of loop? In the next lesson, you'll discover **while loops** - loops that keep going until a condition becomes false!
+
+<NextLesson
+  track="python"
+  lesson="13-while-loops"
+  teaser="Master while loops and learn when to use break and continue!"
+/>

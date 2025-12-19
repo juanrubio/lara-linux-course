@@ -1,0 +1,156 @@
+---
+title: "Your First Commands"
+track: "linux"
+chapter: 1
+lesson: 3
+slug: "03-first-commands"
+prerequisites: ["02-the-terminal"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Learn to navigate directories with pwd
+  - List files and folders with ls
+  - Understand command output
+nextLesson: "04-getting-help"
+prevLesson: "02-the-terminal"
+---
+
+# Your First Commands
+
+<StoryBox character="commander_byte">
+  Excellent, recruit! Now that you understand what the terminal is, it's time to speak your first words to the computer!
+
+  Today you'll learn three essential commands that every Linux user must know. These are your bread and butter - commands you'll use every single day!
+</StoryBox>
+
+## Command 1: `pwd` - Where Am I?
+
+When you first open a terminal, you're standing in a folder (directory). But which one? The `pwd` command tells you!
+
+**pwd** stands for "**P**rint **W**orking **D**irectory"
+
+<TerminalDemo>
+{`learner@codequest:~$ pwd
+/home/learner`}
+</TerminalDemo>
+
+The output `/home/learner` tells you:
+- You're in the `learner` folder
+- Which is inside the `home` folder
+- Which is at the root (`/`) of the system
+
+<FunFact>
+  Think of `pwd` like asking "Where am I?" in a huge building. The computer tells you exactly which room (folder) you're in!
+</FunFact>
+
+## Command 2: `ls` - What's Here?
+
+Now that you know WHERE you are, let's see WHAT'S around you. The `ls` command **lists** the contents of a directory.
+
+<TerminalDemo>
+{`learner@codequest:~$ ls
+Desktop  Documents  Downloads  Pictures  projects`}
+</TerminalDemo>
+
+Those are all folders (and sometimes files) in your current directory!
+
+### Making ls More Powerful
+
+`ls` has options that give you more information:
+
+| Command | What it does |
+|---------|--------------|
+| `ls` | Simple list |
+| `ls -l` | Long format with details |
+| `ls -a` | Show ALL files (including hidden) |
+| `ls -la` | Both! Details AND hidden files |
+
+<TerminalDemo>
+{`learner@codequest:~$ ls -la
+total 24
+drwxr-xr-x  5 learner learner 4096 Jan 15 10:30 .
+drwxr-xr-x  3 root    root    4096 Jan 10 08:00 ..
+-rw-------  1 learner learner  220 Jan 10 08:00 .bash_history
+drwxr-xr-x  2 learner learner 4096 Jan 12 14:20 Desktop
+drwxr-xr-x  2 learner learner 4096 Jan 13 09:15 Documents`}
+</TerminalDemo>
+
+<FunFact>
+  Files that start with a dot (`.`) are hidden files! That's why you need `-a` to see them. It's like the computer's way of saying "these are boring system files, you don't need to see them."
+</FunFact>
+
+## Command 3: `whoami` - Who Am I?
+
+Sometimes you need to know which user you're logged in as. The `whoami` command tells you!
+
+<TerminalDemo>
+{`learner@codequest:~$ whoami
+learner`}
+</TerminalDemo>
+
+Simple, but very useful when you're working on different computers or have multiple accounts!
+
+<StoryBox character="commander_byte">
+  Three commands down, a whole universe to go! These commands are your navigation tools. Without them, you'd be lost in the digital wilderness!
+</StoryBox>
+
+## Practice Time!
+
+<Challenge
+  id="ch1-first-commands"
+  title="Command Explorer"
+  description="Practice using your new commands to explore your environment"
+  steps={[
+    { command: "pwd", hint: "Find out where you are" },
+    { command: "ls", hint: "See what's in this directory" },
+    { command: "ls -la", hint: "Now see ALL files with details" },
+    { command: "whoami", hint: "What's your username?" }
+  ]}
+  xp={30}
+  badge="first_commands_master"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does 'pwd' stand for?",
+    options: ["Print Working Directory", "Password", "Power Down", "Path With Dots"],
+    correct: 0,
+    explanation: "pwd means Print Working Directory - it shows you which folder you're currently in!"
+  },
+  {
+    question: "What option shows hidden files with the ls command?",
+    options: ["-h", "-l", "-a", "-s"],
+    correct: 2,
+    explanation: "The -a option shows ALL files, including hidden ones that start with a dot!"
+  },
+  {
+    question: "If you see '/home/lara/Documents' from pwd, which folder are you in?",
+    options: ["home", "lara", "Documents", "/"],
+    correct: 2,
+    explanation: "The last folder in the path is your current location - Documents!"
+  }
+]} />
+
+## Command Cheat Sheet
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `pwd` | Show current location | `pwd` |
+| `ls` | List files | `ls` |
+| `ls -l` | List with details | `ls -l` |
+| `ls -a` | List all (hidden too) | `ls -a` |
+| `ls -la` | List all with details | `ls -la` |
+| `whoami` | Show current user | `whoami` |
+
+## What's Next?
+
+Great job learning your first commands! But what if you forget how a command works? In the next lesson, you'll learn how to get help anytime!
+
+<NextLesson
+  track="linux"
+  lesson="04-getting-help"
+  teaser="Learn how to become self-sufficient with the help command!"
+/>

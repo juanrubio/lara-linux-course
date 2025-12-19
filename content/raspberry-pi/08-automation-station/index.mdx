@@ -1,0 +1,649 @@
+---
+title: "Automation Station"
+track: "raspberry-pi"
+chapter: 2
+lesson: 8
+slug: "08-automation-station"
+prerequisites: ["07-file-server"]
+estimatedTime: 35
+difficulty: "intermediate"
+xpReward: 125
+objectives:
+  - Understand cron jobs and scheduling
+  - Create automated tasks that run on a schedule
+  - Build useful automation scripts
+  - Monitor and manage scheduled tasks
+nextLesson: "09-mini-game-console"
+prevLesson: "07-file-server"
+---
+
+import StoryBox from '@/components/StoryBox'
+import FunFact from '@/components/FunFact'
+import TerminalDemo from '@/components/TerminalDemo'
+import Challenge from '@/components/Challenge'
+import Quiz from '@/components/Quiz'
+import NextLesson from '@/components/NextLesson'
+
+<StoryBox character="pi_princess" mood="excited">
+What if your Pi could do tasks automatically while you sleep? Take sensor readings every hour? Back up files at midnight? Send you a daily report every morning?
+
+Welcome to AUTOMATION STATION! Today we're learning about **cron jobs** - a way to schedule tasks to run automatically at specific times. It's like giving your Pi a to-do list that it follows without you having to do anything!
+
+This is how servers around the world work 24/7. This is how your phone backs up photos at night. This is REAL system administration!
+</StoryBox>
+
+## What is Automation?
+
+Automation means making things happen automatically on a schedule:
+- Run a script every morning at 8 AM
+- Check something every 5 minutes
+- Back up files every night at midnight
+- Send an email every Monday
+- Clean up old files every week
+
+The tool we use is called **cron** - it's been running servers since 1975!
+
+<FunFact title="Why 'Cron'?">
+"Cron" comes from the Greek word "chronos" meaning time. The name "cron" was chosen because it's a time-based job scheduler!
+
+The daemon (background service) is called "crond" and the scheduled jobs are called "cron jobs". Every server in the world probably uses cron!
+</FunFact>
+
+## Components You'll Need
+
+For this project:
+- Your Raspberry Pi (any model)
+- Power supply (keep it running 24/7!)
+- Internet connection (for some examples)
+- Optional: Temperature sensor from earlier projects
+
+No new hardware - this is all software magic!
+
+## Understanding Cron Syntax
+
+Before we dive in, let's understand how to schedule tasks. Cron uses a special format:
+
+```
+* * * * * /path/to/command
+│ │ │ │ │
+│ │ │ │ └─── Day of week (0-7, Sunday is 0 or 7)
+│ │ │ └───── Month (1-12)
+│ │ └─────── Day of month (1-31)
+│ └───────── Hour (0-23)
+└─────────── Minute (0-59)
+```
+
+<StoryBox character="pi_princess" mood="teaching">
+I know this looks confusing at first! Let me show you with examples:
+
+- `* * * * *` - Every minute (all wildcards)
+- `0 * * * *` - Every hour (at minute 0)
+- `0 9 * * *` - Every day at 9 AM
+- `0 0 * * 0` - Every Sunday at midnight
+- `*/5 * * * *` - Every 5 minutes
+- `0 9 * * 1-5` - Every weekday at 9 AM
+
+The `*` means "any value" and `/5` means "every 5th value"!
+</StoryBox>
+
+## Step 1: Your First Cron Job
+
+Let's start simple - create a script that writes the current time to a file:
+
+<TerminalDemo>
+{`$ nano time_logger.sh`}
+</TerminalDemo>
+
+Write this script:
+
+```bash
+#!/bin/bash
+
+# Get current date and time
+echo "The time is now: $(date)" >> /home/pi/time_log.txt
+```
+
+Make it executable:
+
+<TerminalDemo>
+{`$ chmod +x time_logger.sh`}
+</TerminalDemo>
+
+Test it manually:
+
+<TerminalDemo>
+{`$ ./time_logger.sh
+$ cat time_log.txt
+
+The time is now: Thu Dec 19 10:30:00 2024`}
+</TerminalDemo>
+
+Now let's schedule it! Open your crontab (personal cron jobs):
+
+<TerminalDemo>
+{`$ crontab -e
+
+# Choose nano as your editor (option 1)
+# Add this line at the bottom:
+* * * * * /home/pi/time_logger.sh
+
+# Save and exit (Ctrl+X, Y, Enter)`}
+</TerminalDemo>
+
+Wait a minute, then check:
+
+<TerminalDemo>
+{`$ cat time_log.txt
+
+The time is now: Thu Dec 19 10:30:00 2024
+The time is now: Thu Dec 19 10:31:00 2024
+The time is now: Thu Dec 19 10:32:00 2024
+
+It's working! Every minute, a new line appears!`}
+</TerminalDemo>
+
+<FunFact title="Cron Never Sleeps">
+Cron runs in the background 24/7, checking every minute if any jobs need to run. Even if you're not logged in, even if you're asleep, cron keeps working!
+
+This is why servers can do things automatically without anyone watching them.
+</FunFact>
+
+## Step 2: Useful Automation Scripts
+
+Let's create some actually useful automated tasks!
+
+### Temperature Monitor
+
+Record temperature every 5 minutes:
+
+<TerminalDemo>
+{`$ nano temp_monitor.sh`}
+</TerminalDemo>
+
+```bash
+#!/bin/bash
+
+# Get CPU temperature
+temp=$(vcgencmd measure_temp)
+timestamp=$(date "+%Y-%m-%d %H:%M:%S")
+
+# Log it with timestamp
+echo "$timestamp - $temp" >> /home/pi/temp_history.txt
+
+# Alert if too hot (over 70°C)
+temp_value=$(echo $temp | grep -o '[0-9]*\.[0-9]*')
+if (( $(echo "$temp_value > 70" | bc -l) )); then
+    echo "WARNING: Pi is hot! $temp" | wall
+fi
+```
+
+Make it executable and schedule it:
+
+<TerminalDemo>
+{`$ chmod +x temp_monitor.sh
+$ crontab -e
+
+# Add this line:
+*/5 * * * * /home/pi/temp_monitor.sh`}
+</TerminalDemo>
+
+Now it checks temperature every 5 minutes and warns you if it's too hot!
+
+### Disk Space Monitor
+
+Check available space every morning at 8 AM:
+
+```bash
+#!/bin/bash
+
+# Get disk usage
+usage=$(df -h / | awk 'NR==2 {print $5}')
+timestamp=$(date "+%Y-%m-%d %H:%M")
+
+# Log it
+echo "$timestamp - Disk usage: $usage" >> /home/pi/disk_monitor.txt
+
+# Alert if over 80%
+percent=$(echo $usage | sed 's/%//')
+if [ $percent -gt 80 ]; then
+    echo "WARNING: Disk is $usage full!" >> /home/pi/alerts.txt
+fi
+```
+
+Schedule it:
+
+```bash
+0 8 * * * /home/pi/disk_monitor.sh
+```
+
+### Automatic Backup
+
+Back up important files every night at midnight:
+
+```bash
+#!/bin/bash
+
+# Backup directory
+backup_dir="/home/pi/backups/backup_$(date +%Y%m%d).tar.gz"
+
+# Create backup
+tar -czf $backup_dir /home/pi/important_files/
+
+# Keep only last 7 days of backups
+find /home/pi/backups/ -name "backup_*.tar.gz" -mtime +7 -delete
+
+echo "Backup completed: $backup_dir" >> /home/pi/backup_log.txt
+```
+
+Schedule it:
+
+```bash
+0 0 * * * /home/pi/backup.sh
+```
+
+### Weather Report
+
+Get weather data every hour (requires internet):
+
+```bash
+#!/bin/bash
+
+# Get weather from wttr.in (free weather service)
+weather=$(curl -s "wttr.in/YourCity?format=3")
+timestamp=$(date "+%Y-%m-%d %H:%M")
+
+# Log it
+echo "$timestamp - $weather" >> /home/pi/weather_log.txt
+```
+
+Schedule it:
+
+```bash
+0 * * * * /home/pi/weather.sh
+```
+
+<StoryBox character="pi_princess" mood="proud">
+Look at what you're building! Your Pi is now like a little robot that does tasks for you automatically. This is the same technology that runs weather stations, security systems, and industrial automation!
+
+And the best part? It's all FREE. No cloud subscriptions, no monthly fees. Just your Pi working hard for you!
+</StoryBox>
+
+## Step 3: Managing Cron Jobs
+
+View your scheduled jobs:
+
+<TerminalDemo>
+{`$ crontab -l
+
+* * * * * /home/pi/time_logger.sh
+*/5 * * * * /home/pi/temp_monitor.sh
+0 8 * * * /home/pi/disk_monitor.sh
+0 0 * * * /home/pi/backup.sh
+0 * * * * /home/pi/weather.sh`}
+</TerminalDemo>
+
+Edit your cron jobs:
+
+<TerminalDemo>
+{`$ crontab -e`}
+</TerminalDemo>
+
+Remove all cron jobs:
+
+<TerminalDemo>
+{`$ crontab -r
+
+# Be careful! This deletes everything!`}
+</TerminalDemo>
+
+## Step 4: System-Wide Cron Jobs
+
+There are different levels of cron jobs:
+
+### User Crontab (what we've been using)
+```bash
+$ crontab -e  # Your personal cron jobs
+```
+
+### System Crontab
+```bash
+$ sudo nano /etc/crontab  # System-wide jobs (requires sudo)
+```
+
+### Pre-set Schedules
+Linux also has convenient folders:
+
+<TerminalDemo>
+{`$ ls /etc/cron.*
+
+/etc/cron.daily/     # Scripts that run once a day
+/etc/cron.hourly/    # Scripts that run every hour
+/etc/cron.weekly/    # Scripts that run once a week
+/etc/cron.monthly/   # Scripts that run once a month`}
+</TerminalDemo>
+
+Just drop a script in these folders and it runs automatically!
+
+<TerminalDemo>
+{`$ sudo cp my_daily_script.sh /etc/cron.daily/
+$ sudo chmod +x /etc/cron.daily/my_daily_script.sh
+
+# Now it runs every day automatically!`}
+</TerminalDemo>
+
+## Advanced Automation
+
+### Send Email Notifications
+
+Install mail utilities:
+
+<TerminalDemo>
+{`$ sudo apt install ssmtp mailutils -y`}
+</TerminalDemo>
+
+Configure SMTP (for Gmail):
+
+<TerminalDemo>
+{`$ sudo nano /etc/ssmtp/ssmtp.conf
+
+root=youremail@gmail.com
+mailhub=smtp.gmail.com:587
+AuthUser=youremail@gmail.com
+AuthPass=your_app_password
+UseSTARTTLS=YES`}
+</TerminalDemo>
+
+Now your scripts can send emails:
+
+```bash
+#!/bin/bash
+
+echo "This is a test from your Pi!" | mail -s "Pi Alert" youremail@gmail.com
+```
+
+### Run at System Boot
+
+Want something to run when your Pi starts? Use `@reboot`:
+
+```bash
+$ crontab -e
+
+@reboot /home/pi/startup_script.sh
+```
+
+### Special Cron Strings
+
+Cron has shortcuts for common schedules:
+
+```bash
+@reboot     # Run once at startup
+@hourly     # Run once per hour (0 * * * *)
+@daily      # Run once per day (0 0 * * *)
+@weekly     # Run once per week (0 0 * * 0)
+@monthly    # Run once per month (0 0 1 * *)
+@yearly     # Run once per year (0 0 1 1 *)
+```
+
+Example:
+
+```bash
+@daily /home/pi/daily_cleanup.sh
+```
+
+<FunFact title="Cron and Time Zones">
+Cron uses the system's time zone. If you want to change it:
+
+```bash
+$ sudo timedatectl set-timezone America/New_York
+$ timedatectl list-timezones  # See all options
+```
+
+This is important if you want tasks to run at specific times in YOUR timezone!
+</FunFact>
+
+## Debugging Cron Jobs
+
+Sometimes cron jobs don't work. Here's how to debug:
+
+### Check Cron Logs
+<TerminalDemo>
+{`$ grep CRON /var/log/syslog
+
+Dec 19 10:30:01 raspberrypi CRON[1234]: (pi) CMD (/home/pi/time_logger.sh)`}
+</TerminalDemo>
+
+### Add Logging to Your Scripts
+Always log output to debug:
+
+```bash
+#!/bin/bash
+
+{
+    echo "Script started at $(date)"
+    # Your commands here
+    echo "Script finished at $(date)"
+} >> /home/pi/script.log 2>&1
+```
+
+The `2>&1` captures both normal output AND errors!
+
+### Test Scripts Manually First
+Before scheduling, always test:
+
+```bash
+$ /home/pi/my_script.sh
+# Make sure it works!
+```
+
+### Use Full Paths
+Cron doesn't have the same environment as your terminal:
+
+```bash
+# Bad:
+python script.py
+
+# Good:
+/usr/bin/python3 /home/pi/script.py
+```
+
+## Real-World Automation Projects
+
+Here are some projects you could build:
+
+### 1. Plant Watering System
+- Check soil moisture sensor
+- Water plants if too dry
+- Log watering history
+- Send alert if water reservoir is empty
+
+### 2. Security Camera System
+- Take photo every minute
+- Save to file server
+- Delete photos older than 7 days
+- Alert if motion detected
+
+### 3. Smart Home Dashboard
+- Read temperature sensors hourly
+- Log power usage
+- Generate daily report
+- Update web dashboard
+
+### 4. Download Manager
+- Check for new episodes of shows
+- Download at night when internet is faster
+- Organize files automatically
+- Send notification when complete
+
+### 5. System Health Monitor
+- Check CPU temperature
+- Monitor disk space
+- Test internet connection
+- Restart services if they crash
+- Email daily report
+
+<Challenge
+  title="Build Your Automation Suite"
+  description="Create a set of useful automated tasks for your Pi"
+  steps={[
+    "Create at least 3 different automation scripts",
+    "Schedule them with different intervals (one per minute, one daily, one weekly)",
+    "Add logging to all scripts so you can see they're working",
+    "Create a monitor script that checks if all cron jobs are running",
+    "Test everything by waiting and checking logs"
+  ]}
+  xp={60}
+/>
+
+## Best Practices
+
+When creating automated tasks:
+
+1. **Always Log** - Write to log files so you can see what happened
+2. **Use Absolute Paths** - `/home/pi/script.sh` not `./script.sh`
+3. **Test First** - Run scripts manually before scheduling
+4. **Handle Errors** - Check if files exist, handle missing data
+5. **Don't Overlap** - Don't schedule the same script too frequently
+6. **Clean Up** - Delete old logs and data to save space
+7. **Monitor** - Check logs regularly to ensure things work
+
+Example of a robust script:
+
+```bash
+#!/bin/bash
+
+# Configuration
+LOG_FILE="/home/pi/logs/myscript.log"
+MAX_LOG_SIZE=10485760  # 10MB
+
+# Rotate log if too big
+if [ -f "$LOG_FILE" ] && [ $(stat -f%z "$LOG_FILE") -gt $MAX_LOG_SIZE ]; then
+    mv "$LOG_FILE" "$LOG_FILE.old"
+fi
+
+# Log start
+echo "=== Script started at $(date) ===" >> "$LOG_FILE"
+
+# Do the actual work
+if [ -f "/home/pi/data.txt" ]; then
+    process_data.sh >> "$LOG_FILE" 2>&1
+    echo "Data processed successfully" >> "$LOG_FILE"
+else
+    echo "ERROR: data.txt not found!" >> "$LOG_FILE"
+    exit 1
+fi
+
+# Log end
+echo "=== Script finished at $(date) ===" >> "$LOG_FILE"
+```
+
+<Quiz
+  questions={[
+    {
+      question: "What does the cron expression '0 9 * * *' mean?",
+      options: [
+        "Every 9 minutes",
+        "Every day at 9 AM",
+        "9th day of every month",
+        "Every 9 hours"
+      ],
+      correctAnswer: 1,
+      explanation: "0 9 * * * means: minute 0, hour 9, any day, any month, any weekday - which is 9:00 AM every day!"
+    },
+    {
+      question: "What does '*/5 * * * *' mean?",
+      options: [
+        "At 5 o'clock",
+        "Every 5 hours",
+        "Every 5 minutes",
+        "5 times per day"
+      ],
+      correctAnswer: 2,
+      explanation: "*/5 means 'every 5th value' in the minutes field, so it runs every 5 minutes!"
+    },
+    {
+      question: "What command shows your scheduled cron jobs?",
+      options: [
+        "crontab -l",
+        "crontab -e",
+        "crontab -show",
+        "ls cron"
+      ],
+      correctAnswer: 0,
+      explanation: "crontab -l lists your cron jobs. The -e flag is for editing, -l is for listing!"
+    },
+    {
+      question: "Why should you use absolute paths in cron scripts?",
+      options: [
+        "They look more professional",
+        "Cron runs in a different environment without your normal PATH",
+        "Relative paths don't work in Linux",
+        "It makes scripts run faster"
+      ],
+      correctAnswer: 1,
+      explanation: "Cron doesn't have the same environment variables as your shell, so it might not find commands or files without full paths!"
+    },
+    {
+      question: "Where can you find cron logs?",
+      options: [
+        "/var/log/cron",
+        "/var/log/syslog",
+        "/home/pi/cron.log",
+        "/etc/cron.log"
+      ],
+      correctAnswer: 1,
+      explanation: "On Raspberry Pi (Debian/Ubuntu), cron logs are in /var/log/syslog. Use 'grep CRON /var/log/syslog' to see them!"
+    }
+  ]}
+/>
+
+<StoryBox character="pi_princess" mood="excited">
+Amazing work! You've turned your Raspberry Pi into an automation powerhouse! It can now work for you 24/7, doing tasks on a schedule without any input from you.
+
+You learned:
+- How cron works and the scheduling syntax
+- Creating useful automation scripts
+- Managing and debugging cron jobs
+- Best practices for reliable automation
+- System-wide vs user-specific schedules
+
+This is REAL server administration stuff! Companies pay good money for people who know this!
+
+Next up: we're building a MINI GAME CONSOLE! We're going to program games with buttons and make your Pi into a fun gaming machine. Get ready to code some fun!
+</StoryBox>
+
+## Quick Reference
+
+### Cron Syntax
+```
+* * * * * command
+│ │ │ │ │
+│ │ │ │ └─ Day of week (0-7)
+│ │ │ └─── Month (1-12)
+│ │ └───── Day (1-31)
+│ └─────── Hour (0-23)
+└───────── Minute (0-59)
+```
+
+### Common Schedules
+| Expression | Meaning |
+|------------|---------|
+| `* * * * *` | Every minute |
+| `0 * * * *` | Every hour |
+| `0 0 * * *` | Every day at midnight |
+| `0 9 * * 1-5` | Weekdays at 9 AM |
+| `*/5 * * * *` | Every 5 minutes |
+| `0 0 * * 0` | Every Sunday at midnight |
+
+### Commands
+| Command | Purpose |
+|---------|---------|
+| `crontab -e` | Edit your cron jobs |
+| `crontab -l` | List your cron jobs |
+| `crontab -r` | Remove all cron jobs |
+| `grep CRON /var/log/syslog` | View cron logs |
+
+<NextLesson
+  track="raspberry-pi"
+  lesson="09-mini-game-console"
+  teaser="Build games with buttons and pygame - turn your Pi into a retro gaming machine!"
+/>

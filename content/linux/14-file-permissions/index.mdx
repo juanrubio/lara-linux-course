@@ -1,0 +1,363 @@
+---
+title: "File Permissions"
+track: "linux"
+chapter: 3
+lesson: 14
+slug: "14-file-permissions"
+prerequisites: ["13-text-editors"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand Linux file permissions
+  - Learn the meaning of rwx
+  - Use chmod to change permissions
+  - Understand permission numbers
+nextLesson: "15-chapter3-quest"
+prevLesson: "13-text-editors"
+---
+
+# File Permissions
+
+<StoryBox character="commander_byte">
+  Security alert! In the Digital Kingdom, not everyone should access everything!
+
+  Imagine if anyone could read your diary, delete your homework, or modify important system files. Chaos!
+
+  That's why Linux has an amazing permission system. Today you'll learn to control who can read, write, and execute your files!
+</StoryBox>
+
+## Why Permissions Matter
+
+Linux is designed for multiple users. Permissions control:
+- Who can READ a file (see its contents)
+- Who can WRITE to a file (modify it)
+- Who can EXECUTE a file (run it as a program)
+
+This keeps your system secure and organized!
+
+## Understanding Permissions
+
+Let's look at file permissions:
+
+<TerminalDemo>
+ls -l myfile.txt
+</TerminalDemo>
+
+Output:
+```
+-rw-r--r-- 1 pi users 1234 Dec 19 10:30 myfile.txt
+```
+
+Let's decode this mystery!
+
+<FunFact>
+  That weird string of letters at the start (-rw-r--r--) is actually a secret code that tells you EXACTLY who can do what with the file!
+</FunFact>
+
+## The Permission Code
+
+The first 10 characters show permissions:
+
+```
+-rw-r--r--
+│└┬┘└┬┘└┬┘
+│ │  │  └─ Others permissions
+│ │  └──── Group permissions
+│ └─────── Owner permissions
+└────────── File type (- = file, d = directory)
+```
+
+### Breaking It Down
+
+```
+-rw-r--r--
+ ├─┤       Owner: rw- (read, write, no execute)
+    ├─┤    Group: r-- (read only)
+       ├─┤ Others: r-- (read only)
+```
+
+## The Three Permission Types
+
+| Letter | Permission | What It Means for Files | What It Means for Directories |
+|--------|-----------|-------------------------|------------------------------|
+| `r` | Read | View file contents | List directory contents |
+| `w` | Write | Modify file | Create/delete files inside |
+| `x` | Execute | Run as program | Enter the directory |
+
+<StoryBox character="pixel_the_penguin">
+  Think of it like a club:
+  - **r** (read) = You can look around
+  - **w** (write) = You can change things
+  - **x** (execute) = You can enter/run things
+</StoryBox>
+
+## The Three Permission Groups
+
+Every file has permissions for three groups:
+
+1. **Owner (u)** - The person who created the file
+2. **Group (g)** - A group of users
+3. **Others (o)** - Everyone else
+
+<TerminalDemo>
+-rw-r--r-- 1 pi users 1234 Dec 19 10:30 myfile.txt
+         │   ││
+         │   │└──── Group name
+         │   └───── Owner name
+         └───────── Number of links
+</TerminalDemo>
+
+## The Chmod Command
+
+`chmod` (change mode) lets you modify permissions!
+
+### Using Letters (Symbolic Mode)
+
+<TerminalDemo>
+# Give owner execute permission
+chmod u+x script.sh
+
+# Remove write permission from group
+chmod g-w file.txt
+
+# Give everyone read permission
+chmod a+r document.txt
+</TerminalDemo>
+
+**The Format:**
+```
+chmod [who][action][permission] filename
+
+who:    u (user/owner), g (group), o (others), a (all)
+action: + (add), - (remove), = (set exactly)
+permission: r (read), w (write), x (execute)
+```
+
+### Examples
+
+<TerminalDemo>
+# Add execute for owner
+chmod u+x myscript.sh
+
+# Remove write for others
+chmod o-w secrets.txt
+
+# Give read and write to group
+chmod g+rw shared.txt
+
+# Remove all permissions from others
+chmod o-rwx private.txt
+
+# Set exact permissions: owner gets all, others get read only
+chmod u=rwx,o=r file.txt
+</TerminalDemo>
+
+<FunFact>
+  When you create a script, you MUST add execute permission before you can run it! Otherwise Linux treats it as just a text file.
+</FunFact>
+
+## Using Numbers (Octal Mode)
+
+There's a faster way using numbers! Each permission has a value:
+
+| Permission | Value |
+|------------|-------|
+| Read (r) | 4 |
+| Write (w) | 2 |
+| Execute (x) | 1 |
+| None (-) | 0 |
+
+**Add them up:**
+- `rwx` = 4+2+1 = **7**
+- `rw-` = 4+2+0 = **6**
+- `r-x` = 4+0+1 = **5**
+- `r--` = 4+0+0 = **4**
+- `-wx` = 0+2+1 = **3**
+- `-w-` = 0+2+0 = **2**
+- `--x` = 0+0+1 = **1**
+- `---` = 0+0+0 = **0**
+
+### Three Digit Permissions
+
+Use three digits for owner, group, others:
+
+<TerminalDemo>
+chmod 755 script.sh
+# 7 (owner: rwx)
+# 5 (group: r-x)
+# 5 (others: r-x)
+
+chmod 644 file.txt
+# 6 (owner: rw-)
+# 4 (group: r--)
+# 4 (others: r--)
+
+chmod 600 private.txt
+# 6 (owner: rw-)
+# 0 (group: ---)
+# 0 (others: ---)
+</TerminalDemo>
+
+<StoryBox character="commander_byte">
+  Most scripts use 755 (everyone can read and execute, only owner can modify). Most files use 644 (everyone can read, only owner can modify).
+</StoryBox>
+
+## Common Permission Patterns
+
+| Code | Permissions | When to Use |
+|------|-------------|-------------|
+| `777` | rwxrwxrwx | Almost NEVER (too permissive!) |
+| `755` | rwxr-xr-x | Scripts and programs |
+| `700` | rwx------ | Private executables |
+| `644` | rw-r--r-- | Regular files |
+| `600` | rw------- | Private files (passwords, keys) |
+| `555` | r-xr-xr-x | Read-only programs |
+| `444` | r--r--r-- | Read-only files |
+
+## Practice Time!
+
+<Challenge
+  id="permissions-practice"
+  title="Permission Master"
+  description="Practice changing file permissions"
+  steps={[
+    { command: "touch testfile.txt", hint: "Create a test file" },
+    { command: "ls -l testfile.txt", hint: "Check initial permissions" },
+    { command: "chmod 600 testfile.txt", hint: "Make it private (owner only)" },
+    { command: "ls -l testfile.txt", hint: "Verify: rw-------" },
+    { command: "chmod u+x testfile.txt", hint: "Add execute for owner" },
+    { command: "ls -l testfile.txt", hint: "Verify: rwx------" },
+    { command: "chmod 644 testfile.txt", hint: "Make it readable by all" },
+    { command: "ls -l testfile.txt", hint: "Verify: rw-r--r--" }
+  ]}
+  xp={35}
+/>
+
+## Making Scripts Executable
+
+When you create a script, you must make it executable:
+
+<TerminalDemo>
+# Create a simple script
+echo '#!/bin/bash' > hello.sh
+echo 'echo "Hello, World!"' >> hello.sh
+
+# Try to run it (this will fail!)
+./hello.sh
+# Permission denied!
+
+# Make it executable
+chmod +x hello.sh
+
+# Now it works!
+./hello.sh
+# Hello, World!
+</TerminalDemo>
+
+<FunFact>
+  The `+x` shortcut adds execute permission for everyone! It's the same as `chmod a+x`.
+</FunFact>
+
+## Security Tips
+
+<StoryBox character="commander_byte">
+  ATTENTION! Follow these security rules:
+
+  1. **Never use 777!** It lets anyone do anything. Very dangerous!
+  2. **Protect private files** with 600 (only you can access)
+  3. **Scripts should be 755** (everyone can run, only you can modify)
+  4. **Regular files should be 644** (everyone can read, only you can write)
+  5. **Never change system file permissions** unless you know what you're doing!
+</StoryBox>
+
+## Permission Checker
+
+Want to see what a number means?
+
+| Number | Binary | Permissions |
+|--------|--------|-------------|
+| 0 | 000 | --- |
+| 1 | 001 | --x |
+| 2 | 010 | -w- |
+| 3 | 011 | -wx |
+| 4 | 100 | r-- |
+| 5 | 101 | r-x |
+| 6 | 110 | rw- |
+| 7 | 111 | rwx |
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does 'r' permission mean?",
+    options: ["Run the file", "Read the file", "Remove the file", "Rename the file"],
+    correct: 1,
+    explanation: "'r' stands for Read - it allows viewing the file contents!"
+  },
+  {
+    question: "What do you need to run a script?",
+    options: ["Read permission", "Write permission", "Execute permission", "Delete permission"],
+    correct: 2,
+    explanation: "Execute permission (x) is required to run scripts and programs!"
+  },
+  {
+    question: "What does 'chmod 755 script.sh' do?",
+    options: [
+      "Makes everyone owner",
+      "Owner: rwx, Group: r-x, Others: r-x",
+      "Deletes the file",
+      "Owner: r-x, Group: rwx, Others: rwx"
+    ],
+    correct: 1,
+    explanation: "755 = rwxr-xr-x (owner gets all permissions, others can read and execute)"
+  },
+  {
+    question: "What's the SAFEST permission for a private file?",
+    options: ["777", "755", "644", "600"],
+    correct: 3,
+    explanation: "600 (rw-------) means only YOU can read and write it. Maximum privacy!"
+  }
+]} />
+
+## Permission Command Reference
+
+<TerminalDemo>
+# SYMBOLIC MODE (using letters)
+chmod u+x file      # Add execute for owner
+chmod g-w file      # Remove write from group
+chmod o+r file      # Add read for others
+chmod a+x file      # Add execute for all
+
+# NUMERIC MODE (using numbers)
+chmod 755 file      # rwxr-xr-x (scripts)
+chmod 644 file      # rw-r--r-- (regular files)
+chmod 600 file      # rw------- (private files)
+chmod 700 folder    # rwx------ (private folder)
+
+# VIEW PERMISSIONS
+ls -l file          # Show permissions for a file
+ls -ld folder       # Show permissions for a folder
+</TerminalDemo>
+
+## What You Learned
+
+You now understand:
+- The three permission types: read, write, execute
+- The three permission groups: owner, group, others
+- How to read permission codes (like `rw-r--r--`)
+- How to change permissions with `chmod`
+- Both letter mode and number mode
+- Common permission patterns and when to use them
+
+<StoryBox character="pixel_the_penguin">
+  Amazing work! File permissions are one of the most important security features in Linux!
+
+  You've completed all the lessons in Chapter 3! Ready for your final quest?
+</StoryBox>
+
+<NextLesson
+  track="linux"
+  lesson="15-chapter3-quest"
+  teaser="Complete the Secret Message quest and master all Chapter 3 skills!"
+/>

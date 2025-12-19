@@ -1,0 +1,193 @@
+---
+title: "Quest: The Lost Files"
+track: "linux"
+chapter: 2
+lesson: 10
+slug: "10-chapter2-quest"
+prerequisites: ["09-copying-moving"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 150
+objectives:
+  - Apply all Chapter 2 skills
+  - Navigate complex directory structures
+  - Organize files efficiently
+nextLesson: "11-reading-files"
+prevLesson: "09-copying-moving"
+---
+
+# Quest: The Lost Files
+
+<StoryBox character="commander_byte">
+  CODE RED, RECRUIT! We have a situation!
+
+  The Chaos Dragon has struck again! Important mission files have been scattered throughout the system, directories are in disarray, and we need your skills to restore order!
+
+  Your mission: Navigate the file system, create an organized structure, and recover the lost files. This won't be easy, but I believe in you!
+</StoryBox>
+
+## The Situation
+
+The file system is a mess! You need to:
+1. Create an organized project structure
+2. Navigate between directories
+3. Move and organize scattered files
+4. Clean up the chaos
+
+## Mission Part 1: Create the Structure
+
+First, let's build a proper organization system!
+
+<Challenge
+  id="quest2-structure"
+  title="Building the Base"
+  description="Create an organized directory structure"
+  steps={[
+    { command: "mkdir mission", hint: "Create the mission folder" },
+    { command: "mkdir -p mission/documents mission/backup mission/archive", hint: "Create organized subfolders" },
+    { command: "ls mission", hint: "Verify your structure" }
+  ]}
+  xp={30}
+/>
+
+## Mission Part 2: Create the Files
+
+Now, let's create some files to work with!
+
+<Challenge
+  id="quest2-files"
+  title="File Creation"
+  description="Create test files for organization"
+  steps={[
+    { command: "touch report.txt notes.txt secret.txt", hint: "Create three files" },
+    { command: "touch mission/plan.txt", hint: "Create a file directly in mission folder" },
+    { command: "ls", hint: "Check your work" }
+  ]}
+  xp={20}
+/>
+
+## Mission Part 3: Organize the Chaos
+
+Time to put everything in its place!
+
+<Challenge
+  id="quest2-organize"
+  title="File Organization"
+  description="Move files to their proper locations"
+  steps={[
+    { command: "mv report.txt mission/documents/", hint: "Move report to documents" },
+    { command: "mv notes.txt mission/documents/", hint: "Move notes to documents" },
+    { command: "cp secret.txt mission/backup/", hint: "Make a backup of secret.txt" },
+    { command: "mv secret.txt mission/archive/", hint: "Archive the original" }
+  ]}
+  xp={35}
+/>
+
+## Mission Part 4: Verify and Clean
+
+Let's make sure everything is in order!
+
+<Challenge
+  id="quest2-verify"
+  title="Verification"
+  description="Verify your organization"
+  steps={[
+    { command: "ls mission/documents", hint: "Check the documents folder" },
+    { command: "ls mission/backup", hint: "Check the backup" },
+    { command: "ls mission/archive", hint: "Check the archive" }
+  ]}
+  xp={25}
+/>
+
+## Final Knowledge Check
+
+<StoryBox character="pixel_the_penguin">
+  Great work organizing those files! Now let's test your knowledge with some questions!
+</StoryBox>
+
+<Quiz questions={[
+  {
+    question: "What's the difference between cp and mv?",
+    options: [
+      "They're the same",
+      "cp copies (keeps original), mv moves (removes original)",
+      "cp is for directories only",
+      "mv is slower"
+    ],
+    correct: 1,
+    explanation: "cp creates a duplicate, mv relocates the original!"
+  },
+  {
+    question: "What does 'mkdir -p a/b/c' do?",
+    options: [
+      "Creates only folder c",
+      "Fails if a doesn't exist",
+      "Creates all folders in the path",
+      "Deletes existing folders"
+    ],
+    correct: 2,
+    explanation: "-p creates the entire path, including all parent directories!"
+  },
+  {
+    question: "How do you navigate up one directory?",
+    options: ["cd up", "cd ..", "cd back", "cd -"],
+    correct: 1,
+    explanation: "cd .. moves you to the parent directory!"
+  },
+  {
+    question: "What does 'rm -r' do differently than 'rm'?",
+    options: [
+      "Removes files faster",
+      "Removes directories and their contents",
+      "Asks for confirmation",
+      "Creates a backup first"
+    ],
+    correct: 1,
+    explanation: "-r means recursive - it goes into directories and removes everything!"
+  }
+]} />
+
+## Quest Complete!
+
+<StoryBox character="commander_byte">
+  OUTSTANDING WORK, SOLDIER!
+
+  You've successfully:
+  - Created an organized directory structure
+  - Navigated through the file system
+  - Moved and copied files efficiently
+  - Brought order to the chaos!
+
+  You've earned the title **File System Navigator**! The Digital Kingdom is in your debt!
+
+  But there's more to learn... Chapter 3 awaits, where you'll learn to READ what's INSIDE files!
+</StoryBox>
+
+## Rewards Earned
+
+- **XP:** +150
+- **Badge:** File System Navigator
+- **Unlocked:** Chapter 3 - File Content
+
+## Skills Mastered
+
+| Category | Commands |
+|----------|----------|
+| Navigation | `cd`, `cd ..`, `cd ~`, `cd -` |
+| Viewing | `ls`, `ls -l`, `ls -la`, `pwd` |
+| Creating | `mkdir`, `mkdir -p`, `touch` |
+| Removing | `rm`, `rm -r`, `rmdir` |
+| Organizing | `cp`, `cp -r`, `mv` |
+
+## Bonus Challenge
+
+Want extra XP? Try these on your own:
+1. Create a nested structure 5 levels deep
+2. Copy an entire directory to a backup
+3. Rename a directory using mv
+
+<NextLesson
+  track="linux"
+  lesson="11-reading-files"
+  teaser="Learn to peek inside files with cat, less, and more!"
+/>

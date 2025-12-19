@@ -1,0 +1,352 @@
+---
+title: "Users and Groups"
+track: "linux"
+chapter: 4
+lesson: 19
+slug: "19-users-groups"
+prerequisites: ["18-processes"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand Linux multi-user system
+  - Check user information with id and whoami
+  - See who's logged in with who
+  - Learn about groups and permissions basics
+nextLesson: "20-final-quest"
+prevLesson: "18-processes"
+---
+
+# Users and Groups
+
+<StoryBox character="pixel_the_penguin">
+  Welcome to the Social Network... of Linux!
+
+  Unlike your phone or tablet that usually has one user (you!), Linux was designed from the ground up to let MANY people use the same computer at the same time!
+
+  Each person gets their own account (user), and users can join teams (groups) to share access to files and resources. Let's explore this multi-user world!
+</StoryBox>
+
+## The Multi-User System
+
+Linux is like an apartment building:
+- **Users** = Different people who live there (tenants)
+- **Groups** = Clubs or teams people can join
+- **Root** = The building manager (superuser)
+- **Home directories** = Each user's private apartment
+
+Each user has:
+- A unique username
+- A User ID (UID) number
+- A home directory (like `/home/learner`)
+- Group memberships
+- Their own files and settings
+
+## Command 1: whoami - Who Am I?
+
+The simplest command - it tells you your current username!
+
+<TerminalDemo>
+{`learner@codequest:~$ whoami
+learner`}
+</TerminalDemo>
+
+Super simple, but useful in scripts or when switching between users!
+
+<FunFact>
+  "whoami" is spelled without spaces because of early Unix traditions. It's like saying "whoisthispersonusingthisterminal" but shorter!
+</FunFact>
+
+## Command 2: id - Detailed Identity
+
+**id** shows detailed information about your user account!
+
+<TerminalDemo>
+{`learner@codequest:~$ id
+uid=1000(learner) gid=1000(learner) groups=1000(learner),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev)`}
+</TerminalDemo>
+
+This tells you:
+- **uid**: Your User ID number (1000)
+- **gid**: Your primary Group ID (1000)
+- **groups**: All groups you belong to
+
+### Check Another User's ID
+
+<TerminalDemo>
+{`learner@codequest:~$ id root
+uid=0(root) gid=0(root) groups=0(root)`}
+</TerminalDemo>
+
+<StoryBox character="commander_byte">
+  Notice root's UID is 0! In Linux, UID 0 means SUPERUSER - the all-powerful administrator. Regular users start at UID 1000.
+</StoryBox>
+
+## Command 3: who - Who's Logged In?
+
+The **who** command shows everyone currently logged into the system!
+
+<TerminalDemo>
+{`learner@codequest:~$ who
+learner  tty1         2025-12-19 10:23
+learner  pts/0        2025-12-19 14:15 (192.168.1.100)
+juan     pts/1        2025-12-19 15:30 (192.168.1.101)`}
+</TerminalDemo>
+
+This shows:
+- **Username**: Who is logged in
+- **Terminal**: Where they're logged in (tty1 = physical console, pts/0 = remote terminal)
+- **Date/Time**: When they logged in
+- **Location**: Where they connected from (if remote)
+
+### who am i - More Details About Me
+
+<TerminalDemo>
+{`learner@codequest:~$ who am i
+learner  pts/0        2025-12-19 14:15 (192.168.1.100)`}
+</TerminalDemo>
+
+### w - Even More Information!
+
+The **w** command is like "who" with extra details:
+
+<TerminalDemo>
+{`learner@codequest:~$ w
+ 15:45:01 up 5 days,  3:45,  2 users,  load average: 0.52, 0.48, 0.41
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+learner  pts/0    192.168.1.100    14:15    0.00s  0.12s  0.01s w
+juan     pts/1    192.168.1.101    15:30    5:00   0.05s  0.05s vim report.txt`}
+</TerminalDemo>
+
+Now you can see what each user is currently doing!
+
+## Understanding Groups
+
+**Groups** are like clubs or teams. Users in the same group can share files and resources.
+
+### Common System Groups
+
+| Group | Purpose |
+|-------|---------|
+| **sudo** | Can run commands as root (administrator) |
+| **users** | Regular users |
+| **audio** | Can access sound devices |
+| **video** | Can access video/graphics |
+| **cdrom** | Can access CD/DVD drives |
+| **plugdev** | Can mount USB drives |
+| **docker** | Can use Docker containers |
+
+### Check Your Groups
+
+<TerminalDemo>
+{`learner@codequest:~$ groups
+learner adm cdrom sudo dip plugdev
+
+learner@codequest:~$ groups learner
+learner : learner adm cdrom sudo dip plugdev
+
+learner@codequest:~$ groups juan
+juan : juan users`}
+</TerminalDemo>
+
+<StoryBox character="pixel_the_penguin">
+  Being in the "sudo" group is like having a master key to the building! It lets you run commands as the administrator when needed.
+</StoryBox>
+
+## The Special Root User
+
+**root** is the superuser - the ultimate administrator with unlimited power!
+
+<TerminalDemo>
+{`# Regular user (can't read protected files)
+learner@codequest:~$ cat /etc/shadow
+cat: /etc/shadow: Permission denied
+
+# Using sudo to run as root
+learner@codequest:~$ sudo cat /etc/shadow
+[sudo] password for learner:
+root:*:19000:0:99999:7:::
+learner:$6$abc123...:19000:0:99999:7:::`}
+</TerminalDemo>
+
+<FunFact>
+  The name "root" comes from the root of the file system tree (/). Root user has access to everything from the root down!
+</FunFact>
+
+## User Information Files
+
+Linux stores user information in special files:
+
+### /etc/passwd - User Database
+
+<TerminalDemo>
+{`learner@codequest:~$ cat /etc/passwd | grep learner
+learner:x:1000:1000:Learner User:/home/learner:/bin/bash`}
+</TerminalDemo>
+
+Format: `username:x:UID:GID:full_name:home_dir:shell`
+
+### /etc/group - Group Database
+
+<TerminalDemo>
+{`learner@codequest:~$ cat /etc/group | grep sudo
+sudo:x:27:learner,juan`}
+</TerminalDemo>
+
+Shows which users belong to each group!
+
+## Switching Users: su
+
+The **su** command lets you switch to another user account:
+
+<TerminalDemo>
+{`# Switch to another user
+learner@codequest:~$ su juan
+Password:
+juan@codequest:~$ whoami
+juan
+
+# Exit back to original user
+juan@codequest:~$ exit
+learner@codequest:~$ whoami
+learner`}
+</TerminalDemo>
+
+### su vs sudo
+
+| Command | What it does |
+|---------|-------------|
+| **su** | Switch User (become another user completely) |
+| **sudo** | SuperUser DO (run ONE command as root) |
+
+<StoryBox character="commander_byte">
+  Use sudo for running individual admin commands. Use su when you need to do many things as another user. In general, sudo is safer because you're only root for one command!
+</StoryBox>
+
+## Quick Reference
+
+| Command | Purpose |
+|---------|---------|
+| `whoami` | Show current username |
+| `id` | Show user ID and groups |
+| `id username` | Show info about specific user |
+| `who` | Show who's logged in |
+| `w` | Show who's doing what |
+| `groups` | Show your groups |
+| `groups user` | Show user's groups |
+| `su user` | Switch to another user |
+| `sudo command` | Run command as root |
+
+## Practice: User Explorer
+
+<Challenge
+  id="ch4-users-groups"
+  title="User Explorer"
+  description="Explore user and group information"
+  steps={[
+    { command: "whoami", hint: "What's your username?" },
+    { command: "id", hint: "See your full user info" },
+    { command: "groups", hint: "What groups are you in?" },
+    { command: "who", hint: "Who's logged in?" },
+    { command: "cat /etc/passwd | grep $USER", hint: "See your entry in passwd file" }
+  ]}
+  xp={35}
+  badge="user_explorer"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does the 'id' command show?",
+    options: [
+      "Your IP address",
+      "Your user ID, group ID, and groups",
+      "Your computer's ID",
+      "Your process ID"
+    ],
+    correct: 1,
+    explanation: "id displays your user ID (UID), group ID (GID), and all group memberships!"
+  },
+  {
+    question: "What is UID 0 reserved for?",
+    options: [
+      "First regular user",
+      "System user",
+      "Root (superuser)",
+      "Guest account"
+    ],
+    correct: 2,
+    explanation: "UID 0 is always the root user - the system administrator with unlimited access!"
+  },
+  {
+    question: "What's the difference between 'su' and 'sudo'?",
+    options: [
+      "They're the same",
+      "su switches user, sudo runs one command as root",
+      "sudo is for switching users",
+      "su is newer than sudo"
+    ],
+    correct: 1,
+    explanation: "su changes your entire session to another user, sudo runs just one command with elevated privileges!"
+  },
+  {
+    question: "Which command shows who is currently logged in?",
+    options: ["users", "loggedin", "who", "list"],
+    correct: 2,
+    explanation: "The who command displays all currently logged-in users!"
+  }
+]} />
+
+## Why Multi-User Matters
+
+Even if you're the only person using your Linux machine, the multi-user system is important because:
+
+1. **Security**: System processes run as different users for isolation
+2. **Organization**: Your files are separate from system files
+3. **Permissions**: Controls who can access what
+4. **Safety**: You don't run as root all the time (prevents accidents!)
+
+<StoryBox character="pixel_the_penguin">
+  Fun fact: Big Linux servers can have hundreds of users logged in at the same time, all working independently! Cloud servers, university computers, and supercomputers all use this system!
+</StoryBox>
+
+## Common User Scenarios
+
+### Check if you're in the sudo group
+<TerminalDemo>
+{`learner@codequest:~$ groups | grep sudo
+learner adm cdrom sudo dip plugdev
+# Yes! "sudo" is in the list`}
+</TerminalDemo>
+
+### Find out who's hogging resources
+<TerminalDemo>
+{`learner@codequest:~$ w
+USER     TTY      WHAT
+learner  pts/0    w
+juan     pts/1    python heavy_script.py
+# Juan is running a heavy script!`}
+</TerminalDemo>
+
+### Check your own user info
+<TerminalDemo>
+{`learner@codequest:~$ id $(whoami)
+uid=1000(learner) gid=1000(learner) groups=1000(learner),...`}
+</TerminalDemo>
+
+## What's Next?
+
+Congratulations! You've completed all the core lessons of Chapter 4! You've learned about:
+- System information
+- Disk usage
+- Processes
+- Users and groups
+
+Now it's time for the ultimate test - the Final Quest! This will test EVERYTHING you've learned throughout the entire Linux track!
+
+<NextLesson
+  track="linux"
+  lesson="20-final-quest"
+  teaser="Face the ultimate challenge and become a Linux Champion!"
+/>

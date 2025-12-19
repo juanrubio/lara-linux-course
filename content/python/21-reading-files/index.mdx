@@ -1,0 +1,291 @@
+---
+title: "Reading Files"
+chapter: 5
+lesson: 21
+xp: 50
+difficulty: "intermediate"
+prevLesson: "20-chapter4-quest"
+description: "Learn how to read data from files and unlock the power of persistent data storage"
+---
+
+import StoryBox from '@/components/StoryBox'
+import FunFact from '@/components/FunFact'
+import TerminalDemo from '@/components/TerminalDemo'
+import Challenge from '@/components/Challenge'
+import Quiz from '@/components/Quiz'
+import NextLesson from '@/components/NextLesson'
+
+<StoryBox character="python_pete" mood="excited">
+Welcome back, adventurer! You've mastered variables, loops, functions, and even collections. But there's one crucial skill every Python wizard needs: **the ability to read and write scrolls of data**!
+
+Think about it - every time you save a game, write a note on your computer, or even take a photo, that information is stored in a **file**. Today, we're learning how to read these magical scrolls!
+</StoryBox>
+
+## What Are Files?
+
+Files are like treasure chests on your computer. They hold information that stays there even when your program stops running. Unlike variables (which disappear when your program ends), files are **permanent storage**.
+
+<FunFact title="File Formats Everywhere!">
+Your computer is full of different types of files:
+- `.txt` files hold plain text (like digital notebooks)
+- `.py` files hold Python code (your programs!)
+- `.jpg` files hold pictures
+- `.mp3` files hold music
+
+We'll start with `.txt` files because they're the simplest to work with!
+</FunFact>
+
+## Opening a File
+
+To read a file in Python, you first need to **open** it. Think of it like opening a book before you can read it.
+
+<TerminalDemo>
+```python
+# The basic way to open a file
+file = open("treasure_map.txt", "r")
+
+# "r" means "read mode" - we're only reading, not changing anything
+# Now we can read from the file!
+
+# When we're done, we MUST close the file
+file.close()
+```
+</TerminalDemo>
+
+<StoryBox character="python_pete" mood="warning">
+**Important!** Always close files when you're done with them. It's like putting a book back on the shelf. If you forget, it can cause problems!
+
+But there's a better way that automatically closes the file for you...
+</StoryBox>
+
+## The `with` Statement (The Safe Way)
+
+Python has a special keyword called `with` that opens a file and **automatically closes it** when you're done. This is the way professional programmers do it!
+
+<TerminalDemo>
+```python
+# The BEST way to open and read a file
+with open("treasure_map.txt", "r") as file:
+    content = file.read()
+    print(content)
+
+# The file is automatically closed after the 'with' block!
+# No need to call file.close()
+```
+</TerminalDemo>
+
+Let's break this down:
+- `with open("treasure_map.txt", "r") as file:` - Opens the file in read mode
+- `file.read()` - Reads ALL the content from the file
+- When the indented block ends, Python automatically closes the file!
+
+## Reading Methods
+
+There are three main ways to read from a file:
+
+### 1. `.read()` - Read Everything
+
+<TerminalDemo>
+```python
+with open("story.txt", "r") as file:
+    everything = file.read()
+    print(everything)
+
+# This reads the ENTIRE file as one big string
+```
+</TerminalDemo>
+
+### 2. `.readline()` - Read One Line
+
+<TerminalDemo>
+```python
+with open("story.txt", "r") as file:
+    first_line = file.readline()
+    second_line = file.readline()
+    print(first_line)
+    print(second_line)
+
+# Each call to readline() reads the next line
+```
+</TerminalDemo>
+
+### 3. `.readlines()` - Read All Lines Into a List
+
+<TerminalDemo>
+```python
+with open("story.txt", "r") as file:
+    all_lines = file.readlines()
+    # all_lines is now a LIST where each item is one line!
+
+for line in all_lines:
+    print(line)
+```
+</TerminalDemo>
+
+<FunFact title="Looping Through Files">
+You can loop through a file directly without reading it all at once! This is great for huge files:
+
+```python
+with open("huge_file.txt", "r") as file:
+    for line in file:
+        print(line)
+```
+
+This reads one line at a time, which uses less memory!
+</FunFact>
+
+## Practical Example: Reading a High Score File
+
+Let's create a real example. Imagine you have a file called `high_scores.txt` with scores from your game:
+
+<TerminalDemo>
+```python
+# First, let's see what's in the file:
+# high_scores.txt contains:
+# 150
+# 230
+# 175
+# 290
+
+# Now let's read and find the highest score!
+with open("high_scores.txt", "r") as file:
+    scores = []
+    for line in file:
+        score = int(line.strip())  # .strip() removes extra spaces/newlines
+        scores.append(score)
+
+    highest = max(scores)
+    print(f"The highest score is: {highest}")
+
+# Output: The highest score is: 290
+```
+</TerminalDemo>
+
+<StoryBox character="python_pete" mood="proud">
+See how we used `.strip()`? When reading lines from a file, each line includes a newline character (`\n`) at the end. The `.strip()` method removes it!
+
+Also notice we converted each line to an integer with `int()` so we could use `max()` to find the highest score.
+</StoryBox>
+
+## Handling File Errors
+
+What happens if you try to open a file that doesn't exist? Python will crash with an error! We can handle this gracefully:
+
+<TerminalDemo>
+```python
+try:
+    with open("missing_file.txt", "r") as file:
+        content = file.read()
+        print(content)
+except FileNotFoundError:
+    print("Oops! That file doesn't exist!")
+    print("Check the filename and try again.")
+```
+</TerminalDemo>
+
+<Challenge title="Read and Count Words">
+Create a file called `message.txt` with this content:
+```
+Python is amazing
+I love learning to code
+Files make programs powerful
+```
+
+Then write a program that:
+1. Opens and reads the file
+2. Counts how many total words are in the file
+3. Prints each line with a line number
+
+**Hint:** Use `.split()` to break a line into words!
+
+<details>
+<summary>Solution</summary>
+
+```python
+with open("message.txt", "r") as file:
+    lines = file.readlines()
+
+    # Count total words
+    total_words = 0
+    for line in lines:
+        words = line.split()
+        total_words += len(words)
+
+    print(f"Total words: {total_words}")
+    print("\nLines:")
+
+    # Print each line with a number
+    line_number = 1
+    for line in lines:
+        print(f"{line_number}. {line.strip()}")
+        line_number += 1
+```
+
+Output:
+```
+Total words: 11
+
+Lines:
+1. Python is amazing
+2. I love learning to code
+3. Files make programs powerful
+```
+</details>
+</Challenge>
+
+<Quiz
+  questions={[
+    {
+      question: "What does the 'r' mean in open('file.txt', 'r')?",
+      options: [
+        "Run mode",
+        "Read mode",
+        "Remove mode",
+        "Repeat mode"
+      ],
+      correctAnswer: 1,
+      explanation: "The 'r' stands for 'read mode' - it means we can only read from the file, not change it."
+    },
+    {
+      question: "Why should you use 'with' when opening files?",
+      options: [
+        "It makes the code run faster",
+        "It automatically closes the file when done",
+        "It's required by Python",
+        "It allows reading and writing at the same time"
+      ],
+      correctAnswer: 1,
+      explanation: "The 'with' statement automatically closes the file when the block ends, even if an error occurs. This prevents file corruption and memory leaks!"
+    },
+    {
+      question: "What does file.readlines() return?",
+      options: [
+        "A single string with all the content",
+        "The first line of the file",
+        "A list where each item is a line from the file",
+        "The number of lines in the file"
+      ],
+      correctAnswer: 2,
+      explanation: "file.readlines() returns a LIST where each element is one line from the file. This makes it easy to loop through all lines!"
+    },
+    {
+      question: "What method removes extra whitespace and newlines from a string?",
+      options: [
+        ".clean()",
+        ".remove()",
+        ".strip()",
+        ".cut()"
+      ],
+      correctAnswer: 2,
+      explanation: ".strip() removes whitespace (spaces, tabs, newlines) from the beginning and end of a string. Very useful when reading files!"
+    }
+  ]}
+/>
+
+<StoryBox character="python_pete" mood="excited">
+Fantastic work, adventurer! You can now read from files, which means your programs can access data that was saved from previous runs. This is a **huge** skill!
+
+Next, we'll learn the other side of the coin: **writing to files**. Get ready to create your own treasure maps!
+</StoryBox>
+
+<NextLesson href="/python/22-writing-files" />

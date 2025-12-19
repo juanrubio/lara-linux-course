@@ -1,0 +1,989 @@
+---
+title: "Final Project: Pi Master"
+track: "raspberry-pi"
+chapter: 3
+lesson: 10
+slug: "10-final-project"
+prerequisites: ["09-mini-game-console"]
+estimatedTime: 120
+difficulty: "advanced"
+xpReward: 300
+objectives:
+  - Design and plan a complete Raspberry Pi project
+  - Combine multiple skills learned throughout the course
+  - Build a working prototype from scratch
+  - Document and present your creation
+  - Troubleshoot and iterate on your design
+prevLesson: "09-mini-game-console"
+---
+
+import StoryBox from '@/components/StoryBox'
+import FunFact from '@/components/FunFact'
+import TerminalDemo from '@/components/TerminalDemo'
+import Challenge from '@/components/Challenge'
+import Quiz from '@/components/Quiz'
+
+<StoryBox character="pi_princess" mood="excited">
+This is it. The moment you've been training for!
+
+You've learned to:
+- Monitor sensors and temperature
+- Build web servers and file servers
+- Automate tasks with cron
+- Create games with pygame
+
+Now it's time to combine ALL of these skills into ONE incredible project that YOU design from scratch!
+
+This is your final quest. Your masterpiece. Your chance to show the world what you can do with a tiny Raspberry Pi and a lot of determination.
+
+Are you ready to become a Pi Master?
+</StoryBox>
+
+## What is a Final Project?
+
+A final project is:
+- **Your own idea** - Not following instructions, but creating something original
+- **Multi-skilled** - Uses at least 3 things you've learned
+- **Complete** - Actually works and does something useful or fun
+- **Documented** - Can be explained and shared with others
+- **Yours to keep** - Something you'll be proud of!
+
+This isn't about perfection. It's about creativity, problem-solving, and bringing your ideas to life!
+
+<FunFact title="How Professional Projects Start">
+Every great product started as someone's project:
+- Facebook began as a college project
+- Linux started as Linus Torvalds' personal operating system
+- Minecraft was made by one person experimenting with games
+- YouTube started with 3 friends solving a problem
+
+Your project might seem small now, but who knows where it could lead? The important thing is to START!
+</FunFact>
+
+## Project Ideas
+
+Stuck on what to build? Here are categorized ideas:
+
+### Home Automation Projects
+
+**1. Smart Plant Monitor**
+- Water level sensor
+- Soil moisture sensor
+- Automatic watering system
+- Web dashboard showing plant health
+- Email alerts when plants need attention
+
+**2. Home Security System**
+- Camera that takes photos on motion
+- Web interface to view photos
+- Automated email/SMS alerts
+- Log all events with timestamps
+- Optional: Face recognition
+
+**3. Smart Doorbell**
+- Button triggers camera
+- Saves photo to file server
+- Sends notification to your phone
+- Web interface to see who visited
+- Log of all doorbell rings
+
+**4. Temperature Control System**
+- Multiple room temperature sensors
+- Automatically turn on fans/heaters
+- Web dashboard with graphs
+- Historical data logging
+- Temperature predictions
+
+### Entertainment Projects
+
+**5. Retro Gaming Station**
+- Multiple games in one menu
+- High score tracking across games
+- Physical arcade controls
+- Sound effects and music
+- Player profiles and achievements
+
+**6. Music Jukebox**
+- Play music from file server
+- Web remote control
+- Physical buttons for play/pause/skip
+- Display currently playing song
+- Create playlists
+
+**7. LED Light Show**
+- Programmable LED patterns
+- React to music/sound
+- Web interface for control
+- Scheduled light shows (with cron)
+- Different modes (party, relax, etc.)
+
+**8. Digital Picture Frame**
+- Rotates through photos
+- Pull from file server
+- Web upload interface
+- Clock and weather display
+- Motion sensor to turn on/off
+
+### Information & Monitoring Projects
+
+**9. Personal Dashboard**
+- Weather forecast
+- Calendar/schedule
+- System stats (CPU, temp, etc.)
+- News headlines
+- Cryptocurrency prices
+- Traffic information
+
+**10. Environmental Monitor**
+- Temperature, humidity, pressure
+- Air quality sensor
+- Graph data over time
+- Web dashboard
+- Alerts for extreme conditions
+- Export data to CSV
+
+**11. Network Monitor**
+- See all devices on network
+- Internet speed tests
+- Uptime monitoring
+- Alert when internet goes down
+- Bandwidth usage tracking
+
+**12. Bird Feeder Camera**
+- Motion-triggered camera
+- Identify bird species (with AI)
+- Log bird visits
+- Web gallery of photos
+- Statistics on visitors
+
+### Educational Projects
+
+**13. Learning Assistant**
+- Quiz game on any topic
+- Study flashcards
+- Progress tracking
+- Web interface for adding questions
+- Email daily quizzes
+
+**14. Code Learning Game**
+- Teach programming concepts
+- Interactive coding challenges
+- Track progress
+- Leaderboard for fastest solutions
+- Hint system
+
+### Utility Projects
+
+**15. Backup Station**
+- Automatically backup important folders
+- Scheduled with cron
+- Status dashboard
+- Email reports
+- Restore functionality
+
+**16. Download Manager**
+- Queue downloads
+- Schedule for off-peak hours
+- Web interface for adding downloads
+- Organize files automatically
+- Bandwidth limiting
+
+**17. Family Message Board**
+- Leave notes for family
+- Web interface accessible by all
+- Display on screen
+- Voice message recording
+- Calendar integration
+
+### Advanced Projects
+
+**18. Weather Station**
+- Multiple sensors (temp, humidity, pressure, wind)
+- Solar powered (optional)
+- Upload data to web
+- Predictions based on data
+- Compare with official forecasts
+
+**19. Pet Monitor**
+- Camera to watch pets
+- Dispense treats remotely
+- Motion detection alerts
+- Track pet activity
+- Temperature monitoring
+
+**20. Smart Mirror**
+- Display on two-way mirror
+- Show time, weather, calendar
+- Motion sensor activation
+- News headlines
+- Personal affirmations
+
+<StoryBox character="pi_princess" mood="teaching">
+These are just starting points! The best projects are ones that solve YOUR problems or interest YOU personally.
+
+Think about:
+- What do you wish existed but doesn't?
+- What repetitive task could you automate?
+- What would make your life more fun or easier?
+- What would your family/friends find useful?
+
+Start there!
+</StoryBox>
+
+## Planning Your Project
+
+Before writing ANY code, let's plan! Grab paper and pencil.
+
+### Step 1: Define Your Goal
+
+Write one sentence describing what your project does:
+
+> "My project is a _____________ that helps with _____________ by _____________."
+
+Example:
+> "My project is a plant monitoring system that helps with keeping plants healthy by checking moisture and automatically watering them."
+
+### Step 2: List Features (MVP First!)
+
+**MVP** means "Minimum Viable Product" - the simplest version that works.
+
+List features in priority:
+
+**Must Have (MVP):**
+- [ ] Feature 1
+- [ ] Feature 2
+- [ ] Feature 3
+
+**Nice to Have:**
+- [ ] Feature 4
+- [ ] Feature 5
+
+**Future Ideas:**
+- [ ] Feature 6
+- [ ] Feature 7
+
+Start with MVP! You can always add more later.
+
+### Step 3: List Required Components
+
+What do you need?
+
+**Hardware:**
+- Raspberry Pi (you have this!)
+- Sensors (which ones?)
+- Buttons/LEDs (how many?)
+- Other electronics?
+
+**Software:**
+- Python scripts
+- Web interface?
+- Database/file storage?
+- Scheduled tasks?
+
+### Step 4: Sketch It Out
+
+Draw:
+- Physical layout (where do components go?)
+- Circuit diagram (how are things wired?)
+- User interface (what does the screen/web page look like?)
+- Data flow (how does information move through the system?)
+
+### Step 5: Break Down Into Tasks
+
+List specific tasks in order:
+
+1. [ ] Set up hardware
+2. [ ] Test each sensor individually
+3. [ ] Write basic data collection script
+4. [ ] Add data storage
+5. [ ] Create web interface
+6. [ ] Add automation
+7. [ ] Test everything together
+8. [ ] Polish and document
+
+<FunFact title="Professional Project Planning">
+This is EXACTLY how professionals plan projects! This process is called:
+
+- **Requirements Gathering** - What does it need to do?
+- **Design** - How will it work?
+- **Implementation Plan** - What steps to build it?
+
+Companies spend weeks or months on this phase before writing any code. You're learning real project management skills!
+</FunFact>
+
+## Building Your Project
+
+Now the fun part - building!
+
+### Tips for Success
+
+**1. Start Small, Iterate**
+Get ONE thing working, then add the next. Don't try to build everything at once!
+
+```python
+# Version 1: Just read sensor
+print(sensor.read())
+
+# Version 2: Add timestamp
+print(f"{time.now()}: {sensor.read()}")
+
+# Version 3: Save to file
+with open("data.txt", "a") as f:
+    f.write(f"{time.now()}: {sensor.read()}\n")
+
+# And so on...
+```
+
+**2. Test Constantly**
+Test after every small change. Finding bugs early is WAY easier!
+
+**3. Use Print Statements**
+Debug by printing what's happening:
+
+```python
+print("Starting sensor read...")
+data = sensor.read()
+print(f"Got data: {data}")
+print("Writing to file...")
+```
+
+**4. Save Your Work Often**
+Make backups! Copy your code to another location:
+
+```bash
+$ cp -r my_project my_project_backup_$(date +%Y%m%d)
+```
+
+**5. Comment Your Code**
+You'll forget what code does! Comment it:
+
+```python
+# Check if temperature is too high
+if temp > 30:
+    # Turn on fan at full speed
+    fan.set_speed(100)
+```
+
+**6. Don't Panic When Stuck**
+Everyone gets stuck! Try:
+- Take a break (seriously!)
+- Search online for similar problems
+- Test individual parts separately
+- Ask for help (forums, friends, teachers)
+
+### Project Structure
+
+Organize your files:
+
+```
+my_project/
+├── main.py              # Main program
+├── sensors.py           # Sensor reading code
+├── web_server.py        # Web interface
+├── automation.sh        # Cron scripts
+├── data/                # Data storage
+│   ├── logs.txt
+│   └── readings.json
+├── web/                 # Web files
+│   ├── index.html
+│   └── style.css
+├── README.md            # Documentation
+└── requirements.txt     # Python packages needed
+```
+
+### Example: Building a Temperature Monitor Dashboard
+
+Let's walk through a complete example:
+
+**Project:** Web dashboard showing temperature with alerts
+
+#### Step 1: Read Temperature
+
+```python
+# temp_sensor.py
+import subprocess
+
+def get_temperature():
+    """Read CPU temperature"""
+    result = subprocess.run(
+        ['vcgencmd', 'measure_temp'],
+        capture_output=True,
+        text=True
+    )
+    temp_str = result.stdout.strip()
+    temp = float(temp_str.replace("temp=", "").replace("'C", ""))
+    return temp
+
+if __name__ == "__main__":
+    temp = get_temperature()
+    print(f"Current temperature: {temp}°C")
+```
+
+Test it:
+<TerminalDemo>
+{`$ python3 temp_sensor.py
+Current temperature: 45.2°C`}
+</TerminalDemo>
+
+#### Step 2: Log Data
+
+```python
+# temp_logger.py
+import json
+import time
+from datetime import datetime
+from temp_sensor import get_temperature
+
+def log_temperature():
+    """Log temperature with timestamp"""
+    temp = get_temperature()
+    timestamp = datetime.now().isoformat()
+
+    # Read existing data
+    try:
+        with open("data/temps.json", "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        data = []
+
+    # Add new reading
+    data.append({"time": timestamp, "temp": temp})
+
+    # Keep only last 1000 readings
+    data = data[-1000:]
+
+    # Save
+    with open("data/temps.json", "w") as f:
+        json.dump(data, f, indent=2)
+
+    print(f"Logged: {temp}°C at {timestamp}")
+
+if __name__ == "__main__":
+    log_temperature()
+```
+
+#### Step 3: Automate Logging
+
+```bash
+$ crontab -e
+
+# Log temperature every 5 minutes
+*/5 * * * * /usr/bin/python3 /home/pi/my_project/temp_logger.py
+```
+
+#### Step 4: Create Web Dashboard
+
+```python
+# web_dashboard.py
+from flask import Flask, render_template_string
+import json
+
+app = Flask(__name__)
+
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Temperature Monitor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .temp-display {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 40px 0;
+        }
+        .warning {
+            background: #ff6b6b;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        table {
+            margin: 20px auto;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        td, th {
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌡️ Raspberry Pi Temperature Monitor</h1>
+    <div class="temp-display">{{ current_temp }}°C</div>
+
+    {% if current_temp > 70 %}
+    <div class="warning">
+        ⚠️ WARNING: Temperature is HIGH!
+    </div>
+    {% endif %}
+
+    <h2>Recent Readings</h2>
+    <table>
+        <tr>
+            <th>Time</th>
+            <th>Temperature</th>
+        </tr>
+        {% for reading in recent %}
+        <tr>
+            <td>{{ reading.time }}</td>
+            <td>{{ reading.temp }}°C</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><small>Updates every 5 minutes</small></p>
+</body>
+</html>
+"""
+
+@app.route('/')
+def dashboard():
+    # Load data
+    try:
+        with open("data/temps.json", "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        data = []
+
+    current_temp = data[-1]["temp"] if data else 0
+    recent = data[-10:]  # Last 10 readings
+
+    return render_template_string(
+        HTML_TEMPLATE,
+        current_temp=current_temp,
+        recent=reversed(recent)
+    )
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
+```
+
+#### Step 5: Make it Auto-Start
+
+```bash
+$ sudo nano /etc/systemd/system/temp-dashboard.service
+```
+
+```ini
+[Unit]
+Description=Temperature Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/my_project
+ExecStart=/usr/bin/python3 /home/pi/my_project/web_dashboard.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+$ sudo systemctl enable temp-dashboard
+$ sudo systemctl start temp-dashboard
+```
+
+Done! Now you have a complete temperature monitoring system!
+
+<StoryBox character="pi_princess" mood="proud">
+See how it comes together? Each piece builds on the last:
+
+1. Read sensor → Works!
+2. Log data → Works!
+3. Automate → Works!
+4. Web interface → Works!
+5. Auto-start → Complete system!
+
+This is how you build ANY project. One piece at a time, testing as you go!
+</StoryBox>
+
+## Documentation
+
+Good projects are well-documented! Create a README.md:
+
+```markdown
+# My Awesome Project Name
+
+## Description
+Brief description of what your project does and why.
+
+## Features
+- Feature 1
+- Feature 2
+- Feature 3
+
+## Hardware Required
+- Raspberry Pi (Model X or higher)
+- Temperature sensor (DHT22)
+- 3 LEDs (red, yellow, green)
+- Breadboard and wires
+
+## Installation
+
+1. Clone or download this project:
+   ```bash
+   git clone [your-repo-url]
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip3 install -r requirements.txt
+   ```
+
+3. Wire up hardware according to circuit diagram
+
+4. Run the program:
+   ```bash
+   python3 main.py
+   ```
+
+## Usage
+Explain how to use your project:
+- How to access the web interface
+- What buttons do
+- How to interpret the data
+- Any configuration needed
+
+## Troubleshooting
+Common issues and solutions
+
+## Future Improvements
+Ideas for version 2.0
+
+## Credits
+- Created by [Your Name]
+- Thanks to [anyone who helped]
+- Libraries used: Flask, RPi.GPIO, etc.
+
+## License
+MIT License (or whatever you choose)
+```
+
+<Challenge
+  title="Complete Your Final Project"
+  description="Build and document your complete Raspberry Pi project"
+  steps={[
+    "Plan your project (write goals, features, components)",
+    "Sketch the design (physical layout and/or interface)",
+    "Build MVP (minimum viable product with core features)",
+    "Test thoroughly (try to break it!)",
+    "Add at least 2 extra features beyond MVP",
+    "Create complete documentation (README)",
+    "Make a demo video or presentation (optional but recommended)",
+    "Share with at least one person and get feedback"
+  ]}
+  xp={200}
+/>
+
+## Presentation & Sharing
+
+Your project is done! Now share it:
+
+### Demo Video
+Record a quick video showing:
+1. What the project does
+2. How to use it
+3. Cool features
+4. Any challenges you overcame
+
+### Online Sharing
+Post it on:
+- GitHub (with README and photos)
+- Reddit (/r/raspberry_pi, /r/DIY)
+- Hackster.io
+- YouTube (demo video)
+
+### Local Sharing
+- Show your family and friends
+- Present at school
+- Enter in a science fair
+- Start a project club
+
+<FunFact title="Portfolio Power">
+This project can go on your portfolio! When applying for:
+- College/university
+- Internships
+- Jobs in tech
+- Scholarships
+
+...being able to say "I built a complete system on a Raspberry Pi" is IMPRESSIVE. Keep documenting your projects - they're proof of your skills!
+</FunFact>
+
+## Troubleshooting Guide
+
+Getting stuck? Here's what to check:
+
+### Hardware Issues
+- [ ] All wires connected securely?
+- [ ] Power supply adequate (at least 2.5A)?
+- [ ] Components getting hot? (might be wired wrong!)
+- [ ] LED test: Does a simple LED work?
+
+### Software Issues
+- [ ] All packages installed? (`pip3 list`)
+- [ ] Correct Python version? (`python3 --version`)
+- [ ] Permissions correct? (`chmod +x script.py`)
+- [ ] Check logs: `journalctl -u your-service`
+
+### Network Issues
+- [ ] Pi connected to network? (`ping 8.8.8.8`)
+- [ ] Correct IP address? (`hostname -I`)
+- [ ] Firewall blocking? (`sudo ufw status`)
+- [ ] Other device on same network?
+
+### Logic Issues
+- [ ] Add print statements everywhere
+- [ ] Test each function individually
+- [ ] Check for typos
+- [ ] Review logic step-by-step on paper
+
+## Going Beyond
+
+Want to make your project even more impressive?
+
+### Add Machine Learning
+Use pre-trained models for:
+- Image recognition
+- Voice control
+- Predictions based on data
+
+```bash
+$ pip3 install tensorflow-lite
+```
+
+### Add Cloud Integration
+Upload data to:
+- Google Sheets
+- AWS/Azure
+- Custom APIs
+
+### Mobile App
+Create a companion phone app:
+- React Native
+- Flutter
+- MIT App Inventor
+
+### Multiple Pis
+Connect several Raspberry Pis:
+- Distributed sensors
+- Load balancing
+- Redundancy
+
+<Quiz
+  questions={[
+    {
+      question: "What should you build first when starting a project?",
+      options: [
+        "All features at once",
+        "The most complex feature",
+        "MVP - Minimum Viable Product",
+        "The documentation"
+      ],
+      correctAnswer: 2,
+      explanation: "Always start with MVP - the simplest version that works! You can add features later, but get the core working first."
+    },
+    {
+      question: "What's the best way to debug code?",
+      options: [
+        "Stare at it until it works",
+        "Rewrite everything from scratch",
+        "Add print statements and test small pieces",
+        "Ask someone else to fix it"
+      ],
+      correctAnswer: 2,
+      explanation: "Print statements and testing small pieces help you find EXACTLY where problems are. Debug systematically!"
+    },
+    {
+      question: "Why is documentation important?",
+      options: [
+        "It makes the project look professional",
+        "You'll forget how it works",
+        "Others can understand and use it",
+        "All of the above"
+      ],
+      correctAnswer: 3,
+      explanation: "Good documentation helps you, helps others, and shows you're serious about your work. Always document!"
+    },
+    {
+      question: "What does 'iterate' mean in project development?",
+      options: [
+        "Give up and start over",
+        "Make small improvements repeatedly",
+        "Copy someone else's project",
+        "Add random features"
+      ],
+      correctAnswer: 1,
+      explanation: "Iteration means building in small steps, testing, improving, and repeating. Each version gets better!"
+    },
+    {
+      question: "When should you ask for help on a project?",
+      options: [
+        "Never - figure it out yourself",
+        "Immediately for every small problem",
+        "After trying to solve it yourself first",
+        "Only if failing the class"
+      ],
+      correctAnswer: 2,
+      explanation: "Try first (you learn by struggling!), but don't stay stuck forever. It's smart to ask for help when truly stuck!"
+    }
+  ]}
+/>
+
+<StoryBox character="pi_princess" mood="emotional">
+You did it. You really did it.
+
+When you started this journey, a Raspberry Pi was just a small computer. Now look at what you can do with it:
+
+- Build web servers that the world can access
+- Share files across all your devices
+- Automate tasks that run 24/7
+- Create games people can play
+- Design complete systems from scratch
+
+But more importantly, you learned HOW to learn. How to break down problems. How to persist when things don't work. How to build something from nothing.
+
+These skills will serve you for the rest of your life, no matter what you do.
+
+I'm so proud of you. Now go build something amazing!
+
+-- Pi Princess 🍓
+</StoryBox>
+
+## Certification
+
+Congratulations! You've completed the Raspberry Pi track!
+
+You are now certified in:
+- Hardware interfacing and sensors
+- GPIO programming with Python
+- Web development with Flask
+- System administration and automation
+- File server configuration
+- Game development with pygame
+- Complete project design and execution
+
+### What's Next?
+
+Continue your learning journey:
+
+**Advanced Raspberry Pi:**
+- Build robots with motor control
+- Create computer vision projects
+- Set up Kubernetes clusters
+- Build IoT networks
+- Contribute to open source
+
+**Related Tracks:**
+- Advanced Python programming
+- Web development (JavaScript, databases)
+- Network engineering
+- Cybersecurity
+- Machine learning
+
+**Community:**
+- Join Raspberry Pi forums
+- Attend maker fairs
+- Start a robotics club
+- Mentor others
+- Keep building!
+
+## Final Wisdom
+
+Remember these truths:
+
+1. **Every expert was once a beginner** - You're on the journey
+2. **Build what interests YOU** - Passion drives learning
+3. **Failure is learning** - Every bug teaches you something
+4. **Share your work** - Help others learn from your journey
+5. **Never stop creating** - The world needs your ideas
+
+<FunFact title="The Next Steve Jobs?">
+Steve Jobs, Steve Wozniak, Bill Gates - they all started by tinkering with computers as kids. They built projects, learned by doing, and never stopped exploring.
+
+You have the SAME opportunities they had (actually better - the Raspberry Pi is more powerful than computers that sent humans to the moon!).
+
+Who knows? Maybe your project today becomes tomorrow's revolutionary product. Dream big!
+</FunFact>
+
+## Project Gallery
+
+Want inspiration? Here are real projects students have built:
+
+### Smart Garden System
+"My garden tells me when it's thirsty! Moisture sensors, auto-watering, and a dashboard showing which plants need attention."
+
+### Home Theater Controller
+"Control all my media from one interface - play movies, adjust volume, change lights, all from my phone!"
+
+### Pet Treat Dispenser
+"My dog can trigger treats by pressing a button. It logs how many treats she gets and won't let her cheat!"
+
+### Weather Predictor
+"Collects weather data and uses patterns to predict tomorrow's weather. It's not perfect, but it's MINE!"
+
+### Study Buddy
+"Quizzes me on flashcards, tracks which ones I get wrong, and focuses on my weak areas. Helped me ace my exams!"
+
+### Raspberry Pi Cluster
+"Connected 4 Pis together to make a mini supercomputer. Running distributed calculations and learning about parallel processing!"
+
+What will YOU build?
+
+## The End (Or Just the Beginning?)
+
+This is the end of the structured lessons, but it's just the beginning of your journey.
+
+You now have the power to:
+- Turn ideas into reality
+- Build solutions to real problems
+- Create things that didn't exist before
+- Help others with your skills
+
+Go forth and build amazing things!
+
+## Resources for Continued Learning
+
+### Websites
+- raspberrypi.org/projects
+- hackster.io/raspberry-pi
+- instructables.com/circuits/raspberry-pi
+- github.com/topics/raspberry-pi
+
+### Books
+- "Adventures in Raspberry Pi" by Carrie Anne Philbin
+- "Raspberry Pi Cookbook" by Simon Monk
+- "Make: Electronics" by Charles Platt
+
+### YouTube Channels
+- Raspberry Pi Foundation
+- ExplainingComputers
+- The MagPi
+- Andreas Spiess
+
+### Communities
+- r/raspberry_pi (Reddit)
+- Raspberry Pi Forums
+- Discord servers for makers
+- Local maker spaces
+
+---
+
+**Final Mission Complete**
+
+You are now a **Raspberry Pi Master**!
+
+Keep building. Keep learning. Keep sharing.
+
+The world needs more makers like you.
+
+🍓 End of Track 🍓

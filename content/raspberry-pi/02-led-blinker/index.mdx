@@ -1,0 +1,599 @@
+---
+title: "LED Blinker"
+track: "raspberry-pi"
+chapter: 1
+lesson: 2
+slug: "02-led-blinker"
+prerequisites: ["01-pi-setup"]
+estimatedTime: 30
+difficulty: "beginner"
+xpReward: 100
+objectives:
+  - Understand basic circuits and electricity
+  - Learn about LEDs and resistors
+  - Connect components to GPIO pins safely
+  - Write Python code to control an LED
+  - Make your first LED blink!
+nextLesson: "03-button-input"
+prevLesson: "01-pi-setup"
+---
+
+# LED Blinker: Your First Hardware Program!
+
+<StoryBox character="pi_princess">
+  Welcome back, maker! Today is a BIG day - we're going to make an LED blink!
+
+  This might seem simple, but you're about to learn something profound: how to control the physical world with code! The same principles we use today work for everything from traffic lights to space station controls!
+
+  Let's light it up!
+</StoryBox>
+
+## What You'll Need
+
+### Components for This Lesson
+
+- Your Raspberry Pi (set up and running)
+- 1× LED (any color - red, green, or yellow work great!)
+- 1× Resistor (220Ω or 330Ω - look for red-red-brown or orange-orange-brown stripes)
+- 2× Jumper wires (male-to-female)
+- Breadboard (optional but recommended)
+
+<FunFact>
+  LEDs (Light Emitting Diodes) are incredibly efficient! They use 90% less energy than old incandescent bulbs and can last for 50,000 hours. If you left your LED on 24/7, it would run for almost 6 years!
+</FunFact>
+
+## Understanding Electricity Basics
+
+Before we start connecting things, let's understand what we're working with!
+
+### The Water Pipe Analogy
+
+Electricity is like water flowing through pipes:
+
+- **Voltage (V)**: The pressure pushing the water (measured in volts)
+- **Current (I)**: How much water flows (measured in amperes or amps)
+- **Resistance (R)**: Something that slows the flow (measured in ohms - Ω)
+
+Your Raspberry Pi GPIO pins output **3.3V** - that's the "pressure" they use!
+
+### What's a Circuit?
+
+A circuit is a complete loop that electricity flows through. It needs:
+
+1. **Power source** (your GPIO pin)
+2. **Something that uses power** (the LED)
+3. **A path back to ground** (the GND pin)
+
+Think of it like a racetrack - the electricity starts at the power, travels through components, and returns home!
+
+<StoryBox character="pi_princess">
+  Here's the golden rule: electricity ALWAYS wants to flow from high voltage (power) to low voltage (ground). It's lazy and takes the easiest path!
+
+  Our job is to give it a fun path through components we want to control!
+</StoryBox>
+
+## Understanding LEDs
+
+### What is an LED?
+
+LED stands for Light Emitting Diode. When electricity flows through it, it emits light!
+
+### LED Anatomy
+
+An LED has two legs:
+
+- **Anode (+)**: The LONGER leg - this connects to positive/power
+- **Cathode (-)**: The SHORTER leg - this connects to negative/ground
+
+Inside the LED, look for a tiny flat edge on one side - that's also the cathode!
+
+### Why Do We Need a Resistor?
+
+LEDs are like Goldilocks - they need JUST the right amount of electricity:
+- **Too little**: Won't light up
+- **Too much**: They burn out instantly (and sometimes pop!)
+- **Just right**: Beautiful light!
+
+The resistor limits current to protect the LED. Think of it like a speed bump for electricity!
+
+<FunFact>
+  Different color LEDs need different voltages! Red LEDs need about 1.8V, while blue and white LEDs need about 3.3V. That's why some LEDs are brighter than others when connected the same way!
+</FunFact>
+
+## Reading Resistor Color Codes
+
+Resistors have colored stripes that tell you their value!
+
+For a **220Ω resistor**:
+- **1st stripe (Red)**: 2
+- **2nd stripe (Red)**: 2
+- **3rd stripe (Brown)**: ×10
+- Result: 22 × 10 = 220Ω
+
+For a **330Ω resistor**:
+- **1st stripe (Orange)**: 3
+- **2nd stripe (Orange)**: 3
+- **3rd stripe (Brown)**: ×10
+- Result: 33 × 10 = 330Ω
+
+Either 220Ω or 330Ω works great for our LED!
+
+<TerminalDemo>
+{`Color Code Quick Reference:
+Black  = 0
+Brown  = 1
+Red    = 2
+Orange = 3
+Yellow = 4
+Green  = 5
+Blue   = 6
+Violet = 7
+Gray   = 8
+White  = 9
+
+Mnemonic: "Big Brown Rabbits Often Yield Great Big Vegetables Growing Wild"`}
+</TerminalDemo>
+
+## Building the Circuit
+
+Now let's connect everything! Remember: **TURN OFF YOUR PI FIRST!**
+
+### Step 1: Identify Your Components
+
+Look at your LED:
+- Find the longer leg (anode/+)
+- Find the shorter leg (cathode/-)
+- Note the flat edge on the cathode side
+
+Look at your resistor:
+- Either end can connect either way (resistors aren't directional!)
+
+### Step 2: The Wiring Diagram
+
+Here's how to connect everything:
+
+```
+Raspberry Pi GPIO 17 → Resistor → LED (long leg/anode)
+LED (short leg/cathode) → Raspberry Pi GND (ground)
+```
+
+### Step 3: Physical Connections
+
+**Method 1: Using a Breadboard** (Recommended)
+
+1. Insert LED into breadboard (legs in different rows)
+2. Connect resistor from GPIO 17 wire to LED long leg row
+3. Connect ground wire to LED short leg row
+
+**Method 2: Direct Connection** (Works but messier)
+
+1. GPIO 17 wire → One end of resistor
+2. Other end of resistor → LED long leg (twist together)
+3. LED short leg → Ground wire
+
+### Pin Numbers
+
+We're using:
+- **Physical Pin 11** (GPIO 17) for controlling the LED
+- **Physical Pin 6** (Ground) for completing the circuit
+
+<StoryBox character="pi_princess">
+  Take your time with connections! It's MUCH better to triple-check before powering on than to fix a burnt LED afterward!
+
+  Pro tip: Take a photo of your circuit before powering on. If something goes wrong, you can compare your setup to the working version!
+</StoryBox>
+
+<TerminalDemo>
+{`# View your pin layout anytime with:
+pinout
+
+# Look for:
+# Pin 11: GPIO17
+# Pin 6: GND (Ground)`}
+</TerminalDemo>
+
+## Writing the Code
+
+Now for the fun part - let's write Python code to control our LED!
+
+### Step 1: Open Thonny IDE
+
+1. Turn your Pi back on
+2. Menu → Programming → Thonny Python IDE
+3. You'll see a friendly code editor
+
+### Step 2: The Simplest Blink
+
+Let's start with the most basic version:
+
+```python
+# Import the GPIO Zero library
+from gpiozero import LED
+from time import sleep
+
+# Create an LED object connected to GPIO 17
+led = LED(17)
+
+# Turn the LED on
+led.on()
+print("LED is ON!")
+
+# Wait 1 second
+sleep(1)
+
+# Turn the LED off
+led.off()
+print("LED is OFF!")
+```
+
+Type this code into Thonny and click the green "Run" button!
+
+### Step 3: Make It Blink Forever!
+
+Now let's make it blink continuously:
+
+```python
+from gpiozero import LED
+from time import sleep
+
+# Set up the LED on GPIO 17
+led = LED(17)
+
+print("Starting LED blink...")
+print("Press Ctrl+C to stop")
+
+# Loop forever
+while True:
+    led.on()      # Turn LED on
+    sleep(0.5)    # Wait half a second
+    led.off()     # Turn LED off
+    sleep(0.5)    # Wait half a second
+```
+
+Your LED should blink on and off every half second!
+
+<FunFact>
+  The "while True" loop means "do this forever"! Your Pi will keep running this code until you stop it with Ctrl+C. This is called an infinite loop!
+</FunFact>
+
+### Step 4: Use the Built-in Blink Method
+
+GPIO Zero makes it even easier with a built-in blink method:
+
+```python
+from gpiozero import LED
+from signal import pause
+
+# Set up LED
+led = LED(17)
+
+# Blink: on for 1 second, off for 1 second
+led.blink(on_time=1, off_time=1)
+
+print("LED is blinking!")
+print("Press Ctrl+C to stop")
+
+# Keep the program running
+pause()
+```
+
+So simple, right?
+
+<StoryBox character="pi_princess">
+  This is the beauty of libraries like GPIO Zero! Someone else did the hard work of writing all the low-level code, and we just use their simple commands!
+
+  It's like having a robot butler - you just say "blink the LED" instead of explaining every tiny step!
+</StoryBox>
+
+## Experiment Time!
+
+Now that you have a working blinker, let's experiment!
+
+### Experiment 1: Change the Speed
+
+Try different timing values:
+
+```python
+# Super fast blink
+led.blink(on_time=0.1, off_time=0.1)
+
+# Slow blink
+led.blink(on_time=2, off_time=2)
+
+# Quick flash, long pause
+led.blink(on_time=0.1, off_time=2)
+
+# Heartbeat effect
+led.blink(on_time=0.1, off_time=0.1, n=2, background=False)
+sleep(1)
+```
+
+### Experiment 2: Morse Code SOS
+
+Let's send an SOS distress signal in Morse code!
+
+```python
+from gpiozero import LED
+from time import sleep
+
+led = LED(17)
+
+def dot():
+    """Short blink (dot)"""
+    led.on()
+    sleep(0.2)
+    led.off()
+    sleep(0.2)
+
+def dash():
+    """Long blink (dash)"""
+    led.on()
+    sleep(0.6)
+    led.off()
+    sleep(0.2)
+
+print("Sending SOS!")
+
+# S = dot dot dot
+dot()
+dot()
+dot()
+sleep(0.4)  # Pause between letters
+
+# O = dash dash dash
+dash()
+dash()
+dash()
+sleep(0.4)
+
+# S = dot dot dot
+dot()
+dot()
+dot()
+
+print("SOS sent!")
+```
+
+<FunFact>
+  SOS (··· ─── ···) is the international distress signal in Morse code! It was chosen because it's easy to recognize and doesn't spell any actual word in Morse. Ships and planes still use it today!
+</FunFact>
+
+### Experiment 3: Pulse (Breathing Effect)
+
+Make the LED fade in and out smoothly:
+
+```python
+from gpiozero import PWMLED
+from time import sleep
+
+# PWMLED allows brightness control!
+led = PWMLED(17)
+
+print("Breathing effect... Press Ctrl+C to stop")
+
+while True:
+    # Fade in
+    for brightness in range(0, 101, 5):
+        led.value = brightness / 100
+        sleep(0.05)
+
+    # Fade out
+    for brightness in range(100, -1, -5):
+        led.value = brightness / 100
+        sleep(0.05)
+```
+
+This creates a beautiful breathing effect!
+
+<StoryBox character="pi_princess">
+  We just used PWM - Pulse Width Modulation! Instead of just ON or OFF, we can control brightness by rapidly turning the LED on and off so fast your eye can't see it!
+
+  This is how your phone screen adjusts brightness, how motors control speed, and how fancy lights change colors!
+</StoryBox>
+
+## Practice Challenges!
+
+<Challenge
+  id="rpi-02-led-basic"
+  title="LED Blink Master"
+  description="Create different blinking patterns"
+  steps={[
+    {
+      command: "Make an LED blink at 2 blinks per second",
+      hint: "on_time=0.25, off_time=0.25"
+    },
+    {
+      command: "Create a pattern: 3 quick blinks, then a pause",
+      hint: "Use a for loop with range(3) and sleep between"
+    },
+    {
+      command: "Make an LED blink 10 times then stop",
+      hint: "Use led.blink() with n=10, background=False"
+    },
+    {
+      command: "Create your own Morse code message",
+      hint: "Use dot() and dash() functions"
+    }
+  ]}
+  xp={50}
+/>
+
+## Understanding the Code
+
+Let's break down what's happening:
+
+### Import Statements
+
+```python
+from gpiozero import LED
+```
+
+This imports the LED class from the GPIO Zero library. It's like grabbing a tool from a toolbox!
+
+### Creating an LED Object
+
+```python
+led = LED(17)
+```
+
+This creates an LED object connected to GPIO pin 17. Now `led` represents your physical LED!
+
+### Controlling the LED
+
+```python
+led.on()      # Sends 3.3V to the pin (LED lights up)
+led.off()     # Sends 0V to the pin (LED turns off)
+led.toggle()  # Switches state (on→off or off→on)
+```
+
+### The Sleep Function
+
+```python
+from time import sleep
+sleep(1)  # Pause for 1 second
+```
+
+Sleep tells Python to wait before continuing. Without it, your LED would blink too fast to see!
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "Why do we need a resistor with an LED?",
+    options: ["To make it brighter", "To limit current and protect the LED", "To make it blink", "Resistors aren't needed"],
+    correct: 1,
+    explanation: "Resistors limit the current flowing through the LED, preventing it from burning out!"
+  },
+  {
+    question: "Which leg of the LED is longer?",
+    options: ["Cathode (negative)", "Anode (positive)", "Both are the same", "It doesn't matter"],
+    correct: 1,
+    explanation: "The anode (positive leg) is longer! This is the side that connects toward the power source."
+  },
+  {
+    question: "What does led.toggle() do?",
+    options: ["Always turns it on", "Always turns it off", "Switches between on and off", "Makes it blink forever"],
+    correct: 2,
+    explanation: "toggle() switches the LED to the opposite state - if it's on, it turns off, and vice versa!"
+  },
+  {
+    question: "What voltage do Raspberry Pi GPIO pins output?",
+    options: ["5V", "3.3V", "12V", "1.5V"],
+    correct: 1,
+    explanation: "GPIO pins output 3.3V - this is important to remember when choosing components!"
+  }
+]} />
+
+## Troubleshooting
+
+### LED Doesn't Light Up
+
+- Check connections (is everything secure?)
+- Verify the LED isn't backwards (long leg to resistor side)
+- Try a different LED (it might be burnt out)
+- Test with led.on() instead of blink to eliminate timing issues
+- Check you're using the correct GPIO pin number
+
+### LED is Very Dim
+
+- Resistor might be too high (try 220Ω instead of 330Ω)
+- Connections might be loose
+- LED might be damaged
+
+### Code Gives an Error
+
+- Make sure GPIO Zero is installed: `sudo apt-get install python3-gpiozero`
+- Check for typos in your code
+- Verify you're using GPIO pin number (17), not physical pin number (11)
+
+### LED Stays On or Off
+
+- Make sure you're running the blink code, not just on() or off()
+- Check for infinite loops that might have stopped
+- Try restarting your program
+
+<StoryBox character="pi_princess">
+  Debugging is a HUGE part of electronics! Every maker spends time figuring out why something doesn't work. Don't get frustrated - this is where you learn the most!
+
+  Pro tip: When something works, take a photo and save your code! That way you have a reference for future projects.
+</StoryBox>
+
+## Taking It Further
+
+### Multiple LEDs
+
+Try connecting 2 or 3 LEDs to different GPIO pins:
+
+```python
+from gpiozero import LED
+from time import sleep
+
+red = LED(17)
+green = LED(27)
+blue = LED(22)
+
+# Create a pattern!
+while True:
+    red.on()
+    sleep(0.3)
+    red.off()
+
+    green.on()
+    sleep(0.3)
+    green.off()
+
+    blue.on()
+    sleep(0.3)
+    blue.off()
+```
+
+### LED Traffic Light
+
+We'll build a full traffic light in lesson 4, but you can start experimenting now!
+
+<FunFact>
+  The first electric traffic light was installed in 1914 in Cleveland, Ohio! Before that, traffic police had to direct traffic by hand. Now there are over 300,000 traffic lights in the United States alone!
+</FunFact>
+
+## What You've Learned
+
+Today you've mastered:
+
+- How electricity flows in a circuit
+- The anatomy of an LED
+- Why resistors are important
+- How to read resistor color codes
+- Connecting components to GPIO pins safely
+- Writing Python code to control hardware
+- Creating different blinking patterns
+
+<StoryBox character="pi_princess">
+  You just wrote your first hardware program! You controlled the physical world with code!
+
+  This is just the beginning. The LED blink is like "Hello World" for electronics - simple but profound. Every maker starts here, but there's no limit to where you can go!
+
+  In the next lesson, we'll add INPUT - reading a button press. Then you'll be able to interact with your Pi, creating programs that respond to the real world!
+
+  Great work, maker! Your LED blinker is the first step toward building robots, smart homes, and incredible inventions!
+</StoryBox>
+
+## Save Your Work!
+
+Create a folder for your projects:
+
+<TerminalDemo>
+{`# Create a projects folder
+mkdir ~/pi-projects
+
+# Save your code
+nano ~/pi-projects/led_blink.py
+
+# Run it anytime with:
+python3 ~/pi-projects/led_blink.py`}
+</TerminalDemo>
+
+<NextLesson
+  track="raspberry-pi"
+  lesson="03-button-input"
+  teaser="Learn to read button presses and create interactive programs!"
+/>

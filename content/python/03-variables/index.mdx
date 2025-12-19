@@ -1,0 +1,399 @@
+---
+title: "Variables"
+track: "python"
+chapter: 1
+lesson: 3
+slug: "03-variables"
+prerequisites: ["02-hello-world"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand what variables are and why they're useful
+  - Learn how to create and use variables
+  - Master variable naming rules
+nextLesson: "04-numbers-math"
+prevLesson: "02-hello-world"
+---
+
+# Variables: Giving Your Computer a Memory
+
+<StoryBox character="python_pete">
+  Alright, coding champion! Now we're getting to the really cool stuff!
+
+  Imagine if you had to remember every single number, name, and piece of information in your head while writing a program. Impossible, right?
+
+  That's where VARIABLES come in! They're like labeled boxes where you can store information and use it later. Let's explore!
+</StoryBox>
+
+## What is a Variable?
+
+A **variable** is a container that stores a value. Think of it like:
+
+- A **labeled box** where you keep things
+- A **nickname** for a piece of data
+- A **name tag** you put on information
+
+Here's your first variable:
+
+```python
+name = "Alex"
+```
+
+Now Python remembers that `name` equals "Alex"!
+
+You can use it anytime:
+
+```python
+name = "Alex"
+print("Hello,", name)
+print("Nice to meet you,", name)
+```
+
+<TerminalDemo>
+{`Hello, Alex
+Nice to meet you, Alex`}
+</TerminalDemo>
+
+<FunFact>
+  Variables are called "variables" because they can VARY (change)! You can store different values in them as your program runs.
+</FunFact>
+
+## Creating Variables
+
+Creating a variable is super easy! Just use the equals sign:
+
+```python
+age = 12
+favorite_color = "blue"
+lives = 3
+score = 0
+```
+
+The pattern is always:
+```
+variable_name = value
+```
+
+## Using Variables
+
+Once you create a variable, you can use it anywhere:
+
+```python
+username = "CodeMaster"
+points = 100
+
+print("Welcome back,", username)
+print("You have", points, "points!")
+```
+
+<TerminalDemo>
+{`Welcome back, CodeMaster
+You have 100 points!`}
+</TerminalDemo>
+
+## Variables Can Change!
+
+That's the magic of variables - you can change them!
+
+```python
+score = 0
+print("Starting score:", score)
+
+score = 10
+print("Score after level 1:", score)
+
+score = 25
+print("Score after level 2:", score)
+```
+
+<TerminalDemo>
+{`Starting score: 0
+Score after level 1: 10
+Score after level 2: 25`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  See? The variable `score` can hold different values at different times! It's like updating what's written on a whiteboard - erase the old value, write the new one!
+</StoryBox>
+
+## Types of Data You Can Store
+
+Variables can hold different types of information:
+
+### 1. Text (Strings)
+```python
+name = "Sarah"
+message = "Hello, World!"
+favorite_game = "Minecraft"
+```
+
+### 2. Numbers (Integers)
+```python
+age = 12
+lives = 3
+level = 1
+```
+
+### 3. Decimal Numbers (Floats)
+```python
+price = 9.99
+temperature = 72.5
+height = 4.8
+```
+
+### 4. True/False (Booleans)
+```python
+is_playing = True
+game_over = False
+has_key = True
+```
+
+## Variable Naming Rules
+
+Python has rules for naming variables. Follow these and you'll be golden!
+
+### ✅ GOOD Variable Names:
+```python
+player_name = "Alex"
+max_score = 100
+user_age = 12
+total_points = 500
+```
+
+### ❌ BAD Variable Names:
+```python
+# Can't start with a number
+1st_place = "Winner"  # ERROR!
+
+# Can't have spaces
+my name = "Alex"  # ERROR!
+
+# Can't use special Python words
+print = "Hello"  # ERROR! 'print' is reserved
+```
+
+### The Golden Rules:
+
+1. **Start with a letter or underscore** (`_`)
+2. **Only use letters, numbers, and underscores**
+3. **No spaces** (use underscore instead: `my_variable`)
+4. **Case matters** (`name` and `Name` are different!)
+5. **Be descriptive** (`score` is better than `s`)
+
+<FunFact>
+  Python programmers use "snake_case" for variables - words are lowercase and separated by underscores, like a snake slithering! Example: `player_high_score`
+</FunFact>
+
+## Good vs. Bad Variable Names
+
+| Bad Name | Why It's Bad | Good Name |
+|----------|--------------|-----------|
+| `x` | Not descriptive | `player_score` |
+| `a` | Too vague | `age` |
+| `thing1` | Not clear | `username` |
+| `ABCD` | Confusing | `high_score` |
+
+Always choose names that explain what the variable holds!
+
+## Multiple Variables
+
+You can create many variables:
+
+```python
+first_name = "Luna"
+last_name = "Star"
+age = 12
+grade = 7
+favorite_subject = "Science"
+
+print(first_name, last_name, "is", age, "years old")
+print("Favorite subject:", favorite_subject)
+```
+
+<TerminalDemo>
+{`Luna Star is 12 years old
+Favorite subject: Science`}
+</TerminalDemo>
+
+## Swapping Variables
+
+Here's a cool trick! You can swap values between variables:
+
+```python
+player1 = "Alex"
+player2 = "Jordan"
+
+print("Before swap:", player1, player2)
+
+# The magic swap!
+player1, player2 = player2, player1
+
+print("After swap:", player1, player2)
+```
+
+<TerminalDemo>
+{`Before swap: Alex Jordan
+After swap: Jordan Alex`}
+</TerminalDemo>
+
+## Practice Time!
+
+<Challenge
+  id="ch1-variables"
+  title="Variable Master"
+  description="Practice creating and using variables"
+  steps={[
+    {
+      command: 'name = "YourName"',
+      hint: "Create a variable called 'name'"
+    },
+    {
+      command: 'age = 12',
+      hint: "Store your age in a variable"
+    },
+    {
+      command: 'print("My name is", name)',
+      hint: "Use the variable in a print statement"
+    },
+    {
+      command: 'print("I am", age, "years old")',
+      hint: "Print your age using the variable"
+    }
+  ]}
+  xp={30}
+  badge="variable_wizard"
+/>
+
+## Real-World Example: Game Status
+
+Let's create a simple game status using variables:
+
+```python
+# Player information
+player_name = "DragonSlayer"
+health = 100
+mana = 50
+level = 5
+gold = 250
+
+# Display status
+print("==== PLAYER STATUS ====")
+print("Name:", player_name)
+print("Level:", level)
+print("Health:", health, "HP")
+print("Mana:", mana, "MP")
+print("Gold:", gold, "coins")
+print("=======================")
+```
+
+<TerminalDemo>
+{`==== PLAYER STATUS ====
+Name: DragonSlayer
+Level: 5
+Health: 100 HP
+Mana: 50 MP
+Gold: 250 coins
+=======================`}
+</TerminalDemo>
+
+## Quiz Time!
+
+<Quiz questions={[
+  {
+    question: "What symbol do you use to create a variable?",
+    options: ["+", "=", "*", "=>"],
+    correct: 1,
+    explanation: "Use the equals sign (=) to assign a value to a variable!"
+  },
+  {
+    question: "Which is a valid variable name?",
+    options: ["2cool", "my-name", "player_score", "print"],
+    correct: 2,
+    explanation: "player_score follows all the rules: starts with a letter, uses underscore for spaces, no special Python words!"
+  },
+  {
+    question: "Can variables change their value?",
+    options: ["Yes", "No", "Sometimes", "Only on Tuesdays"],
+    correct: 0,
+    explanation: "Yes! That's why they're called variables - they can vary (change)!"
+  },
+  {
+    question: "What's wrong with: my name = 'Alex'?",
+    options: ["Nothing", "Has a space", "Wrong quotes", "Too short"],
+    correct: 1,
+    explanation: "Variable names can't have spaces! Use my_name instead."
+  }
+]} />
+
+## Common Mistakes to Avoid
+
+### Mistake 1: Using a variable before creating it
+```python
+# Wrong:
+print(score)  # Error! score doesn't exist yet!
+
+# Right:
+score = 100
+print(score)
+```
+
+### Mistake 2: Forgetting quotes for text
+```python
+# Wrong:
+name = Alex  # Python thinks Alex is a variable!
+
+# Right:
+name = "Alex"
+```
+
+### Mistake 3: Confusing assignment with comparison
+```python
+age = 12  # This SETS age to 12
+# Later we'll learn: age == 12 checks if age equals 12
+```
+
+<StoryBox character="python_pete">
+  Variables are one of the MOST important concepts in programming! Every program uses them!
+
+  Think of them as your program's memory. Without variables, programs would be super limited!
+
+  Next, we'll learn how to do MATH with variables. Get ready to build a calculator!
+</StoryBox>
+
+## What You've Learned!
+
+You now know how to:
+- Create variables with the `=` operator
+- Store different types of data
+- Use variables in print statements
+- Follow variable naming rules
+- Change variable values
+- Create multiple variables
+
+## Variable Cheat Sheet
+
+```python
+# Creating variables
+name = "Alex"
+age = 12
+score = 100
+is_active = True
+
+# Using variables
+print(name)
+print("Score:", score)
+
+# Changing variables
+score = 150
+print("New score:", score)
+
+# Multiple variables
+x, y, z = 1, 2, 3
+```
+
+<NextLesson
+  track="python"
+  lesson="04-numbers-math"
+  teaser="Time to do some math! Learn about numbers and mathematical operations!"
+/>

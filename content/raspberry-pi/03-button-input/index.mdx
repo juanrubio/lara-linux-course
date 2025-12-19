@@ -1,0 +1,674 @@
+---
+title: "Button Input"
+track: "raspberry-pi"
+chapter: 1
+lesson: 3
+slug: "03-button-input"
+prerequisites: ["02-led-blinker"]
+estimatedTime: 30
+difficulty: "beginner"
+xpReward: 100
+objectives:
+  - Understand input vs output in electronics
+  - Learn about pull-up and pull-down resistors
+  - Connect and read a button with GPIO
+  - Create interactive programs that respond to input
+  - Build a button-controlled LED project
+nextLesson: "04-traffic-light"
+prevLesson: "02-led-blinker"
+---
+
+# Button Input: Making Your Pi Interactive!
+
+<StoryBox character="pi_princess">
+  Welcome back, maker! Last time we controlled OUTPUT - making an LED blink. Today we're learning about INPUT - reading button presses!
+
+  This is when things get REALLY interesting! Once you can read input, you can create interactive projects that respond to the real world. Games, doorbells, alarm systems, robots - they all start with reading input!
+
+  Let's make your Pi talk back to you!
+</StoryBox>
+
+## Output vs Input: A Two-Way Conversation
+
+So far, we've only sent signals OUT from the Pi (output). Now we're going to READ signals coming IN (input)!
+
+### Output (What We've Done)
+- Pi **controls** components
+- Pi **sends** signals
+- Example: Turning an LED on/off
+
+### Input (What We're Learning Today)
+- Pi **reads** from components
+- Pi **receives** signals
+- Example: Detecting a button press
+
+Think of it like this:
+- **Output**: You talking to your Pi
+- **Input**: Your Pi listening to the world
+
+<FunFact>
+  Every device you use combines input and output! Your phone reads input (touch screen, buttons, microphone) and creates output (screen, speaker, vibration). Your Pi can do the same thing!
+</FunFact>
+
+## What You'll Need
+
+### Components for This Lesson
+
+- Your Raspberry Pi with the LED circuit from last lesson
+- 1× Pushbutton (tactile switch)
+- 1× 10kΩ resistor (brown-black-orange stripes) **OR** we'll use internal resistors!
+- 2× Jumper wires (male-to-female)
+- Breadboard (recommended)
+
+<StoryBox character="pi_princess">
+  Good news! Raspberry Pi has built-in resistors we can use, so the external 10kΩ resistor is optional. I'll show you both methods!
+</StoryBox>
+
+## Understanding Buttons
+
+### What is a Pushbutton?
+
+A pushbutton (or tactile switch) is a simple component:
+- **Not pressed**: Circuit is open (no connection)
+- **Pressed**: Circuit is closed (connection made)
+
+It's like a drawbridge - up means no cars pass, down means cars can cross!
+
+### Inside a Pushbutton
+
+Most pushbuttons have 4 legs arranged in two pairs:
+- **Left pair**: Connected together
+- **Right pair**: Connected together
+- **Pressing**: Connects left pair to right pair
+
+For our projects, we only need to use one leg from each pair (2 legs total).
+
+## The Pull-Up and Pull-Down Problem
+
+Here's a tricky question: When the button is NOT pressed, what signal does the GPIO pin read?
+
+If the pin is just floating (not connected to anything), it picks up electrical noise and gives random readings! We need to give it a default state.
+
+### Two Solutions
+
+**Pull-Down Resistor**:
+- Connects pin to ground (0V) through resistor
+- Button pressed = HIGH (1)
+- Button not pressed = LOW (0)
+
+**Pull-Up Resistor**:
+- Connects pin to 3.3V through resistor
+- Button pressed = LOW (0)
+- Button not pressed = HIGH (1)
+
+The Raspberry Pi has **internal pull-up and pull-down resistors** we can activate in code! No extra components needed!
+
+<FunFact>
+  Why use a resistor instead of connecting directly to ground? The resistor limits current when the button is pressed, protecting your Pi from a short circuit! It's like having a safety valve.
+</FunFact>
+
+## Building the Button Circuit
+
+Let's build a simple button circuit! We'll keep the LED from last lesson too.
+
+### Wiring Diagram
+
+```
+Button Leg 1 → GPIO 2 (Physical Pin 3)
+Button Leg 2 → GND (Physical Pin 9)
+
+LED from last lesson stays connected:
+GPIO 17 → Resistor → LED → GND
+```
+
+### Step-by-Step Assembly
+
+**TURN OFF YOUR PI FIRST!**
+
+1. **Add the button to your breadboard**
+   - Insert button so legs straddle the center groove
+   - This ensures opposite legs are connected
+
+2. **Connect one button leg to GPIO 2**
+   - Use a jumper wire from button leg to Physical Pin 3 (GPIO 2)
+
+3. **Connect other button leg to Ground**
+   - Use a jumper wire from other button leg to Physical Pin 9 (GND)
+
+4. **Keep your LED circuit from last lesson**
+   - LED should still be on GPIO 17
+
+<TerminalDemo>
+{`# View your pins:
+pinout
+
+# We're using:
+# Physical Pin 3  = GPIO 2  (button input)
+# Physical Pin 9  = GND     (button ground)
+# Physical Pin 11 = GPIO 17 (LED output)
+# Physical Pin 6  = GND     (LED ground)`}
+</TerminalDemo>
+
+<StoryBox character="pi_princess">
+  Notice we're using GPIO 2 for the button and GPIO 17 for the LED - different pins! Your Pi has lots of GPIO pins, so you can control many components at once!
+
+  Think of GPIO pins like USB ports - you can plug multiple things in, and your computer knows which is which!
+</StoryBox>
+
+## Reading a Button Press
+
+Let's write code to detect button presses!
+
+### Basic Button Detection
+
+```python
+from gpiozero import Button
+from time import sleep
+
+# Create button object on GPIO 2
+# pull_up=True means we use internal pull-up resistor
+button = Button(2, pull_up=True)
+
+print("Button test - Press the button!")
+print("Press Ctrl+C to exit")
+
+while True:
+    if button.is_pressed:
+        print("Button is pressed!")
+    else:
+        print("Button is not pressed")
+
+    sleep(0.1)  # Check 10 times per second
+```
+
+Run this code and press your button - you'll see the messages change!
+
+### Using Button Events
+
+There's a better way! Instead of constantly checking, we can use **events** - the button tells us when something happens:
+
+```python
+from gpiozero import Button
+from signal import pause
+
+button = Button(2, pull_up=True)
+
+def button_pressed():
+    """This function runs when button is pressed"""
+    print("Button pressed!")
+
+def button_released():
+    """This function runs when button is released"""
+    print("Button released!")
+
+# Set up event handlers
+button.when_pressed = button_pressed
+button.when_released = button_released
+
+print("Waiting for button presses...")
+print("Press Ctrl+C to exit")
+
+# Keep program running
+pause()
+```
+
+Much cleaner! The Pi waits and only responds when the button state changes.
+
+<FunFact>
+  This is called "event-driven programming"! Instead of constantly checking (like asking "Are we there yet?" every second), the button TELLS us when something happens. This saves energy and makes code more efficient!
+</FunFact>
+
+## Button-Controlled LED
+
+Now let's combine input and output! We'll make a button that controls our LED.
+
+### Version 1: Toggle LED
+
+Press the button to toggle the LED on/off:
+
+```python
+from gpiozero import Button, LED
+from signal import pause
+
+button = Button(2, pull_up=True)
+led = LED(17)
+
+def toggle_led():
+    """Toggle LED when button is pressed"""
+    led.toggle()
+    if led.is_lit:
+        print("LED is ON")
+    else:
+        print("LED is OFF")
+
+button.when_pressed = toggle_led
+
+print("Press button to toggle LED")
+print("Press Ctrl+C to exit")
+
+pause()
+```
+
+### Version 2: LED Follows Button
+
+LED is on while button is pressed, off when released:
+
+```python
+from gpiozero import Button, LED
+from signal import pause
+
+button = Button(2, pull_up=True)
+led = LED(17)
+
+# Simple one-liner: LED follows button state!
+led.source = button.values
+
+print("LED will light up when button is pressed")
+print("Press Ctrl+C to exit")
+
+pause()
+```
+
+This is AMAZING! `led.source = button.values` creates a live connection - the LED automatically follows the button state!
+
+<StoryBox character="pi_princess">
+  This is the magic of GPIO Zero! With just one line, we've created a circuit where input controls output. No loops, no checking, just a simple connection!
+
+  This is how modern programming works - we describe WHAT we want, not HOW to do every step!
+</StoryBox>
+
+### Version 3: Blink While Pressed
+
+LED blinks only while the button is held down:
+
+```python
+from gpiozero import Button, LED
+from signal import pause
+
+button = Button(2, pull_up=True)
+led = LED(17)
+
+def start_blinking():
+    """Start LED blinking when button is pressed"""
+    print("Button pressed - LED blinking!")
+    led.blink(on_time=0.5, off_time=0.5)
+
+def stop_blinking():
+    """Stop LED blinking when button is released"""
+    print("Button released - LED off")
+    led.off()
+
+button.when_pressed = start_blinking
+button.when_released = stop_blinking
+
+print("Hold button to make LED blink")
+print("Press Ctrl+C to exit")
+
+pause()
+```
+
+## Practice Challenges!
+
+<Challenge
+  id="rpi-03-button-basic"
+  title="Button Input Master"
+  description="Create interactive button programs"
+  steps={[
+    {
+      command: "Make a button that prints 'Hello!' when pressed",
+      hint: "Use button.when_pressed = your_function"
+    },
+    {
+      command: "Create a counter that counts button presses",
+      hint: "Use a variable and increment it in the button function"
+    },
+    {
+      command: "Make LED turn on when pressed, off when released",
+      hint: "Use button.when_pressed and button.when_released"
+    },
+    {
+      command: "Create a double-press detector",
+      hint: "Track time between presses with time.time()"
+    }
+  ]}
+  xp={50}
+/>
+
+## Button Counter Project
+
+Let's count how many times the button is pressed:
+
+```python
+from gpiozero import Button, LED
+from signal import pause
+
+button = Button(2, pull_up=True)
+led = LED(17)
+
+# Counter variable
+press_count = 0
+
+def count_press():
+    """Count and display button presses"""
+    global press_count  # Access the global variable
+    press_count += 1
+    print(f"Button pressed {press_count} times")
+
+    # Flash LED to confirm
+    led.on()
+    sleep(0.1)
+    led.off()
+
+button.when_pressed = count_press
+
+print("Button press counter")
+print("Press Ctrl+C to exit")
+
+pause()
+
+print(f"\nTotal presses: {press_count}")
+```
+
+## Button Debouncing
+
+Sometimes buttons can produce multiple signals from a single press due to mechanical bouncing. GPIO Zero handles this automatically!
+
+```python
+# Set a custom bounce time (default is 10ms)
+button = Button(2, pull_up=True, bounce_time=0.02)
+```
+
+The `bounce_time` parameter ignores rapid changes for 20 milliseconds (0.02 seconds), treating them as one press.
+
+<FunFact>
+  When you press a physical button, the contacts actually bounce together several times in a few milliseconds before settling! It's like dropping a ball - it bounces before coming to rest. Without debouncing, one press might register as 5-10 presses!
+</FunFact>
+
+## Advanced: Long Press Detection
+
+Detect how long the button is held:
+
+```python
+from gpiozero import Button
+from time import time
+from signal import pause
+
+button = Button(2, pull_up=True)
+
+press_start = 0
+
+def button_pressed():
+    """Record when button was pressed"""
+    global press_start
+    press_start = time()
+    print("Button pressed...")
+
+def button_released():
+    """Calculate how long button was held"""
+    global press_start
+    press_duration = time() - press_start
+
+    if press_duration < 0.5:
+        print("Short press!")
+    elif press_duration < 2:
+        print("Medium press!")
+    else:
+        print("Long press!")
+
+    print(f"Held for {press_duration:.2f} seconds")
+
+button.when_pressed = button_pressed
+button.when_released = button_released
+
+print("Try short, medium, and long presses!")
+print("Press Ctrl+C to exit")
+
+pause()
+```
+
+## Multiple Buttons
+
+Let's control different LED patterns with different buttons:
+
+```python
+from gpiozero import Button, LED
+from signal import pause
+
+# Two buttons, one LED
+button1 = Button(2, pull_up=True)
+button2 = Button(3, pull_up=True)
+led = LED(17)
+
+def slow_blink():
+    """Button 1: Slow blink"""
+    print("Slow blink mode")
+    led.blink(on_time=1, off_time=1)
+
+def fast_blink():
+    """Button 2: Fast blink"""
+    print("Fast blink mode")
+    led.blink(on_time=0.2, off_time=0.2)
+
+button1.when_pressed = slow_blink
+button2.when_pressed = fast_blink
+
+print("Button 1 (GPIO 2) = Slow blink")
+print("Button 2 (GPIO 3) = Fast blink")
+print("Press Ctrl+C to exit")
+
+pause()
+```
+
+<StoryBox character="pi_princess">
+  Now you're creating user interfaces! Buttons are how users interact with devices. Every game controller, appliance, and gadget uses buttons!
+
+  Think about the projects you could build:
+  - Doorbell that plays a tune
+  - Game buzzer system
+  - Secret knock detector
+  - Morse code transmitter
+  - Electronic lock
+
+  The possibilities are endless!
+</StoryBox>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What's the difference between input and output?",
+    options: ["They're the same thing", "Input reads data, output sends data", "Output is faster", "Input is only for sensors"],
+    correct: 1,
+    explanation: "Input means reading data FROM components (like buttons), output means sending data TO components (like LEDs)!"
+  },
+  {
+    question: "Why do we need pull-up or pull-down resistors?",
+    options: ["To make buttons work", "To give pins a default state instead of floating", "To limit current", "They're not needed"],
+    correct: 1,
+    explanation: "Pull resistors prevent GPIO pins from 'floating' and picking up electrical noise when nothing is connected!"
+  },
+  {
+    question: "What does button.when_pressed do?",
+    options: ["Checks if button is pressed", "Runs a function when button is pressed", "Counts button presses", "Turns on an LED"],
+    correct: 1,
+    explanation: "button.when_pressed assigns a function to run automatically when the button is pressed - this is event-driven programming!"
+  },
+  {
+    question: "What is button debouncing?",
+    options: ["Making buttons bounce", "Ignoring rapid changes from mechanical bouncing", "A type of button", "Button cleaning"],
+    correct: 1,
+    explanation: "Debouncing filters out the rapid 'bounces' that occur when button contacts physically touch, treating them as one press!"
+  }
+]} />
+
+## Understanding the Code
+
+### Creating a Button Object
+
+```python
+button = Button(2, pull_up=True)
+```
+
+- `2`: GPIO pin number
+- `pull_up=True`: Enables internal pull-up resistor
+- Alternative: `pull_up=False` for pull-down
+
+### Checking Button State
+
+```python
+button.is_pressed   # True if pressed, False if not
+button.wait_for_press()    # Waits until button is pressed
+button.wait_for_release()  # Waits until button is released
+```
+
+### Event Handlers
+
+```python
+button.when_pressed = function_name   # Runs when pressed
+button.when_released = function_name  # Runs when released
+button.when_held = function_name      # Runs when held down
+```
+
+Notice we write `function_name` not `function_name()` - we're passing the function itself, not calling it!
+
+## Troubleshooting
+
+### Button Doesn't Respond
+
+- Check connections (button legs can be tricky!)
+- Verify you're using the correct GPIO pin number
+- Try different button legs if your button has 4
+- Test with a simple is_pressed loop first
+
+### Button Registers Multiple Presses
+
+- This is bouncing! Increase bounce_time: `Button(2, bounce_time=0.05)`
+- Make sure you're using GPIO Zero's built-in debouncing
+
+### Inverted Button (Backwards)
+
+- If pressed=off and released=on, check your pull resistor
+- Try `pull_up=False` instead of `pull_up=True`
+
+### Button Works, LED Doesn't
+
+- Test LED separately with led.on() in Python console
+- Check LED connections and polarity
+- Verify LED worked in previous lesson
+
+<StoryBox character="pi_princess">
+  Debugging button circuits can be tricky because you can't SEE electricity! Start with simple tests:
+
+  1. Test LED alone (led.on())
+  2. Test button alone (print button.is_pressed)
+  3. Then combine them
+
+  This methodical approach helps you isolate problems!
+</StoryBox>
+
+## Real-World Applications
+
+### Where Are Buttons Used?
+
+Buttons are EVERYWHERE in electronics:
+
+- **Game controllers**: Every button you press
+- **Keyboards**: Each key is a button!
+- **Appliances**: Start/stop buttons on microwaves, washing machines
+- **Cars**: Power windows, radio controls, dashboard buttons
+- **Elevators**: Floor selection buttons
+- **ATMs**: Number pad and function buttons
+
+Every time you press a button, somewhere a program is responding just like your Pi!
+
+<FunFact>
+  The International Space Station has over 1,000 buttons and switches! Astronauts train for months to memorize what each one does. Your button projects are training you for real-world systems!
+</FunFact>
+
+## Project Idea: Reaction Timer Game
+
+Here's a fun project that combines everything:
+
+```python
+from gpiozero import Button, LED
+from time import sleep, time
+from random import uniform
+from signal import pause
+
+button = Button(2, pull_up=True)
+led = LED(17)
+
+def play_game():
+    """Simple reaction timer game"""
+    print("\n=== REACTION TIMER ===")
+    print("Press the button when the LED lights up!")
+    print("Get ready...")
+
+    # Wait random time
+    sleep(uniform(2, 5))
+
+    # Turn on LED and start timer
+    led.on()
+    start_time = time()
+
+    # Wait for button press
+    button.wait_for_press()
+
+    # Calculate reaction time
+    reaction_time = time() - start_time
+    led.off()
+
+    print(f"Your reaction time: {reaction_time:.3f} seconds")
+
+    if reaction_time < 0.2:
+        print("AMAZING! Lightning fast!")
+    elif reaction_time < 0.3:
+        print("Great reflexes!")
+    elif reaction_time < 0.5:
+        print("Good job!")
+    else:
+        print("Keep practicing!")
+
+# Start the game
+play_game()
+```
+
+## What You've Learned
+
+Today you mastered:
+
+- The difference between input and output
+- How buttons work electrically
+- Pull-up and pull-down resistors
+- Reading button state in Python
+- Event-driven programming
+- Creating interactive programs
+- Combining input and output
+
+<StoryBox character="pi_princess">
+  You've now completed the INPUT/OUTPUT circle! You can send signals (LED) and receive signals (button). This is the foundation of ALL interactive electronics!
+
+  Every robot, game, smart home device, and interactive installation uses these same principles. You're not just learning - you're building real skills!
+
+  In the next lesson, we'll level up by controlling MULTIPLE LEDs to build a working traffic light! Get ready to juggle three LEDs at once!
+
+  Fantastic work, maker! You're becoming a true hardware hacker!
+</StoryBox>
+
+## Save Your Projects!
+
+<TerminalDemo>
+{`# Create project files
+nano ~/pi-projects/button_test.py
+nano ~/pi-projects/led_toggle.py
+nano ~/pi-projects/reaction_game.py
+
+# Run anytime with:
+python3 ~/pi-projects/reaction_game.py`}
+</TerminalDemo>
+
+<NextLesson
+  track="raspberry-pi"
+  lesson="04-traffic-light"
+  teaser="Control multiple LEDs to build a working traffic light system!"
+/>

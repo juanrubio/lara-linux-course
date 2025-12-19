@@ -1,0 +1,446 @@
+---
+title: "Conditionals"
+track: "bash"
+chapter: 2
+lesson: 6
+slug: "06-conditionals"
+prerequisites: ["05-chapter1-quest"]
+estimatedTime: 25
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Learn if/then/else/fi syntax
+  - Master test conditions and operators
+  - Create scripts that make decisions
+  - Use comparison operators in bash
+nextLesson: "07-loops"
+prevLesson: "05-chapter1-quest"
+---
+
+# Conditionals
+
+<StoryBox character="bash_betty">
+  Welcome back, script master! Today we're learning one of the most powerful tools in bash scripting: MAKING DECISIONS!
+
+  Just like you decide what to do based on what's happening around you, your scripts can check conditions and react accordingly. "If the file exists, open it. Otherwise, create it!"
+
+  Let's give your scripts the power to think!
+</StoryBox>
+
+## What is a Conditional?
+
+A **conditional statement** lets your bash script check if something is true or false, then decide what to do.
+
+Think of it like a security guard:
+- **IF** you have the password → Let you in
+- **ELSE** → Keep you out
+
+In bash, we use the `if` command with this structure:
+```bash
+if [ condition ]
+then
+    # Do something if condition is true
+fi
+```
+
+Notice the `fi` at the end? That's "if" spelled backwards! It tells bash "the if statement is done."
+
+<FunFact>
+  Bash uses "fi" to close if statements, "esac" to close case statements (that's "case" backwards!), and "done" to close loops. The bash creators loved symmetry!
+</FunFact>
+
+## Your First Conditional
+
+Let's check if a number is greater than 10:
+
+<TerminalDemo>
+{`$ number=15
+$ if [ $number -gt 10 ]
+> then
+>     echo "Number is greater than 10!"
+> fi
+Number is greater than 10!`}
+</TerminalDemo>
+
+Let's break this down:
+1. `if [ $number -gt 10 ]` - Check if number is greater than (-gt) 10
+2. `then` - If true, do the following commands
+3. `echo "Number is greater than 10!"` - The command to run
+4. `fi` - End of the if statement
+
+<StoryBox character="bash_betty">
+  IMPORTANT: Notice the SPACES around the square brackets! You MUST write `[ $number -gt 10 ]` with spaces. Writing `[$number -gt 10]` will cause an error!
+
+  Bash is very picky about spaces in conditionals!
+</StoryBox>
+
+## Test Operators - Numbers
+
+When comparing numbers in bash, we use special operators:
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `-eq` | Equal to | `[ $a -eq $b ]` |
+| `-ne` | Not equal | `[ $a -ne $b ]` |
+| `-gt` | Greater than | `[ $a -gt $b ]` |
+| `-lt` | Less than | `[ $a -lt $b ]` |
+| `-ge` | Greater or equal | `[ $a -ge $b ]` |
+| `-le` | Less or equal | `[ $a -le $b ]` |
+
+Let's try some examples:
+
+<TerminalDemo>
+{`$ age=14
+$ if [ $age -ge 13 ]
+> then
+>     echo "You're a teenager!"
+> fi
+You're a teenager!
+
+$ score=85
+$ if [ $score -lt 60 ]
+> then
+>     echo "You need to study more"
+> fi
+# Nothing prints because condition is false!`}
+</TerminalDemo>
+
+## Adding an Else Branch
+
+What if you want to do something when the condition is FALSE?
+
+<TerminalDemo>
+{`$ temperature=25
+$ if [ $temperature -gt 30 ]
+> then
+>     echo "It's hot outside!"
+> else
+>     echo "Temperature is comfortable"
+> fi
+Temperature is comfortable`}
+</TerminalDemo>
+
+The structure is:
+```bash
+if [ condition ]
+then
+    # Commands if true
+else
+    # Commands if false
+fi
+```
+
+## Multiple Conditions with elif
+
+Need to check multiple conditions? Use `elif` (else if):
+
+<TerminalDemo>
+{`$ score=85
+$ if [ $score -ge 90 ]
+> then
+>     echo "Grade: A - Excellent!"
+> elif [ $score -ge 80 ]
+> then
+>     echo "Grade: B - Great job!"
+> elif [ $score -ge 70 ]
+> then
+>     echo "Grade: C - Good work!"
+> else
+>     echo "Grade: D - Keep trying!"
+> fi
+Grade: B - Great job!`}
+</TerminalDemo>
+
+<FunFact>
+  Bash checks conditions from top to bottom and stops at the FIRST true condition. So a score of 95 would match the first condition (>= 90) and never check the others!
+</FunFact>
+
+## String Comparisons
+
+You can also compare text (strings)!
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `=` | Equal to | `[ "$a" = "$b" ]` |
+| `!=` | Not equal | `[ "$a" != "$b" ]` |
+| `-z` | String is empty | `[ -z "$a" ]` |
+| `-n` | String is not empty | `[ -n "$a" ]` |
+
+<TerminalDemo>
+{`$ username="betty"
+$ if [ "$username" = "betty" ]
+> then
+>     echo "Welcome back, Betty!"
+> else
+>     echo "I don't know you!"
+> fi
+Welcome back, Betty!
+
+$ password=""
+$ if [ -z "$password" ]
+> then
+>     echo "Password cannot be empty!"
+> fi
+Password cannot be empty!`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  PRO TIP: Always put quotes around variables when comparing strings! Write `[ "$name" = "betty" ]` not `[ $name = "betty" ]`. This prevents errors when the variable is empty!
+</StoryBox>
+
+## File Test Operators
+
+Bash has special operators for checking files! This is super useful:
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `-f` | File exists (regular file) | `[ -f "file.txt" ]` |
+| `-d` | Directory exists | `[ -d "folder" ]` |
+| `-e` | File or dir exists | `[ -e "something" ]` |
+| `-r` | File is readable | `[ -r "file.txt" ]` |
+| `-w` | File is writable | `[ -w "file.txt" ]` |
+| `-x` | File is executable | `[ -x "script.sh" ]` |
+
+Let's check if a file exists:
+
+<TerminalDemo>
+{`$ if [ -f "important.txt" ]
+> then
+>     echo "File exists! Reading it..."
+>     cat important.txt
+> else
+>     echo "File not found! Creating it..."
+>     echo "New file" > important.txt
+> fi
+File not found! Creating it...
+
+$ # Run it again
+$ if [ -f "important.txt" ]
+> then
+>     echo "File exists! Reading it..."
+>     cat important.txt
+> else
+>     echo "File not found! Creating it..."
+>     echo "New file" > important.txt
+> fi
+File exists! Reading it...
+New file`}
+</TerminalDemo>
+
+## Combining Conditions with AND/OR
+
+You can check multiple conditions at once!
+
+**AND** - Both conditions must be true:
+```bash
+if [ $age -ge 13 ] && [ $age -le 19 ]
+then
+    echo "You're a teenager!"
+fi
+```
+
+**OR** - At least one condition must be true:
+```bash
+if [ "$day" = "Saturday" ] || [ "$day" = "Sunday" ]
+then
+    echo "It's the weekend!"
+fi
+```
+
+<TerminalDemo>
+{`$ age=15
+$ has_permission="yes"
+$ if [ $age -ge 13 ] && [ "$has_permission" = "yes" ]
+> then
+>     echo "Access granted!"
+> else
+>     echo "Access denied!"
+> fi
+Access granted!`}
+</TerminalDemo>
+
+## The NOT Operator
+
+You can reverse a condition with `!` (NOT):
+
+<TerminalDemo>
+{`$ if [ ! -f "secret.txt" ]
+> then
+>     echo "Secret file doesn't exist!"
+> else
+>     echo "Secret file found!"
+> fi
+Secret file doesn't exist!`}
+</TerminalDemo>
+
+The `!` means "opposite" - so `[ ! -f "file.txt" ]` means "if file.txt does NOT exist."
+
+## A Complete Script Example
+
+Let's create a script that checks your system setup:
+
+<TerminalDemo>
+{`$ cat > system_check.sh << 'EOF'
+#!/bin/bash
+
+echo "=== SYSTEM CHECKER ==="
+echo
+
+# Check if running as root
+if [ "$USER" = "root" ]
+then
+    echo "Warning: Running as root user!"
+else
+    echo "Running as user: $USER"
+fi
+
+# Check disk space
+free_space=$(df -h / | tail -1 | awk '{print $5}' | sed 's/%//')
+if [ $free_space -gt 80 ]
+then
+    echo "Warning: Disk is $free_space% full!"
+elif [ $free_space -gt 50 ]
+then
+    echo "Disk usage: $free_space% - Monitor closely"
+else
+    echo "Disk usage: $free_space% - Looking good!"
+fi
+
+# Check if important directory exists
+if [ -d "$HOME/scripts" ]
+then
+    echo "Scripts directory: Found"
+else
+    echo "Scripts directory: Missing"
+    echo "Creating scripts directory..."
+    mkdir -p "$HOME/scripts"
+fi
+
+echo
+echo "=== CHECK COMPLETE ==="
+EOF
+
+$ chmod +x system_check.sh
+$ ./system_check.sh
+=== SYSTEM CHECKER ===
+
+Running as user: betty
+Disk usage: 45% - Looking good!
+Scripts directory: Found
+
+=== CHECK COMPLETE ===`}
+</TerminalDemo>
+
+## Practice Time!
+
+<Challenge
+  id="bash-conditionals-age"
+  title="Age Checker Script"
+  description="Create a script that checks age and responds accordingly"
+  steps={[
+    {
+      command: 'age=16',
+      hint: "Set the age variable"
+    },
+    {
+      command: 'if [ $age -lt 13 ]\nthen\n    echo "You are a kid!"\nelif [ $age -le 19 ]\nthen\n    echo "You are a teenager!"\nelse\n    echo "You are an adult!"\nfi',
+      hint: "Check age ranges with if/elif/else"
+    }
+  ]}
+  xp={25}
+  badge="conditional_master"
+/>
+
+## Common Mistakes to Avoid
+
+1. **Forgetting spaces around brackets:**
+   - WRONG: `[$a -eq $b]`
+   - RIGHT: `[ $a -eq $b ]`
+
+2. **Forgetting to close with fi:**
+   - Every `if` needs a `fi` at the end!
+
+3. **Using = for numbers:**
+   - WRONG: `[ $a = 5 ]`
+   - RIGHT: `[ $a -eq 5 ]`
+
+4. **Not quoting strings:**
+   - WRONG: `[ $name = betty ]`
+   - RIGHT: `[ "$name" = "betty" ]`
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does 'fi' do in bash?",
+    options: ["Starts an if statement", "Ends an if statement", "Means 'false if'", "It's a typo"],
+    correct: 1,
+    explanation: "fi (if backwards) marks the end of an if statement!"
+  },
+  {
+    question: "Which operator checks if a number is greater than another?",
+    options: ["-gt", ">", "-ge", "greater"],
+    correct: 0,
+    explanation: "-gt means 'greater than' when comparing numbers in bash!"
+  },
+  {
+    question: "How do you check if a file exists?",
+    options: ["[ -e filename ]", "[ file? ]", "exists filename", "[ -f filename ]"],
+    correct: 3,
+    explanation: "-f checks if a file exists and is a regular file. -e also works but checks any file or directory!"
+  },
+  {
+    question: "What does && mean between conditions?",
+    options: ["OR - either can be true", "AND - both must be true", "NOT - reverse condition", "MAYBE - one might be true"],
+    correct: 1,
+    explanation: "&& means AND - both conditions must be true for the whole thing to be true!"
+  },
+  {
+    question: "Why do we need spaces around brackets in [ $a -eq 5 ]?",
+    options: ["Just for looks", "Bash requires it", "Makes code faster", "Prevents viruses"],
+    correct: 1,
+    explanation: "Bash requires spaces around brackets because [ is actually a command, and bash needs spaces to separate it from its arguments!"
+  }
+]} />
+
+## Conditional Cheat Sheet
+
+```bash
+# Number comparisons
+[ $a -eq $b ]  # Equal
+[ $a -ne $b ]  # Not equal
+[ $a -gt $b ]  # Greater than
+[ $a -lt $b ]  # Less than
+[ $a -ge $b ]  # Greater or equal
+[ $a -le $b ]  # Less or equal
+
+# String comparisons
+[ "$a" = "$b" ]   # Equal
+[ "$a" != "$b" ]  # Not equal
+[ -z "$a" ]       # Empty string
+[ -n "$a" ]       # Not empty
+
+# File tests
+[ -f "file.txt" ]  # File exists
+[ -d "dir" ]       # Directory exists
+[ -r "file.txt" ]  # Readable
+[ -w "file.txt" ]  # Writable
+[ -x "script.sh" ] # Executable
+
+# Combining conditions
+[ condition1 ] && [ condition2 ]  # AND
+[ condition1 ] || [ condition2 ]  # OR
+[ ! condition ]                   # NOT
+```
+
+<StoryBox character="bash_betty">
+  You've mastered conditionals! Now your scripts can make smart decisions!
+
+  Next up, we'll learn about LOOPS - how to do the same thing multiple times without writing the same code over and over. Get ready to supercharge your scripts!
+</StoryBox>
+
+<NextLesson
+  track="bash"
+  lesson="07-loops"
+  teaser="Master loops and learn to automate repetitive tasks!"
+/>

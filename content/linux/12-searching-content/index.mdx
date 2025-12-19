@@ -1,0 +1,303 @@
+---
+title: "Searching Content"
+track: "linux"
+chapter: 3
+lesson: 12
+slug: "12-searching-content"
+prerequisites: ["11-reading-files"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Search inside files with grep
+  - Find files by name with find
+  - Use powerful search patterns
+  - Combine commands for advanced searches
+nextLesson: "13-text-editors"
+prevLesson: "11-reading-files"
+---
+
+# Searching Content
+
+<StoryBox character="commander_byte">
+  Soldier! You can read files now, but what if you need to find ONE specific piece of information in THOUSANDS of files?
+
+  That's where search commands become your best friends! Today you'll learn grep and find - two of the most powerful tools in your arsenal!
+
+  Let's turn you into a search ninja!
+</StoryBox>
+
+## Why Search Matters
+
+Imagine you're looking for:
+- A specific error in a 10,000 line log file
+- Which config file contains a certain setting
+- All files that mention "password"
+- Files created last week
+
+Searching manually would take FOREVER! Let's use the right tools instead.
+
+## The Grep Command
+
+`grep` searches INSIDE files for specific text. Think of it as "Find in Page" but for the terminal!
+
+<TerminalDemo>
+grep "hello" myfile.txt
+</TerminalDemo>
+
+This shows every line in `myfile.txt` that contains the word "hello"!
+
+<FunFact>
+  "grep" stands for "Global Regular Expression Print" - but everyone just calls it grep! It's one of the most famous Unix commands ever created!
+</FunFact>
+
+### Basic Grep Examples
+
+Let's create a test file and search it:
+
+<TerminalDemo>
+echo "The quick brown fox" > animals.txt
+echo "The lazy dog" >> animals.txt
+echo "The clever cat" >> animals.txt
+echo "A brave fox" >> animals.txt
+
+grep "fox" animals.txt
+</TerminalDemo>
+
+Output:
+```
+The quick brown fox
+A brave fox
+```
+
+### Grep Options
+
+Grep has super useful options:
+
+| Option | What It Does | Example |
+|--------|-------------|---------|
+| `-i` | Ignore case | `grep -i "FOX" file.txt` |
+| `-n` | Show line numbers | `grep -n "fox" file.txt` |
+| `-v` | Show lines that DON'T match | `grep -v "fox" file.txt` |
+| `-r` | Search recursively in folders | `grep -r "error" /var/log/` |
+| `-c` | Count matches | `grep -c "fox" file.txt` |
+
+<StoryBox character="pixel_the_penguin">
+  The `-i` option is super helpful! It makes "Fox", "fox", and "FOX" all match. Case-insensitive searching saves so much time!
+</StoryBox>
+
+### Grep in Action
+
+<TerminalDemo>
+# Find all lines with "error" (case insensitive)
+grep -i "error" system.log
+
+# Find "TODO" in all text files
+grep "TODO" *.txt
+
+# Count how many times "success" appears
+grep -c "success" results.txt
+
+# Show line numbers for matches
+grep -n "function" script.sh
+</TerminalDemo>
+
+## The Find Command
+
+While `grep` searches INSIDE files, `find` searches FOR files by name, size, date, and more!
+
+<TerminalDemo>
+find . -name "myfile.txt"
+</TerminalDemo>
+
+This searches the current directory (`.`) for a file named "myfile.txt".
+
+### Find Examples
+
+<TerminalDemo>
+# Find all .txt files
+find . -name "*.txt"
+
+# Find all .jpg images
+find . -name "*.jpg"
+
+# Find files in a specific directory
+find /home/pi/Documents -name "*.pdf"
+
+# Find directories only
+find . -type d -name "backup"
+
+# Find files only
+find . -type f -name "notes*"
+</TerminalDemo>
+
+<FunFact>
+  The `*` symbol is called a "wildcard" - it means "anything"! So `*.txt` means "anything that ends with .txt"!
+</FunFact>
+
+### Advanced Find
+
+Find can search by size, date, and permissions:
+
+<TerminalDemo>
+# Find large files (bigger than 10MB)
+find . -size +10M
+
+# Find files modified in last 7 days
+find . -mtime -7
+
+# Find empty files
+find . -empty
+</TerminalDemo>
+
+## Combining Grep and Find
+
+Here's where it gets POWERFUL! You can combine these commands:
+
+<TerminalDemo>
+# Find all .txt files and search them for "error"
+find . -name "*.txt" -exec grep -l "error" {} \;
+</TerminalDemo>
+
+The `-l` option makes grep show only filenames (not the matching lines).
+
+<StoryBox character="commander_byte">
+  This combination is pure power! Find locates the files, grep searches inside them. Together they're unstoppable!
+</StoryBox>
+
+## Search Patterns
+
+Grep can use special patterns (we'll keep it simple for now):
+
+<TerminalDemo>
+# Search for lines starting with "Error"
+grep "^Error" logfile.txt
+
+# Search for lines ending with "done"
+grep "done$" tasks.txt
+
+# Search for "cat" or "dog"
+grep -E "cat|dog" animals.txt
+</TerminalDemo>
+
+| Pattern | Meaning | Example |
+|---------|---------|---------|
+| `^` | Start of line | `^Hello` finds lines starting with Hello |
+| `$` | End of line | `bye$` finds lines ending with bye |
+| `\|` | OR (use with -E) | `cat\|dog` finds cat OR dog |
+| `.` | Any character | `c.t` matches cat, cot, cut |
+
+## Practice Time!
+
+<Challenge
+  id="search-practice"
+  title="Search Master"
+  description="Practice searching files and content"
+  steps={[
+    { command: "echo 'Error: File not found' > log1.txt", hint: "Create first log" },
+    { command: "echo 'Success: Operation complete' > log2.txt", hint: "Create second log" },
+    { command: "echo 'Error: Connection timeout' > log3.txt", hint: "Create third log" },
+    { command: "grep 'Error' *.txt", hint: "Find all errors" },
+    { command: "grep -c 'Error' log1.txt", hint: "Count errors in log1" },
+    { command: "find . -name 'log*.txt'", hint: "Find all log files" },
+    { command: "grep -l 'Success' *.txt", hint: "Which file has Success?" }
+  ]}
+  xp={35}
+/>
+
+## Real-World Examples
+
+Here's how pros use these commands:
+
+<TerminalDemo>
+# Find your Python projects
+find ~ -name "*.py"
+
+# Find TODO comments in your code
+grep -r "TODO" ~/projects/
+
+# Find large files taking up space
+find ~ -size +100M
+
+# Search system logs for errors
+grep -i "error" /var/log/syslog
+
+# Find recently modified files
+find . -mtime -1
+</TerminalDemo>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does grep do?",
+    options: [
+      "Finds files by name",
+      "Searches inside files for text",
+      "Deletes files",
+      "Creates files"
+    ],
+    correct: 1,
+    explanation: "grep searches INSIDE files for specific text patterns!"
+  },
+  {
+    question: "What does the -i option do in grep?",
+    options: [
+      "Shows line numbers",
+      "Ignores case (makes search case-insensitive)",
+      "Inverts the search",
+      "Includes hidden files"
+    ],
+    correct: 1,
+    explanation: "The -i option makes grep ignore case, so 'Error', 'error', and 'ERROR' all match!"
+  },
+  {
+    question: "What does 'find . -name \"*.txt\"' do?",
+    options: [
+      "Searches for text inside .txt files",
+      "Finds all files ending in .txt",
+      "Deletes .txt files",
+      "Creates a .txt file"
+    ],
+    correct: 1,
+    explanation: "find with -name searches for files by name. The * wildcard means 'anything'!"
+  },
+  {
+    question: "Which command shows only the count of matches?",
+    options: ["grep -n", "grep -c", "grep -l", "grep -v"],
+    correct: 1,
+    explanation: "grep -c counts the number of matching lines instead of showing them!"
+  }
+]} />
+
+## Command Cheat Sheet
+
+| Task | Command | Example |
+|------|---------|---------|
+| Search in file | `grep "text" file` | `grep "error" log.txt` |
+| Case-insensitive | `grep -i` | `grep -i "warning" log.txt` |
+| With line numbers | `grep -n` | `grep -n "TODO" code.py` |
+| Find files | `find . -name` | `find . -name "*.py"` |
+| Find large files | `find . -size` | `find . -size +10M` |
+| Search all files | `grep -r` | `grep -r "password" .` |
+
+## What You Learned
+
+You can now:
+- Search inside files with `grep`
+- Use grep options like `-i`, `-n`, `-r`, `-c`
+- Find files by name with `find`
+- Use wildcards (`*`) in searches
+- Combine find and grep for powerful searches
+
+<StoryBox character="pixel_the_penguin">
+  You're becoming a search wizard! These commands will save you HOURS of time in your Linux journey!
+
+  Next up: let's learn how to EDIT files with a text editor!
+</StoryBox>
+
+<NextLesson
+  track="linux"
+  lesson="13-text-editors"
+  teaser="Learn to create and edit files with the nano text editor!"
+/>

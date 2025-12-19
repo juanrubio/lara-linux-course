@@ -1,0 +1,373 @@
+---
+title: "Quest: The Secret Message"
+track: "linux"
+chapter: 3
+lesson: 15
+slug: "15-chapter3-quest"
+prerequisites: ["14-file-permissions"]
+estimatedTime: 25
+difficulty: "beginner"
+xpReward: 150
+objectives:
+  - Apply all Chapter 3 skills
+  - Read and search file contents
+  - Edit files with nano
+  - Manage file permissions
+  - Solve the mystery
+nextLesson: "16-pipes-redirection"
+prevLesson: "14-file-permissions"
+---
+
+# Quest: The Secret Message
+
+<StoryBox character="commander_byte">
+  URGENT MISSION BRIEFING!
+
+  The Digital Kingdom is under threat! The Shadow Hacker has hidden a secret message across multiple files in the system. This message contains critical information about their next attack!
+
+  Your mission: Use your file reading, searching, editing, and permission skills to find the scattered pieces, decode the message, and save the kingdom!
+
+  This is your most challenging quest yet. Are you ready, recruit?
+</StoryBox>
+
+## The Story
+
+Long ago, the Kingdom's greatest defender created a secret vault containing information about future threats. The vault was split into multiple files, encrypted, and hidden.
+
+Now the Shadow Hacker has found these files and added their own evil plans to them. You must:
+1. Find the scattered files
+2. Read their contents
+3. Extract the secret codes
+4. Assemble the final message
+5. Secure the evidence
+
+## Mission Setup
+
+First, let's create the mystery files:
+
+<Challenge
+  id="quest3-setup"
+  title="Initialize Mission Files"
+  description="Create the mission structure"
+  steps={[
+    { command: "mkdir ~/secret_mission", hint: "Create mission directory" },
+    { command: "cd ~/secret_mission", hint: "Enter the mission zone" },
+    { command: "mkdir clues evidence decoded", hint: "Create subdirectories" }
+  ]}
+  xp={20}
+/>
+
+## Part 1: Discover the Clues
+
+The first clue has been left for you. Create it:
+
+<Challenge
+  id="quest3-clues"
+  title="Create the Clue Files"
+  description="Set up the investigation"
+  steps={[
+    { command: "echo 'CLASSIFIED FILE ALPHA' > clues/file1.txt", hint: "Create first clue" },
+    { command: "echo 'Code Fragment: THE-' >> clues/file1.txt", hint: "Add to file" },
+    { command: "echo 'Next clue: Search for BETA' >> clues/file1.txt", hint: "Add hint" },
+    { command: "echo 'CLASSIFIED FILE BETA' > clues/file2.txt", hint: "Create second clue" },
+    { command: "echo 'Code Fragment: DIGITAL-' >> clues/file2.txt", hint: "Add fragment" },
+    { command: "echo 'Next clue: Look for GAMMA in logs' >> clues/file2.txt", hint: "Add hint" },
+    { command: "echo 'SYSTEM LOG FILE' > clues/logfile.txt", hint: "Create log" },
+    { command: "echo 'ERROR: Connection failed' >> clues/logfile.txt", hint: "Add noise" },
+    { command: "echo 'WARNING: Low memory' >> clues/logfile.txt", hint: "More noise" },
+    { command: "echo 'CLASSIFIED FILE GAMMA' >> clues/logfile.txt", hint: "Hidden clue!" },
+    { command: "echo 'Code Fragment: KINGDOM-' >> clues/logfile.txt", hint: "Add fragment" },
+    { command: "echo 'INFO: System running normally' >> clues/logfile.txt", hint: "More noise" }
+  ]}
+  xp={30}
+/>
+
+## Part 2: Read and Search
+
+Now use your skills to find the code fragments!
+
+<Challenge
+  id="quest3-reading"
+  title="Extract the Codes"
+  description="Read files and find code fragments"
+  steps={[
+    { command: "cat clues/file1.txt", hint: "Read the first clue" },
+    { command: "cat clues/file2.txt", hint: "Read the second clue" },
+    { command: "grep 'GAMMA' clues/logfile.txt", hint: "Search for GAMMA" },
+    { command: "grep 'Code Fragment' clues/*.txt", hint: "Find all code fragments" },
+    { command: "head -n 2 clues/file1.txt", hint: "Check file starts" },
+    { command: "tail -n 3 clues/logfile.txt", hint: "Check log end" }
+  ]}
+  xp={35}
+/>
+
+<StoryBox character="pixel_the_penguin">
+  Great work finding those fragments! Now you need to assemble them. Let me help you...
+
+  The fragments you found were:
+  - THE-
+  - DIGITAL-
+  - KINGDOM-
+
+  But there's more! Create a file with the complete message!
+</StoryBox>
+
+## Part 3: Assemble the Message
+
+Use nano to create the decoded message:
+
+<Challenge
+  id="quest3-decode"
+  title="Decode the Secret"
+  description="Assemble the complete message using nano"
+  steps={[
+    { command: "nano decoded/secret.txt", hint: "Open nano" },
+    {
+      command: "Type the assembled message: THE-DIGITAL-KINGDOM-IS-SAFE",
+      hint: "Combine all fragments"
+    },
+    { command: "Save with Ctrl+O, Enter", hint: "Write out the file" },
+    { command: "Exit with Ctrl+X", hint: "Close nano" },
+    { command: "cat decoded/secret.txt", hint: "Verify the message" }
+  ]}
+  xp={30}
+/>
+
+## Part 4: Create the Report
+
+Now document your findings:
+
+<Challenge
+  id="quest3-report"
+  title="Mission Report"
+  description="Create a detailed report"
+  steps={[
+    { command: "nano evidence/mission_report.txt", hint: "Create report" },
+    {
+      command: "Write a report with: Mission Date, Files Investigated, Secret Message Found, Status: Complete",
+      hint: "Be thorough!"
+    },
+    { command: "Save and exit nano", hint: "Ctrl+O, Ctrl+X" },
+    { command: "cat evidence/mission_report.txt", hint: "Review your report" }
+  ]}
+  xp={25}
+/>
+
+## Part 5: Secure the Evidence
+
+Finally, secure your files with proper permissions:
+
+<Challenge
+  id="quest3-secure"
+  title="Secure the Files"
+  description="Lock down sensitive information"
+  steps={[
+    { command: "ls -l decoded/secret.txt", hint: "Check current permissions" },
+    { command: "chmod 600 decoded/secret.txt", hint: "Make secret private (owner only)" },
+    { command: "chmod 400 evidence/mission_report.txt", hint: "Make report read-only" },
+    { command: "ls -l decoded/secret.txt", hint: "Verify secret is rw-------" },
+    { command: "ls -l evidence/mission_report.txt", hint: "Verify report is r--------" }
+  ]}
+  xp={30}
+/>
+
+<StoryBox character="commander_byte">
+  Outstanding work! Let me explain what you did:
+
+  - **600 permissions (rw-------)** on secret.txt means only YOU can read and write it
+  - **400 permissions (r--------)** on the report means only YOU can read it (no one can modify it)
+
+  This is proper evidence handling!
+</StoryBox>
+
+## Part 6: Final Verification
+
+Let's verify everything is in order:
+
+<Challenge
+  id="quest3-verify"
+  title="Mission Verification"
+  description="Confirm all objectives complete"
+  steps={[
+    { command: "pwd", hint: "Confirm you're in secret_mission" },
+    { command: "ls -la", hint: "List all directories" },
+    { command: "ls clues/", hint: "Verify clue files" },
+    { command: "ls decoded/", hint: "Verify decoded message" },
+    { command: "ls evidence/", hint: "Verify report" },
+    { command: "find . -name '*.txt'", hint: "Find all text files" },
+    { command: "grep -r 'KINGDOM' .", hint: "Search for KINGDOM in all files" }
+  ]}
+  xp={30}
+/>
+
+## Final Knowledge Check
+
+<StoryBox character="pixel_the_penguin">
+  Before we celebrate, let's test your knowledge of everything you've learned!
+</StoryBox>
+
+<Quiz questions={[
+  {
+    question: "Which command shows the last few lines of a file?",
+    options: ["head", "tail", "end", "last"],
+    correct: 1,
+    explanation: "tail shows the end of a file, while head shows the beginning!"
+  },
+  {
+    question: "What does 'grep \"ERROR\" logfile.txt' do?",
+    options: [
+      "Deletes errors from the file",
+      "Finds lines containing ERROR",
+      "Creates an error",
+      "Fixes errors"
+    ],
+    correct: 1,
+    explanation: "grep searches for text patterns. It finds and displays lines containing 'ERROR'!"
+  },
+  {
+    question: "How do you save a file in nano?",
+    options: ["Ctrl+S", "Ctrl+X", "Ctrl+O", "Ctrl+W"],
+    correct: 2,
+    explanation: "Ctrl+O writes Out (saves) the file in nano!"
+  },
+  {
+    question: "What does chmod 600 do?",
+    options: [
+      "Gives everyone access",
+      "Makes file read-only for owner",
+      "Gives owner read+write, blocks everyone else",
+      "Deletes the file"
+    ],
+    correct: 2,
+    explanation: "600 = rw------- (only owner can read and write, maximum privacy!)"
+  },
+  {
+    question: "What does 'cat file.txt' do?",
+    options: [
+      "Creates a file",
+      "Deletes a file",
+      "Displays file contents",
+      "Edits a file"
+    ],
+    correct: 2,
+    explanation: "cat displays the entire contents of a file to your screen!"
+  },
+  {
+    question: "How do you search for a specific file by name?",
+    options: ["grep -name", "find -name", "search -name", "locate -name"],
+    correct: 1,
+    explanation: "find with -name searches for files by their name!"
+  },
+  {
+    question: "What permission do you need to run a script?",
+    options: ["read", "write", "execute", "delete"],
+    correct: 2,
+    explanation: "Execute permission (x) is required to run scripts and programs!"
+  },
+  {
+    question: "Which is safer for a private file: 644 or 600?",
+    options: ["644 (everyone can read)", "600 (only owner can access)", "They're the same", "Both are unsafe"],
+    correct: 1,
+    explanation: "600 is safer because only you can access the file. 644 lets everyone read it!"
+  }
+]} />
+
+## Quest Complete!
+
+<StoryBox character="commander_byte">
+  MISSION ACCOMPLISHED!
+
+  You've successfully:
+  - Created and organized a mission directory structure
+  - Read multiple files with cat, head, and tail
+  - Searched for specific information with grep
+  - Found files using find
+  - Assembled information using nano
+  - Written a professional report
+  - Secured sensitive files with proper permissions
+  - Verified your work thoroughly
+
+  The Digital Kingdom is safe thanks to your skills! You've earned the title **File Content Master**!
+
+  You've mastered:
+  - **Reading:** cat, less, more, head, tail
+  - **Searching:** grep, find
+  - **Editing:** nano
+  - **Security:** chmod and permissions
+
+  You're becoming a true Linux warrior!
+</StoryBox>
+
+<StoryBox character="pixel_the_penguin">
+  I'm so proud of you! You took on a complex mission and solved it like a pro!
+
+  Remember: These skills aren't just for quests. You'll use them EVERY DAY as a Linux user:
+  - Reading log files to troubleshoot problems
+  - Searching code for bugs
+  - Editing configuration files
+  - Securing your private data
+
+  You're not just learning commands - you're learning how to think like a Linux expert!
+</StoryBox>
+
+## Rewards Earned
+
+- **XP:** +150
+- **Badge:** File Content Master
+- **Title:** Digital Detective
+- **Unlocked:** Chapter 4 - Advanced Commands
+
+## Skills Mastered
+
+| Category | Commands |
+|----------|----------|
+| **Reading** | cat, less, more, head, tail, tail -f |
+| **Searching** | grep, grep -i, grep -r, grep -n, find |
+| **Editing** | nano (all essential shortcuts) |
+| **Security** | chmod, permission codes, file security |
+
+## Mission Statistics
+
+If you completed all challenges, you've:
+- Created 12+ files
+- Used 8+ different file reading commands
+- Performed 6+ search operations
+- Edited files with nano
+- Changed permissions on 2 files
+- Executed 40+ commands total
+
+## Bonus Challenges
+
+Want to test your skills further? Try these on your own:
+
+1. **The Hidden Message:** Create 5 files, hide a word in each, then use grep to find all words and assemble a sentence
+2. **The Log Hunter:** Create a fake log with 100 lines, hide 5 "ERROR" messages, find them with grep
+3. **The Permission Puzzle:** Create files with different permissions (777, 755, 644, 600, 400) and explain when to use each
+4. **The Search Master:** Use find to locate all .txt files, then grep to search them all for a specific word
+
+## Clean Up (Optional)
+
+Want to remove the mission files?
+
+<TerminalDemo>
+# Be careful with rm -r!
+cd ~
+rm -r secret_mission
+
+# Or keep them for practice!
+</TerminalDemo>
+
+## What's Next?
+
+You've completed Chapter 3! Here's what's coming in Chapter 4:
+
+- **Pipes and Redirection:** Chain commands together
+- **Process Management:** Control running programs
+- **System Information:** Learn about your system
+- **And more!**
+
+<NextLesson
+  track="linux"
+  lesson="16-pipes-redirection"
+  teaser="Learn to chain commands with pipes and redirect output like a pro!"
+/>

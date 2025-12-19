@@ -1,0 +1,177 @@
+---
+title: "Understanding Directories"
+track: "linux"
+chapter: 2
+lesson: 6
+slug: "06-understanding-directories"
+prerequisites: ["05-chapter1-quest"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand the Linux file system hierarchy
+  - Learn about important system directories
+  - Recognize absolute vs relative paths
+nextLesson: "07-navigation"
+prevLesson: "05-chapter1-quest"
+---
+
+# Understanding Directories
+
+<StoryBox character="pixel_the_penguin">
+  Welcome to Chapter 2, explorer! Now things get really interesting!
+
+  Think of the Linux file system like a giant upside-down tree. At the top is the root (the trunk), and everything branches down from there. Let me show you around!
+</StoryBox>
+
+## The Root of Everything: /
+
+In Linux, EVERYTHING starts from one place: the **root directory**, written as `/`.
+
+Unlike Windows (which has C:, D:, etc.), Linux has just ONE tree, and everything - your files, programs, devices - lives somewhere in this tree!
+
+```
+/
+├── home/        (Your personal stuff)
+├── bin/         (Essential commands)
+├── etc/         (System settings)
+├── var/         (Changing data like logs)
+├── tmp/         (Temporary files)
+└── ...          (And more!)
+```
+
+<FunFact>
+  Even your USB drive and external hard drives appear inside this tree! Linux creates a folder for them and "mounts" them there. Everything is a file or folder in Linux!
+</FunFact>
+
+## Important Directories to Know
+
+| Directory | What's Inside | Think of it like... |
+|-----------|--------------|-------------------|
+| `/` | The root of everything | The lobby of a building |
+| `/home` | User home directories | Apartment floors |
+| `/home/lara` | YOUR personal folder | Your apartment |
+| `/bin` | Basic commands (ls, pwd) | Essential tools |
+| `/etc` | Configuration files | The building's control room |
+| `/tmp` | Temporary files | A whiteboard (erased on reboot) |
+| `/var` | Changing data (logs) | File cabinets |
+
+## Home Sweet Home: ~
+
+Your **home directory** is YOUR space. It's where you keep your files, downloads, and projects.
+
+<TerminalDemo>
+{`learner@codequest:~$ pwd
+/home/learner
+
+learner@codequest:~$ cd /
+learner@codequest:/$ pwd
+/
+
+learner@codequest:/$ cd ~
+learner@codequest:~$ pwd
+/home/learner`}
+</TerminalDemo>
+
+The `~` (tilde) is a shortcut that ALWAYS means "my home folder"!
+
+## Absolute vs Relative Paths
+
+There are two ways to describe locations:
+
+### Absolute Paths (Start from /)
+
+Like a full street address. Always starts with `/`.
+
+```
+/home/learner/Documents/homework.txt
+```
+
+This works from ANYWHERE because it's the complete path from the root.
+
+### Relative Paths (From where you are)
+
+Like saying "it's next door." Depends on your current location.
+
+```
+Documents/homework.txt
+```
+
+This only works if you're already in `/home/learner/`!
+
+<StoryBox character="pixel_the_penguin">
+  Think of it like giving directions:
+
+  - **Absolute:** "Go to 123 Main Street, Apartment 4B"
+  - **Relative:** "Go next door and turn left"
+
+  Both can get you there, but one depends on where you start!
+</StoryBox>
+
+## Special Directory Shortcuts
+
+| Symbol | Meaning | Example |
+|--------|---------|---------|
+| `/` | Root directory | `cd /` |
+| `~` | Your home directory | `cd ~` |
+| `.` | Current directory | `./script.sh` |
+| `..` | Parent directory (one up) | `cd ..` |
+
+<FunFact>
+  The `..` is super useful! If you're in `/home/learner/Documents/projects`, typing `cd ..` takes you to `/home/learner/Documents`. It's like climbing up a ladder!
+</FunFact>
+
+## Practice: Explore the System
+
+<Challenge
+  id="ch2-directories"
+  title="Directory Explorer"
+  description="Navigate and explore the file system"
+  steps={[
+    { command: "pwd", hint: "Where are you now?" },
+    { command: "ls /", hint: "Look at the root directory" },
+    { command: "ls /home", hint: "See what's in home" },
+    { command: "ls ~", hint: "List YOUR home folder" }
+  ]}
+  xp={30}
+  badge="directory_explorer"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does the root directory / contain?",
+    options: ["Only your files", "Everything in the system", "Only system files", "Nothing"],
+    correct: 1,
+    explanation: "The root / is the top of the tree - EVERYTHING branches from it!"
+  },
+  {
+    question: "Which path is absolute?",
+    options: ["Documents/file.txt", "../photos", "/home/user/file.txt", "./script.sh"],
+    correct: 2,
+    explanation: "Absolute paths always start with / and show the full path from root!"
+  },
+  {
+    question: "What does ~ represent?",
+    options: ["The root directory", "The tmp folder", "Your home directory", "The current directory"],
+    correct: 2,
+    explanation: "The tilde ~ is a shortcut for your personal home directory!"
+  },
+  {
+    question: "What does .. mean?",
+    options: ["Current directory", "Root directory", "Home directory", "Parent directory (one level up)"],
+    correct: 3,
+    explanation: "Two dots (..) mean go up one directory level to the parent folder!"
+  }
+]} />
+
+## What's Next?
+
+Now that you understand HOW directories work, let's learn to actually MOVE between them!
+
+<NextLesson
+  track="linux"
+  lesson="07-navigation"
+  teaser="Learn to teleport through the file system with cd!"
+/>

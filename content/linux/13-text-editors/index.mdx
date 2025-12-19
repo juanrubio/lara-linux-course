@@ -1,0 +1,326 @@
+---
+title: "Text Editors"
+track: "linux"
+chapter: 3
+lesson: 13
+slug: "13-text-editors"
+prerequisites: ["12-searching-content"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Learn to use the nano text editor
+  - Create and edit files directly
+  - Save and exit properly
+  - Navigate within files
+nextLesson: "14-file-permissions"
+prevLesson: "12-searching-content"
+---
+
+# Text Editors
+
+<StoryBox character="pixel_the_penguin">
+  Time to level up! You can read files, search them, but now you need to CREATE and EDIT them!
+
+  Text editors are like word processors for programmers. They let you write code, edit configuration files, take notes, and more!
+
+  Today we're learning nano - the friendliest text editor in Linux!
+</StoryBox>
+
+## Why Use Text Editors?
+
+In Linux, EVERYTHING is configured through text files:
+- System settings
+- Network configuration
+- Program behavior
+- Scripts and code
+
+Learning a text editor is ESSENTIAL for any Linux user!
+
+## Meet Nano
+
+Nano is a simple, beginner-friendly text editor that runs in your terminal. Unlike Notepad on Windows, nano works entirely with keyboard shortcuts!
+
+<FunFact>
+  Nano was created as a free alternative to an editor called Pico. The name "nano" comes from nano-technology - something very small and precise!
+</FunFact>
+
+### Starting Nano
+
+<TerminalDemo>
+# Create a new file
+nano myfile.txt
+
+# Edit an existing file
+nano existing.txt
+
+# Create a file in a specific location
+nano ~/Documents/notes.txt
+</TerminalDemo>
+
+When nano opens, you'll see:
+- The file name at the top
+- The editing area in the middle
+- Keyboard shortcuts at the bottom
+
+<StoryBox character="commander_byte">
+  See those symbols at the bottom? The `^` means "Ctrl". So `^X` means "press Ctrl+X"!
+</StoryBox>
+
+## Nano Basics
+
+Once nano is open, just start typing! It's that simple.
+
+### Essential Shortcuts
+
+| Shortcut | What It Does | Remember It As |
+|----------|-------------|----------------|
+| `Ctrl+X` | Exit nano | "X" for eXit |
+| `Ctrl+O` | Save (write Out) | "O" for Output |
+| `Ctrl+W` | Search (Where is) | "W" for Where |
+| `Ctrl+K` | Cut line | "K" for Kut (cut) |
+| `Ctrl+U` | Paste (UnCut) | "U" for Uncut |
+| `Ctrl+G` | Get Help | "G" for Get help |
+
+<FunFact>
+  These shortcuts work even if Caps Lock is on! Nano only cares about the Ctrl key.
+</FunFact>
+
+## Creating Your First File
+
+Let's create a file step by step:
+
+<Challenge
+  id="nano-first-file"
+  title="Your First Nano File"
+  description="Create and save a file using nano"
+  steps={[
+    { command: "nano welcome.txt", hint: "Opens nano with a new file" },
+    {
+      command: "Type: Hello from Nano! This is my first file.",
+      hint: "Just type normally"
+    },
+    { command: "Press Ctrl+O", hint: "This saves (writes Out)" },
+    { command: "Press Enter", hint: "Confirms the filename" },
+    { command: "Press Ctrl+X", hint: "Exits nano" },
+    { command: "cat welcome.txt", hint: "Verify your file was created!" }
+  ]}
+  xp={30}
+/>
+
+## Navigating in Nano
+
+When editing longer files, you need to move around:
+
+### Movement Keys
+
+| Key | Movement |
+|-----|----------|
+| Arrow keys | Move cursor |
+| `Ctrl+A` | Go to start of line |
+| `Ctrl+E` | Go to end of line |
+| `Ctrl+Y` | Page up |
+| `Ctrl+V` | Page down |
+| `Ctrl+_` | Go to specific line number |
+
+## Editing Text
+
+### Cutting and Pasting
+
+<TerminalDemo>
+1. Move cursor to line you want to cut
+2. Press Ctrl+K to cut the line
+3. Move cursor to where you want to paste
+4. Press Ctrl+U to paste (uncut)
+</TerminalDemo>
+
+You can cut multiple lines by pressing `Ctrl+K` multiple times!
+
+### Searching
+
+<TerminalDemo>
+1. Press Ctrl+W (Where is)
+2. Type the text you're searching for
+3. Press Enter
+4. Press Ctrl+W again to find next occurrence
+</TerminalDemo>
+
+<StoryBox character="pixel_the_penguin">
+  Pro tip: If you want to replace text, press `Ctrl+\` (backslash) instead of `Ctrl+W`. Nano will ask what to find and what to replace it with!
+</StoryBox>
+
+## Saving and Exiting
+
+### The Save Process
+
+When you press `Ctrl+O` to save:
+1. Nano shows the filename at the bottom
+2. Press `Enter` to keep the name
+3. Or type a new name and press `Enter`
+
+### The Exit Process
+
+When you press `Ctrl+X`:
+- If you haven't changed anything, nano exits immediately
+- If you made changes, nano asks: "Save modified buffer?"
+  - Press `Y` to save
+  - Press `N` to discard changes
+  - Press `Ctrl+C` to cancel and keep editing
+
+<FunFact>
+  Never used "Ctrl+C" before? It's the universal "cancel" command in Linux! Use it to stop most commands.
+</FunFact>
+
+## Common Nano Tasks
+
+### Task 1: Edit a Configuration File
+
+<TerminalDemo>
+# Create a config file
+nano ~/.config/myapp.conf
+
+# Add settings
+app_name=MyApp
+debug=true
+max_users=100
+
+# Save with Ctrl+O, exit with Ctrl+X
+</TerminalDemo>
+
+### Task 2: Write a Simple Script
+
+<TerminalDemo>
+# Create a script
+nano hello.sh
+
+# Add this code:
+#!/bin/bash
+echo "Hello, World!"
+echo "Today is $(date)"
+
+# Save and exit
+</TerminalDemo>
+
+### Task 3: Quick Notes
+
+<TerminalDemo>
+# Quick note-taking
+nano ~/notes.txt
+
+# Type your thoughts, save, done!
+</TerminalDemo>
+
+## Nano Cheat Sheet
+
+<TerminalDemo>
+╔══════════════════════════════════════╗
+║        NANO QUICK REFERENCE          ║
+╠══════════════════════════════════════╣
+║ MUST KNOW:                           ║
+║ Ctrl+O  Save file                    ║
+║ Ctrl+X  Exit                         ║
+║                                      ║
+║ EDITING:                             ║
+║ Ctrl+K  Cut line                     ║
+║ Ctrl+U  Paste line                   ║
+║                                      ║
+║ NAVIGATION:                          ║
+║ Ctrl+A  Start of line                ║
+║ Ctrl+E  End of line                  ║
+║                                      ║
+║ SEARCH:                              ║
+║ Ctrl+W  Search (Where is)            ║
+║ Ctrl+\  Search and replace           ║
+║                                      ║
+║ HELP:                                ║
+║ Ctrl+G  Get help                     ║
+╚══════════════════════════════════════╝
+</TerminalDemo>
+
+## Practice Challenge
+
+<Challenge
+  id="nano-practice"
+  title="Nano Editor Master"
+  description="Complete editing tasks using nano"
+  steps={[
+    { command: "nano shopping.txt", hint: "Create a new file" },
+    {
+      command: "Type a shopping list with 3 items",
+      hint: "- Apples\n- Bread\n- Milk"
+    },
+    { command: "Save with Ctrl+O, Enter", hint: "Write Out the file" },
+    { command: "Add 2 more items", hint: "Just keep typing!" },
+    { command: "Use Ctrl+K to cut one line", hint: "Move cursor to line first" },
+    { command: "Use Ctrl+U to paste it elsewhere", hint: "Move cursor and UnCut" },
+    { command: "Save and exit with Ctrl+X", hint: "It will ask to save" },
+    { command: "cat shopping.txt", hint: "Verify your edits!" }
+  ]}
+  xp={35}
+/>
+
+## Alternative Editors
+
+Nano is beginner-friendly, but you'll hear about others:
+
+| Editor | Difficulty | Best For |
+|--------|-----------|----------|
+| **nano** | Easy | Beginners, quick edits |
+| **vim** | Hard | Power users, speed |
+| **emacs** | Hard | Programmers, customization |
+| **micro** | Easy | Modern nano alternative |
+
+<StoryBox character="commander_byte">
+  Start with nano. Once you're comfortable, you can explore vim or emacs. But nano will serve you well for years!
+</StoryBox>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "How do you save a file in nano?",
+    options: ["Ctrl+S", "Ctrl+O", "Ctrl+W", "Ctrl+X"],
+    correct: 1,
+    explanation: "Ctrl+O writes Out (saves) the file!"
+  },
+  {
+    question: "How do you exit nano?",
+    options: ["Ctrl+Q", "Ctrl+E", "Ctrl+X", "Type 'exit'"],
+    correct: 2,
+    explanation: "Ctrl+X exits nano. If you have unsaved changes, it will ask if you want to save!"
+  },
+  {
+    question: "What does Ctrl+K do in nano?",
+    options: ["Saves the file", "Cuts (deletes) the current line", "Copies the line", "Closes nano"],
+    correct: 1,
+    explanation: "Ctrl+K cuts the current line. Use Ctrl+U to paste it elsewhere!"
+  },
+  {
+    question: "What does the ^ symbol mean in nano shortcuts?",
+    options: ["Press Shift", "Press Alt", "Press Ctrl", "Press Enter"],
+    correct: 2,
+    explanation: "The ^ symbol represents the Ctrl key. So ^X means Ctrl+X!"
+  }
+]} />
+
+## What You Learned
+
+You can now:
+- Open files in nano
+- Type and edit text
+- Cut and paste lines
+- Search for text
+- Save files properly
+- Exit nano safely
+
+<StoryBox character="pixel_the_penguin">
+  Congratulations! You can now create and edit files like a pro! This is a HUGE skill in Linux!
+
+  Next up: File permissions! You'll learn how to control who can read, write, and execute your files!
+</StoryBox>
+
+<NextLesson
+  track="linux"
+  lesson="14-file-permissions"
+  teaser="Learn to control file access with chmod and permissions!"
+/>

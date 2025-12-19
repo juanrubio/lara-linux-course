@@ -1,0 +1,220 @@
+---
+title: "System Information"
+track: "linux"
+chapter: 4
+lesson: 16
+slug: "16-system-information"
+prerequisites: ["15-chapter3-quest"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Check system details with uname
+  - View hostname information
+  - Monitor system uptime
+  - Display and manage date and time
+nextLesson: "17-disk-usage"
+prevLesson: "15-chapter3-quest"
+---
+
+# System Information
+
+<StoryBox character="commander_byte">
+  Welcome to Chapter 4: System Explorer!
+
+  Every great Linux warrior needs to know their system inside and out! In this chapter, you'll learn to inspect your digital fortress - checking its name, how long it's been running, and gathering intelligence about your hardware!
+
+  Let's start by learning who and what we're dealing with!
+</StoryBox>
+
+## Command 1: uname - System Identity
+
+**uname** stands for "**U**nix **NAME**" - it reveals information about your operating system!
+
+<TerminalDemo>
+{`learner@codequest:~$ uname
+Linux`}
+</TerminalDemo>
+
+That's nice, but not very informative. Let's get more details!
+
+### uname -a: All Information
+
+<TerminalDemo>
+{`learner@codequest:~$ uname -a
+Linux codequest 6.5.0-15-generic #15-Ubuntu SMP x86_64 GNU/Linux`}
+</TerminalDemo>
+
+This tells you EVERYTHING: the kernel name, hostname, kernel version, processor type, and more!
+
+### Useful uname Options
+
+| Command | What it shows |
+|---------|---------------|
+| `uname` | Operating system name |
+| `uname -s` | Kernel name (Linux) |
+| `uname -n` | Network node (hostname) |
+| `uname -r` | Kernel release version |
+| `uname -m` | Machine hardware (x86_64, arm, etc.) |
+| `uname -a` | ALL information |
+
+<FunFact>
+  The kernel version number tells you how up-to-date your system is! Higher numbers mean newer versions. The format is usually MAJOR.MINOR.PATCH (like 6.5.0).
+</FunFact>
+
+## Command 2: hostname - What's My Name?
+
+Every computer has a name on the network. The **hostname** command shows it!
+
+<TerminalDemo>
+{`learner@codequest:~$ hostname
+codequest`}
+</TerminalDemo>
+
+This is your computer's name! Other computers on the network can use this name to find you.
+
+### Check Your Full Domain Name
+
+<TerminalDemo>
+{`learner@codequest:~$ hostname -f
+codequest.local`}
+</TerminalDemo>
+
+<StoryBox character="pixel_the_penguin">
+  Think of your hostname like your computer's nickname! Just like you might be called "Alex" at home but "Alexander Smith" formally, your computer has a short name (hostname) and a full name (FQDN - Fully Qualified Domain Name).
+</StoryBox>
+
+## Command 3: uptime - How Long Has It Been Running?
+
+The **uptime** command tells you how long your system has been running since the last reboot!
+
+<TerminalDemo>
+{`learner@codequest:~$ uptime
+ 14:23:01 up 5 days,  3:45,  2 users,  load average: 0.52, 0.48, 0.41`}
+</TerminalDemo>
+
+This shows:
+- Current time: 14:23:01
+- Uptime: 5 days and 3 hours 45 minutes
+- Users: 2 users logged in
+- Load average: How busy the system is
+
+<FunFact>
+  Server administrators brag about uptime! Some servers run for years without rebooting. The world record is over 20 YEARS of continuous operation!
+</FunFact>
+
+## Command 4: date - What Time Is It?
+
+The **date** command shows the current date and time!
+
+<TerminalDemo>
+{`learner@codequest:~$ date
+Fri Dec 19 14:23:45 EST 2025`}
+</TerminalDemo>
+
+### Format the Date Your Way
+
+You can customize the output format:
+
+<TerminalDemo>
+{`learner@codequest:~$ date +%Y-%m-%d
+2025-12-19
+
+learner@codequest:~$ date +"%A, %B %d, %Y"
+Friday, December 19, 2025
+
+learner@codequest:~$ date +%s
+1734631425`}
+</TerminalDemo>
+
+The last one shows "Unix timestamp" - seconds since January 1, 1970!
+
+## System Information Summary
+
+| Command | Purpose | Example Output |
+|---------|---------|----------------|
+| `uname` | OS name | `Linux` |
+| `uname -r` | Kernel version | `6.5.0-15-generic` |
+| `uname -m` | Architecture | `x86_64` |
+| `hostname` | Computer name | `codequest` |
+| `uptime` | Time running | `up 5 days` |
+| `date` | Current date/time | `Fri Dec 19 14:23:45` |
+
+<StoryBox character="commander_byte">
+  These commands are like your system's ID card! Whenever you need to troubleshoot or get help online, people will ask "What's your kernel version?" or "What architecture are you running?" - now you know how to find out!
+</StoryBox>
+
+## Practice: System Detective
+
+<Challenge
+  id="ch4-system-info"
+  title="System Detective"
+  description="Gather intelligence about your system"
+  steps={[
+    { command: "uname", hint: "What operating system?" },
+    { command: "uname -r", hint: "What kernel version?" },
+    { command: "hostname", hint: "What's your computer's name?" },
+    { command: "uptime", hint: "How long has it been running?" },
+    { command: "date", hint: "What's the current date and time?" }
+  ]}
+  xp={30}
+  badge="system_detective"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What command shows your operating system name?",
+    options: ["osname", "uname", "system", "linux"],
+    correct: 1,
+    explanation: "uname displays Unix/Linux system information!"
+  },
+  {
+    question: "What does the 'uptime' command tell you?",
+    options: [
+      "Current time only",
+      "How long the system has been running",
+      "How fast your CPU is",
+      "Your internet speed"
+    ],
+    correct: 1,
+    explanation: "uptime shows how long your system has been running since the last boot!"
+  },
+  {
+    question: "What does 'hostname' display?",
+    options: [
+      "Your username",
+      "Your home directory",
+      "Your computer's network name",
+      "Your IP address"
+    ],
+    correct: 2,
+    explanation: "hostname shows your computer's name on the network!"
+  },
+  {
+    question: "Which uname option shows ALL information?",
+    options: ["-all", "-info", "-a", "-everything"],
+    correct: 2,
+    explanation: "-a shows all available system information at once!"
+  }
+]} />
+
+## Real-World Use Cases
+
+**Why are these commands useful?**
+
+1. **Tech Support**: When asking for help, you'll need to share your kernel version
+2. **System Monitoring**: Check if your server has been running reliably
+3. **Script Writing**: Programs need to know what system they're running on
+4. **Troubleshooting**: Different systems behave differently - know yours!
+
+## What's Next?
+
+You've learned to identify your system! Next, we'll explore disk space and usage.
+
+<NextLesson
+  track="linux"
+  lesson="17-disk-usage"
+  teaser="Learn to check disk space and find what's eating up your storage!"
+/>

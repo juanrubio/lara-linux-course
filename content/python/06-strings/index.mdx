@@ -1,0 +1,236 @@
+---
+title: "Strings"
+track: "python"
+chapter: 2
+lesson: 6
+slug: "06-strings"
+prerequisites: ["05-chapter1-quest"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand what strings are and how to use them
+  - Learn about single and double quotes
+  - Master string concatenation
+  - Create multi-line strings
+nextLesson: "07-input"
+prevLesson: "05-chapter1-quest"
+---
+
+# Strings
+
+<StoryBox character="python_pete">
+  Hey there, code adventurer! Python Pete here, ready to help you master the art of working with text!
+
+  You know how we've been using print() to display messages? Well, all that text we've been printing are called STRINGS! And today, we're going to become string wizards!
+
+  Think of strings like magic spells - they're how we make our programs talk, write messages, and communicate with users!
+</StoryBox>
+
+## What is a String?
+
+A **string** is just a fancy word for text. Any letters, numbers, symbols, or spaces that you want to store or display are strings!
+
+In Python, you create strings by wrapping text in quotes:
+
+<TerminalDemo>
+{`>>> print("Hello, World!")
+Hello, World!
+
+>>> print('Python is awesome!')
+Python is awesome!`}
+</TerminalDemo>
+
+<FunFact>
+  Why are they called "strings"? Because text is like a string of characters beaded together - each letter, number, or symbol is one bead on the string!
+</FunFact>
+
+## Single Quotes vs Double Quotes
+
+Python is cool - you can use EITHER single quotes `'` or double quotes `"` for strings. They work exactly the same!
+
+<TerminalDemo>
+{`>>> message1 = "Hello!"
+>>> message2 = 'Hello!'
+>>> print(message1)
+Hello!
+>>> print(message2)
+Hello!`}
+</TerminalDemo>
+
+But why have both? Because sometimes you need quotes INSIDE your string:
+
+<TerminalDemo>
+{`>>> print("Python Pete says, 'Code is fun!'")
+Python Pete says, 'Code is fun!'
+
+>>> print('My favorite symbol is the "hashtag"')
+My favorite symbol is the "hashtag"`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  See the trick? Use double quotes on the outside when you need single quotes inside, and vice versa! It's like nesting boxes!
+</StoryBox>
+
+## String Concatenation - Gluing Strings Together
+
+Want to combine strings? Use the `+` operator! This is called **concatenation** (big word alert!).
+
+<TerminalDemo>
+{`>>> first_name = "Ada"
+>>> last_name = "Lovelace"
+>>> full_name = first_name + " " + last_name
+>>> print(full_name)
+Ada Lovelace`}
+</TerminalDemo>
+
+You can also repeat strings using `*`:
+
+<TerminalDemo>
+{`>>> laugh = "ha"
+>>> print(laugh * 5)
+hahahahaha
+
+>>> cheer = "Hip "
+>>> print(cheer * 3 + "Hooray!")
+Hip Hip Hip Hooray!`}
+</TerminalDemo>
+
+<FunFact>
+  Notice we added a space " " between the names? Without it, we'd get "AdaLovelace" - strings stick together EXACTLY as you tell them to!
+</FunFact>
+
+## Multi-Line Strings
+
+Need a string that spans multiple lines? Use three quotes (`"""` or `'''`):
+
+<TerminalDemo>
+{`>>> poem = """
+... Roses are red,
+... Violets are blue,
+... Python is awesome,
+... And so are you!
+... """
+>>> print(poem)
+
+Roses are red,
+Violets are blue,
+Python is awesome,
+And so are you!`}
+</TerminalDemo>
+
+## Special Characters - The Escape Artist
+
+What if you need BOTH types of quotes in the same string? Use a backslash `\\` to "escape" special characters:
+
+<TerminalDemo>
+{`>>> print("Python Pete says, \\"Code is fun!\\"")
+Python Pete says, "Code is fun!"
+
+>>> print('It\\'s a beautiful day!')
+It's a beautiful day!`}
+</TerminalDemo>
+
+Other useful escape sequences:
+
+| Escape | What it does | Example |
+|--------|--------------|---------|
+| `\\n` | New line | `"Line 1\\nLine 2"` |
+| `\\t` | Tab space | `"Name:\\tPete"` |
+| `\\\\` | Actual backslash | `"C:\\\\Users"` |
+
+<TerminalDemo>
+{`>>> print("First Line\\nSecond Line\\nThird Line")
+First Line
+Second Line
+Third Line`}
+</TerminalDemo>
+
+## Practice Time!
+
+<Challenge
+  id="ch2-strings"
+  title="String Master"
+  description="Practice creating and combining strings"
+  steps={[
+    {
+      command: 'name = "Python Pete"',
+      hint: "Create a string variable with a name"
+    },
+    {
+      command: 'greeting = "Hello, " + name + "!"',
+      hint: "Combine strings with +"
+    },
+    {
+      command: 'print(greeting)',
+      hint: "Display your combined string"
+    },
+    {
+      command: 'print("=" * 20)',
+      hint: "Create a line of 20 equal signs"
+    }
+  ]}
+  xp={30}
+  badge="string_wizard"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "Which of these is a valid string in Python?",
+    options: ['"Hello World"', "'Python Rocks'", '"""Multi-line"""', "All of the above"],
+    correct: 3,
+    explanation: "All of these are valid! Python accepts single quotes, double quotes, and triple quotes for strings."
+  },
+  {
+    question: "What does 'Hi' * 3 produce?",
+    options: ["HiHiHi", "Hi Hi Hi", "Hi3", "Error"],
+    correct: 0,
+    explanation: "The * operator repeats strings. 'Hi' * 3 produces 'HiHiHi' with no spaces!"
+  },
+  {
+    question: "How do you create a string that spans multiple lines?",
+    options: ["Use single quotes", "Use double quotes", "Use triple quotes", "Use parentheses"],
+    correct: 2,
+    explanation: "Triple quotes (\"\"\" or ''') allow strings to span multiple lines!"
+  },
+  {
+    question: "What does \\n do in a string?",
+    options: ["Makes text bold", "Creates a new line", "Adds a space", "Deletes a character"],
+    correct: 1,
+    explanation: "\\n is the newline character - it moves to a new line when printed!"
+  }
+]} />
+
+## String Tips & Tricks
+
+<StoryBox character="python_pete">
+  Here are some pro tips for working with strings:
+
+  1. **Be Consistent**: Pick either single or double quotes and stick with it (unless you need both!)
+  2. **Watch Your Spaces**: When concatenating, remember to add spaces where needed
+  3. **Use Variables**: Store strings in variables to reuse them easily
+  4. **Triple Quotes for Long Text**: Perfect for paragraphs, poems, or ASCII art!
+</StoryBox>
+
+## String Cheat Sheet
+
+| Operation | Syntax | Example | Result |
+|-----------|--------|---------|--------|
+| Create string | `"text"` or `'text'` | `"Hello"` | Hello |
+| Concatenate | `string1 + string2` | `"Hi" + " there"` | Hi there |
+| Repeat | `string * number` | `"Go! " * 3` | Go! Go! Go! |
+| Multi-line | `"""text"""` | `"""Line 1\nLine 2"""` | Two lines |
+| New line | `\n` | `"First\nSecond"` | Two lines |
+| Tab | `\t` | `"Name:\tPete"` | Name:    Pete |
+
+## What's Next?
+
+Now that you can work with text, it's time to learn how to GET text FROM users! In the next lesson, we'll learn about the `input()` function - how to make your programs interactive!
+
+<NextLesson
+  track="python"
+  lesson="07-input"
+  teaser="Learn to make your programs talk back and forth with users!"
+/>

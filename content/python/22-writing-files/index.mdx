@@ -1,0 +1,369 @@
+---
+title: "Writing Files"
+chapter: 5
+lesson: 22
+xp: 50
+difficulty: "intermediate"
+prevLesson: "21-reading-files"
+description: "Master the art of writing data to files and creating your own persistent storage"
+---
+
+import StoryBox from '@/components/StoryBox'
+import FunFact from '@/components/FunFact'
+import TerminalDemo from '@/components/TerminalDemo'
+import Challenge from '@/components/Challenge'
+import Quiz from '@/components/Quiz'
+import NextLesson from '@/components/NextLesson'
+
+<StoryBox character="python_pete" mood="excited">
+Welcome back, file wizard! Last time you learned to **read** from files. But what if you want to **create** your own files? What if you want to save a player's progress, write a log of events, or even create a simple database?
+
+Today, we're learning the power of **writing to files**. This is where things get really exciting!
+</StoryBox>
+
+## File Modes: The Gateway to Writing
+
+When you open a file, you need to tell Python what you want to do with it. We've used `"r"` for reading. Now meet the writing modes:
+
+<FunFact title="File Modes Cheat Sheet">
+- `"r"` - **Read** mode (default). File must exist or you get an error.
+- `"w"` - **Write** mode. Creates file if it doesn't exist. **WARNING: Erases existing content!**
+- `"a"` - **Append** mode. Adds to the end of the file without erasing.
+- `"x"` - **Exclusive creation**. Creates file only if it doesn't exist (fails if it does).
+- `"r+"` - Read and write mode (we'll skip this for now).
+</FunFact>
+
+## Writing with `"w"` Mode
+
+The `"w"` mode is powerful but dangerous! It's like having an eraser that automatically wipes the page before you start writing.
+
+<TerminalDemo>
+```python
+# Create a new file (or erase an existing one!)
+with open("my_story.txt", "w") as file:
+    file.write("Once upon a time...\n")
+    file.write("There was a brave Python programmer.\n")
+
+print("File created successfully!")
+```
+</TerminalDemo>
+
+<StoryBox character="python_pete" mood="warning">
+**CAUTION!** If `my_story.txt` already existed, the `"w"` mode just **erased all its content** before writing the new lines!
+
+Think of `"w"` as "write from scratch" - it always starts with a blank file.
+</StoryBox>
+
+Let's verify our file was created:
+
+<TerminalDemo>
+```python
+# Now let's read what we wrote
+with open("my_story.txt", "r") as file:
+    content = file.read()
+    print(content)
+
+# Output:
+# Once upon a time...
+# There was a brave Python programmer.
+```
+</TerminalDemo>
+
+## The `.write()` Method
+
+The `.write()` method writes a string to the file. Important things to know:
+
+1. **It doesn't add newlines automatically** - you need to add `\n` yourself
+2. You can call it multiple times
+3. It returns the number of characters written
+
+<TerminalDemo>
+```python
+with open("numbers.txt", "w") as file:
+    file.write("First line\n")
+    file.write("Second line\n")
+    file.write("Third line\n")
+
+# numbers.txt now contains three lines
+```
+</TerminalDemo>
+
+## The `.writelines()` Method
+
+If you have a list of strings, you can write them all at once with `.writelines()`:
+
+<TerminalDemo>
+```python
+lines = [
+    "Apple\n",
+    "Banana\n",
+    "Cherry\n",
+    "Date\n"
+]
+
+with open("fruits.txt", "w") as file:
+    file.writelines(lines)
+
+# fruits.txt now contains all four fruits on separate lines
+```
+</TerminalDemo>
+
+<FunFact title="Don't Forget the Newlines!">
+`.writelines()` doesn't add newlines between items! You must include `\n` in each string, or they'll all run together:
+
+```python
+# Without \n:
+lines = ["Apple", "Banana", "Cherry"]
+file.writelines(lines)
+# Result: "AppleBananaCherry" (all on one line!)
+
+# With \n:
+lines = ["Apple\n", "Banana\n", "Cherry\n"]
+file.writelines(lines)
+# Result: Three separate lines!
+```
+</FunFact>
+
+## Append Mode: Adding Without Erasing
+
+What if you want to **add** to a file without erasing what's already there? Use `"a"` (append) mode!
+
+<TerminalDemo>
+```python
+# First, create a file with some content
+with open("log.txt", "w") as file:
+    file.write("Day 1: Started learning Python\n")
+
+# Now let's ADD to it (without erasing)
+with open("log.txt", "a") as file:
+    file.write("Day 2: Learned about files\n")
+    file.write("Day 3: Built my first project\n")
+
+# Read the complete file
+with open("log.txt", "r") as file:
+    print(file.read())
+
+# Output:
+# Day 1: Started learning Python
+# Day 2: Learned about files
+# Day 3: Built my first project
+```
+</TerminalDemo>
+
+<StoryBox character="python_pete" mood="proud">
+Append mode is perfect for **log files** - records of what your program has done. Each time your program runs, it can add new entries without losing the old ones!
+
+Think of `"w"` as starting a new notebook, and `"a"` as opening your existing notebook and continuing where you left off.
+</StoryBox>
+
+## Practical Example: Saving High Scores
+
+Let's create a real program that saves high scores to a file:
+
+<TerminalDemo>
+```python
+def save_high_score(player_name, score):
+    """Saves a high score to the file"""
+    with open("high_scores.txt", "a") as file:
+        file.write(f"{player_name}: {score}\n")
+    print(f"Saved {player_name}'s score of {score}!")
+
+def show_all_scores():
+    """Displays all saved scores"""
+    try:
+        with open("high_scores.txt", "r") as file:
+            print("=== HIGH SCORES ===")
+            print(file.read())
+    except FileNotFoundError:
+        print("No scores yet! Play a game first.")
+
+# Let's use these functions
+save_high_score("Alex", 150)
+save_high_score("Sam", 230)
+save_high_score("Jordan", 175)
+
+show_all_scores()
+
+# Output:
+# Saved Alex's score of 150!
+# Saved Sam's score of 230!
+# Saved Jordan's score of 175!
+# === HIGH SCORES ===
+# Alex: 150
+# Sam: 230
+# Jordan: 175
+```
+</TerminalDemo>
+
+## Writing Numbers and Lists
+
+Remember: `.write()` only accepts **strings**! If you want to write numbers, you must convert them first:
+
+<TerminalDemo>
+```python
+# WRONG - This will cause an error!
+with open("data.txt", "w") as file:
+    file.write(42)  # TypeError: expected string, not int
+
+# RIGHT - Convert to string first
+with open("data.txt", "w") as file:
+    file.write(str(42))  # Works!
+    file.write("\n")
+    file.write(str(3.14))
+```
+</TerminalDemo>
+
+For lists, you can convert each item:
+
+<TerminalDemo>
+```python
+scores = [100, 150, 200, 175]
+
+with open("scores.txt", "w") as file:
+    for score in scores:
+        file.write(str(score) + "\n")
+
+# scores.txt now contains:
+# 100
+# 150
+# 200
+# 175
+```
+</TerminalDemo>
+
+## Exclusive Creation with `"x"` Mode
+
+Sometimes you want to create a file **only if it doesn't already exist**. Use `"x"` mode:
+
+<TerminalDemo>
+```python
+try:
+    with open("unique_file.txt", "x") as file:
+        file.write("This file is brand new!\n")
+    print("File created successfully!")
+except FileExistsError:
+    print("File already exists! Won't overwrite it.")
+```
+</TerminalDemo>
+
+This is great when you want to be extra careful not to accidentally overwrite important files!
+
+<Challenge title="Build a Simple Journal">
+Create a journal program that lets users write daily entries. Your program should:
+
+1. Ask the user for a journal entry
+2. Get today's date (you can just ask for it or use a string like "Day 1")
+3. Save the entry to a file called `journal.txt` with the date
+4. Use **append mode** so previous entries aren't lost
+5. Offer to show all entries
+
+**Bonus:** Add a line of dashes between entries for readability!
+
+<details>
+<summary>Solution</summary>
+
+```python
+def write_journal_entry():
+    """Add a new journal entry"""
+    date = input("Enter the date (e.g., 'Dec 19'): ")
+    entry = input("What happened today? ")
+
+    with open("journal.txt", "a") as file:
+        file.write(f"\n--- {date} ---\n")
+        file.write(f"{entry}\n")
+        file.write("-" * 30 + "\n")
+
+    print("Journal entry saved!")
+
+def read_journal():
+    """Display all journal entries"""
+    try:
+        with open("journal.txt", "r") as file:
+            print("\n=== MY JOURNAL ===")
+            print(file.read())
+    except FileNotFoundError:
+        print("No journal entries yet! Write your first one.")
+
+# Main program
+while True:
+    print("\n1. Write entry")
+    print("2. Read journal")
+    print("3. Quit")
+
+    choice = input("Choose an option: ")
+
+    if choice == "1":
+        write_journal_entry()
+    elif choice == "2":
+        read_journal()
+    elif choice == "3":
+        print("Goodbye!")
+        break
+    else:
+        print("Invalid choice!")
+```
+
+This creates a persistent journal that grows over time!
+</details>
+</Challenge>
+
+<Quiz
+  questions={[
+    {
+      question: "What happens when you open a file with 'w' mode and the file already exists?",
+      options: [
+        "It adds to the end of the file",
+        "It causes an error",
+        "It erases all the content and starts fresh",
+        "It only reads the file"
+      ],
+      correctAnswer: 2,
+      explanation: "'w' mode (write mode) completely erases any existing content and starts with a blank file. Use 'a' mode if you want to keep existing content!"
+    },
+    {
+      question: "Which mode should you use to add to the end of a file without erasing it?",
+      options: [
+        "'r' mode",
+        "'w' mode",
+        "'a' mode",
+        "'e' mode"
+      ],
+      correctAnswer: 2,
+      explanation: "'a' stands for 'append' mode - it adds new content to the end of the file without erasing what's already there."
+    },
+    {
+      question: "What must you do before writing a number to a file?",
+      options: [
+        "Nothing, numbers work automatically",
+        "Convert it to a string with str()",
+        "Use a special number mode",
+        "Multiply it by 1.0"
+      ],
+      correctAnswer: 1,
+      explanation: "file.write() only accepts strings. You must convert numbers to strings using str() before writing them."
+    },
+    {
+      question: "Why doesn't .write() add newlines automatically?",
+      options: [
+        "It's a bug in Python",
+        "To give you control over formatting",
+        "Newlines don't work in files",
+        "It actually does add them"
+      ],
+      correctAnswer: 1,
+      explanation: "Python doesn't add newlines automatically so YOU have control over exactly how the file is formatted. Add \\n yourself when you want a new line!"
+    }
+  ]}
+/>
+
+<StoryBox character="python_pete" mood="excited">
+Excellent work! You can now both read AND write files. This means your programs can:
+- Save user progress
+- Create logs of events
+- Store game scores
+- Build simple databases
+
+You're becoming a true file wizard! Next, we'll combine these skills to create smart data storage systems.
+</StoryBox>
+
+<NextLesson href="/python/23-data-storage" />

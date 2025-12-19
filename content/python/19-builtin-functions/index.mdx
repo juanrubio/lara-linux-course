@@ -1,0 +1,436 @@
+---
+title: "Built-in Functions"
+track: "python"
+chapter: 4
+lesson: 19
+slug: "19-builtin-functions"
+prerequisites: ["18-parameters-return"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Master essential built-in functions
+  - Learn len(), max(), min(), sum(), abs()
+  - Understand when to use each function
+nextLesson: "20-chapter4-quest"
+prevLesson: "18-parameters-return"
+---
+
+# Built-in Functions
+
+<StoryBox character="python_pete">
+  Welcome to Python's treasure chest! You've been learning to build your own tools, but guess what? Python comes pre-loaded with TONS of amazing functions!
+
+  These built-in functions are like having a Swiss Army knife. They're ready to use anytime, anywhere. Let's explore the most useful ones!
+</StoryBox>
+
+## Python's Built-in Superpowers
+
+Python includes over 60 built-in functions. You don't need to memorize them all - just learn the most useful ones and look up the others when you need them!
+
+Today we'll master these essential functions:
+- **len()** - Get the length of something
+- **max()** - Find the maximum value
+- **min()** - Find the minimum value
+- **sum()** - Add up numbers
+- **abs()** - Get absolute value
+- **round()** - Round numbers
+- **sorted()** - Sort items
+- **range()** - Create number sequences
+
+## len() - The Length Finder
+
+`len()` tells you how many items are in something:
+
+<TerminalDemo>
+{`# Length of strings
+word = "Python"
+print(len(word))  # Output: 6
+
+message = "Hello, World!"
+print(len(message))  # Output: 13
+
+# Length of lists
+fruits = ["apple", "banana", "cherry"]
+print(len(fruits))  # Output: 3
+
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+print(len(numbers))  # Output: 10
+
+# Empty things have length 0
+empty = ""
+print(len(empty))  # Output: 0
+
+empty_list = []
+print(len(empty_list))  # Output: 0`}
+</TerminalDemo>
+
+<FunFact>
+  You can't use len() on numbers! Try len(42) and you'll get an error. len() only works on "collections" - things that contain multiple items like strings, lists, and tuples!
+</FunFact>
+
+## max() and min() - The Extremes
+
+Find the biggest or smallest value:
+
+<TerminalDemo>
+{`# max() finds the LARGEST value
+numbers = [5, 2, 9, 1, 7]
+print(max(numbers))  # Output: 9
+
+# Can pass values directly
+print(max(5, 2, 9, 1, 7))  # Output: 9
+
+# Works with strings (alphabetically)
+print(max("python"))  # Output: y (latest in alphabet)
+
+names = ["Alice", "Zoe", "Bob"]
+print(max(names))  # Output: Zoe
+
+# min() finds the SMALLEST value
+print(min(numbers))  # Output: 1
+print(min(5, 2, 9, 1, 7))  # Output: 1
+print(min(names))  # Output: Alice`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  Think of max() and min() like referees at a competition. max() gives the gold medal to the biggest value, min() gives it to the smallest!
+
+  They work with numbers (comparing size) and strings (comparing alphabetically).
+</StoryBox>
+
+## sum() - The Adding Machine
+
+Add up all numbers in a list:
+
+<TerminalDemo>
+{`# Sum of a list
+scores = [85, 92, 78, 90, 88]
+total = sum(scores)
+print(total)  # Output: 433
+
+average = sum(scores) / len(scores)
+print(f"Average score: {average}")  # Output: Average score: 86.6
+
+# Sum of numbers
+daily_steps = [5000, 7500, 6200, 8000, 5500, 9000, 6800]
+weekly_total = sum(daily_steps)
+print(f"Weekly steps: {weekly_total}")  # Output: Weekly steps: 48000
+
+# Start with an initial value
+numbers = [1, 2, 3, 4, 5]
+result = sum(numbers, 100)  # Adds 100 to the sum
+print(result)  # Output: 115 (15 + 100)`}
+</TerminalDemo>
+
+## abs() - The Distance Calculator
+
+Get the absolute value (distance from zero):
+
+<TerminalDemo>
+{`# Absolute value removes the negative sign
+print(abs(-5))    # Output: 5
+print(abs(5))     # Output: 5
+print(abs(-3.14)) # Output: 3.14
+print(abs(0))     # Output: 0
+
+# Useful for calculating differences
+score1 = 100
+score2 = 87
+difference = abs(score1 - score2)
+print(f"Difference: {difference}")  # Output: Difference: 13
+
+# Works regardless of which is larger
+temp_yesterday = 15
+temp_today = 22
+temp_change = abs(temp_yesterday - temp_today)
+print(f"Temperature changed by {temp_change}°C")
+# Output: Temperature changed by 7°C`}
+</TerminalDemo>
+
+<FunFact>
+  abs() is short for "absolute value" - a concept from math! It's useful whenever you care about the SIZE of a difference, but not which direction (positive or negative).
+</FunFact>
+
+## round() - The Rounder
+
+Round numbers to a specific decimal place:
+
+<TerminalDemo>
+{`# Round to nearest integer
+print(round(3.7))    # Output: 4
+print(round(3.2))    # Output: 3
+print(round(3.5))    # Output: 4
+
+# Round to specific decimal places
+pi = 3.14159265359
+print(round(pi, 2))  # Output: 3.14
+print(round(pi, 4))  # Output: 3.1416
+
+# Useful for prices
+price = 19.99876
+print(f"${round(price, 2)}")  # Output: $19.99
+
+# Calculate and round
+average = 87.66666666667
+print(f"Average: {round(average, 1)}")  # Output: Average: 87.7`}
+</TerminalDemo>
+
+## sorted() - The Organizer
+
+Sort items in order:
+
+<TerminalDemo>
+{`# Sort numbers
+numbers = [5, 2, 8, 1, 9, 3]
+print(sorted(numbers))  # Output: [1, 2, 3, 5, 8, 9]
+
+# Sort in reverse
+print(sorted(numbers, reverse=True))  # Output: [9, 8, 5, 3, 2, 1]
+
+# Sort strings alphabetically
+names = ["Charlie", "Alice", "Bob", "Diana"]
+print(sorted(names))  # Output: ['Alice', 'Bob', 'Charlie', 'Diana']
+
+# Sort by length
+words = ["hi", "hello", "hey", "greetings"]
+print(sorted(words, key=len))  # Output: ['hi', 'hey', 'hello', 'greetings']
+
+# Original list is unchanged!
+print(numbers)  # Still: [5, 2, 8, 1, 9, 3]`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  Important difference:
+  - **sorted()** returns a NEW sorted list (original unchanged)
+  - **list.sort()** sorts the list IN PLACE (original is modified)
+
+  Use sorted() when you want to keep the original order too!
+</StoryBox>
+
+## range() - The Number Generator
+
+Create sequences of numbers:
+
+<TerminalDemo>
+{`# range(stop) - from 0 to stop-1
+for i in range(5):
+    print(i, end=" ")
+# Output: 0 1 2 3 4
+
+print()  # New line
+
+# range(start, stop) - from start to stop-1
+for i in range(3, 8):
+    print(i, end=" ")
+# Output: 3 4 5 6 7
+
+print()  # New line
+
+# range(start, stop, step) - custom increments
+for i in range(0, 10, 2):
+    print(i, end=" ")
+# Output: 0 2 4 6 8
+
+print()  # New line
+
+# Convert to list to see all values
+numbers = list(range(1, 6))
+print(numbers)  # Output: [1, 2, 3, 4, 5]
+
+# Countdown!
+for i in range(10, 0, -1):
+    print(i, end=" ")
+print("Blastoff!")
+# Output: 10 9 8 7 6 5 4 3 2 1 Blastoff!`}
+</TerminalDemo>
+
+## Combining Functions
+
+The real power comes from combining functions:
+
+<TerminalDemo>
+{`# Find average of scores
+scores = [85, 92, 78, 90, 88]
+average = sum(scores) / len(scores)
+print(f"Average: {round(average, 1)}")
+# Output: Average: 86.6
+
+# Find range (spread) of data
+temps = [15, 22, 18, 25, 17, 20]
+temp_range = max(temps) - min(temps)
+print(f"Temperature range: {temp_range}°C")
+# Output: Temperature range: 10°C
+
+# Sort and get top 3
+high_scores = [450, 380, 520, 290, 410, 475, 360]
+top_3 = sorted(high_scores, reverse=True)[:3]
+print(f"Top 3 scores: {top_3}")
+# Output: Top 3 scores: [520, 475, 450]
+
+# Check if score is in top 10%
+def is_top_ten_percent(score, all_scores):
+    threshold = sorted(all_scores, reverse=True)[len(all_scores)//10]
+    return score >= threshold
+
+scores = [75, 85, 90, 95, 70, 88, 92, 78, 86, 94]
+print(is_top_ten_percent(95, scores))  # Output: True`}
+</TerminalDemo>
+
+## Real-World Examples
+
+### Grade Calculator
+<TerminalDemo>
+{`def calculate_grade_stats(grades):
+    print(f"Total students: {len(grades)}")
+    print(f"Highest grade: {max(grades)}")
+    print(f"Lowest grade: {min(grades)}")
+    print(f"Average grade: {round(sum(grades)/len(grades), 1)}")
+    print(f"Sorted grades: {sorted(grades)}")
+
+grades = [78, 92, 85, 88, 76, 95, 81, 89]
+calculate_grade_stats(grades)
+# Output:
+# Total students: 8
+# Highest grade: 95
+# Lowest grade: 76
+# Average grade: 85.5
+# Sorted grades: [76, 78, 81, 85, 88, 89, 92, 95]`}
+</TerminalDemo>
+
+### Shopping Cart
+<TerminalDemo>
+{`def analyze_cart(prices):
+    total = sum(prices)
+    count = len(prices)
+    average = total / count if count > 0 else 0
+    most_expensive = max(prices) if prices else 0
+
+    print(f"Items in cart: {count}")
+    print(f"Total: ${round(total, 2)}")
+    print(f"Average price: ${round(average, 2)}")
+    print(f"Most expensive: ${round(most_expensive, 2)}")
+
+cart = [19.99, 5.49, 12.99, 8.50, 15.99]
+analyze_cart(cart)
+# Output:
+# Items in cart: 5
+# Total: $62.96
+# Average price: $12.59
+# Most expensive: $19.99`}
+</TerminalDemo>
+
+## Practice Challenge!
+
+<Challenge
+  id="ch4-builtin-functions"
+  title="Function Explorer"
+  description="Master Python's built-in functions"
+  steps={[
+    {
+      command: "# Create a list of numbers and find the total, average, max, and min",
+      hint: "Use sum(), len(), max(), and min()"
+    },
+    {
+      command: "# Sort a list of names alphabetically",
+      hint: "Use sorted()"
+    },
+    {
+      command: "# Calculate the absolute difference between two numbers",
+      hint: "Use abs()"
+    }
+  ]}
+  xp={40}
+  badge="builtin_master"
+/>
+
+## Quick Reference Table
+
+| Function | Purpose | Example | Output |
+|----------|---------|---------|--------|
+| `len()` | Get length | `len("hello")` | `5` |
+| `max()` | Find maximum | `max([1,5,3])` | `5` |
+| `min()` | Find minimum | `min([1,5,3])` | `1` |
+| `sum()` | Add numbers | `sum([1,2,3])` | `6` |
+| `abs()` | Absolute value | `abs(-5)` | `5` |
+| `round()` | Round number | `round(3.7)` | `4` |
+| `sorted()` | Sort items | `sorted([3,1,2])` | `[1,2,3]` |
+| `range()` | Number sequence | `range(3)` | `0,1,2` |
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does len([1, 2, 3, 4, 5]) return?",
+    options: ["15", "5", "10", "Error"],
+    correct: 1,
+    explanation: "len() returns the number of items in the list, which is 5!"
+  },
+  {
+    question: "What's the output of max([10, 5, 20, 15])?",
+    options: ["5", "10", "15", "20"],
+    correct: 3,
+    explanation: "max() returns the largest value in the list, which is 20!"
+  },
+  {
+    question: "What does abs(-10) return?",
+    options: ["-10", "0", "10", "Error"],
+    correct: 2,
+    explanation: "abs() returns the absolute value, removing the negative sign: 10!"
+  },
+  {
+    question: "What does sum([2, 3, 5]) return?",
+    options: ["8", "10", "235", "6"],
+    correct: 1,
+    explanation: "sum() adds all the numbers: 2 + 3 + 5 = 10!"
+  }
+]} />
+
+## Bonus Built-in Functions
+
+Here are a few more useful ones:
+
+<TerminalDemo>
+{`# type() - Check data type
+print(type(42))        # <class 'int'>
+print(type("hello"))   # <class 'str'>
+print(type([1,2,3]))   # <class 'list'>
+
+# isinstance() - Check if value is a type
+print(isinstance(42, int))     # True
+print(isinstance("hi", str))   # True
+print(isinstance([1,2], list)) # True
+
+# any() - True if ANY item is True
+print(any([False, False, True]))  # True
+print(any([False, False, False])) # False
+
+# all() - True if ALL items are True
+print(all([True, True, True]))   # True
+print(all([True, False, True]))  # False
+
+# zip() - Combine lists
+names = ["Alice", "Bob", "Charlie"]
+ages = [25, 30, 35]
+combined = list(zip(names, ages))
+print(combined)
+# Output: [('Alice', 25), ('Bob', 30), ('Charlie', 35)]`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  You've just learned Python's most powerful built-in tools! These functions save you from writing tons of code from scratch.
+
+  Real programmers use these functions ALL THE TIME. They're fast, reliable, and already tested. Why reinvent the wheel when Python gives you a sports car?
+
+  Time to put it all together in your first real quest!
+</StoryBox>
+
+## What's Next?
+
+You've learned what functions are, how to create them, and how to use Python's built-ins. Now it's time for your BIGGEST challenge yet: Build your own function library!
+
+<NextLesson
+  track="python"
+  lesson="20-chapter4-quest"
+  teaser="Create your own utility function library in the Chapter 4 Quest!"
+/>

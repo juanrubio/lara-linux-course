@@ -1,0 +1,574 @@
+---
+title: "Quest: Function Library"
+track: "python"
+chapter: 4
+lesson: 20
+slug: "20-chapter4-quest"
+prerequisites: ["19-builtin-functions"]
+estimatedTime: 30
+difficulty: "beginner"
+xpReward: 150
+objectives:
+  - Create a complete utility function library
+  - Apply all Chapter 4 concepts
+  - Build reusable, practical functions
+nextLesson: "21-introduction-to-lists"
+prevLesson: "19-builtin-functions"
+---
+
+# Quest: Function Library
+
+<StoryBox character="python_pete">
+  Congratulations, code architect! You've mastered the art of functions. Now comes your greatest challenge yet!
+
+  The Digital Kingdom needs a FUNCTION LIBRARY - a collection of useful tools that any programmer can use. Your mission is to create this library from scratch!
+
+  This quest will test everything you've learned: creating functions, using parameters, returning values, and combining built-in functions. Are you ready?
+</StoryBox>
+
+## Your Mission
+
+Create a file called `function_library.py` that contains a collection of useful utility functions. Each function must work correctly and follow best practices!
+
+## Part 1: Math Utilities
+
+Create these mathematical functions:
+
+### Function 1: calculate_average()
+<Challenge
+  id="quest4-part1-average"
+  title="Average Calculator"
+  description="Create a function that calculates the average of a list of numbers"
+  steps={[
+    {
+      command: "def calculate_average(numbers):",
+      hint: "Use sum() and len()"
+    },
+    {
+      command: "    return sum(numbers) / len(numbers)",
+      hint: "Divide total by count"
+    }
+  ]}
+  xp={15}
+/>
+
+**Requirements:**
+- Takes a list of numbers as input
+- Returns the average as a float
+- Example: `calculate_average([10, 20, 30])` returns `20.0`
+
+### Function 2: find_range()
+<Challenge
+  id="quest4-part1-range"
+  title="Range Finder"
+  description="Create a function that finds the range (max - min) of numbers"
+  steps={[
+    {
+      command: "def find_range(numbers):",
+      hint: "Use max() and min()"
+    },
+    {
+      command: "    return max(numbers) - min(numbers)",
+      hint: "Subtract minimum from maximum"
+    }
+  ]}
+  xp={15}
+/>
+
+**Requirements:**
+- Takes a list of numbers as input
+- Returns the difference between the largest and smallest
+- Example: `find_range([5, 10, 15, 20])` returns `15`
+
+### Function 3: calculate_percentage()
+<Challenge
+  id="quest4-part1-percentage"
+  title="Percentage Calculator"
+  description="Calculate what percentage one number is of another"
+  steps={[
+    {
+      command: "def calculate_percentage(part, whole):",
+      hint: "Divide part by whole and multiply by 100"
+    },
+    {
+      command: "    return round((part / whole) * 100, 2)",
+      hint: "Round to 2 decimal places"
+    }
+  ]}
+  xp={15}
+/>
+
+**Requirements:**
+- Takes two numbers: the part and the whole
+- Returns the percentage rounded to 2 decimal places
+- Example: `calculate_percentage(25, 200)` returns `12.5`
+
+## Part 2: String Utilities
+
+Create these text-manipulation functions:
+
+### Function 4: reverse_string()
+<Challenge
+  id="quest4-part2-reverse"
+  title="String Reverser"
+  description="Create a function that reverses a string"
+  steps={[
+    {
+      command: "def reverse_string(text):",
+      hint: "Use string slicing with [::-1]"
+    },
+    {
+      command: "    return text[::-1]",
+      hint: "Slice backwards"
+    }
+  ]}
+  xp={15}
+/>
+
+**Requirements:**
+- Takes a string as input
+- Returns the string in reverse order
+- Example: `reverse_string("Python")` returns `"nohtyP"`
+
+### Function 5: count_vowels()
+<Challenge
+  id="quest4-part2-vowels"
+  title="Vowel Counter"
+  description="Count how many vowels are in a string"
+  steps={[
+    {
+      command: "def count_vowels(text):",
+      hint: "Loop through text and check each character"
+    },
+    {
+      command: "    count = 0",
+      hint: "Initialize counter"
+    },
+    {
+      command: "    for char in text.lower():",
+      hint: "Convert to lowercase first"
+    },
+    {
+      command: "        if char in 'aeiou':",
+      hint: "Check if character is a vowel"
+    },
+    {
+      command: "            count += 1",
+      hint: "Increment counter"
+    },
+    {
+      command: "    return count",
+      hint: "Return the total"
+    }
+  ]}
+  xp={20}
+/>
+
+**Requirements:**
+- Takes a string as input
+- Counts a, e, i, o, u (both uppercase and lowercase)
+- Returns the count
+- Example: `count_vowels("Hello World")` returns `3`
+
+### Function 6: title_case()
+<Challenge
+  id="quest4-part2-title"
+  title="Title Case Converter"
+  description="Convert a string to title case (capitalize each word)"
+  steps={[
+    {
+      command: "def title_case(text):",
+      hint: "You can use .title() method or split and capitalize"
+    },
+    {
+      command: "    return text.title()",
+      hint: "Python has a built-in method for this!"
+    }
+  ]}
+  xp={10}
+/>
+
+**Requirements:**
+- Takes a string as input
+- Returns the string with each word capitalized
+- Example: `title_case("hello world")` returns `"Hello World"`
+
+## Part 3: List Utilities
+
+Create these list-manipulation functions:
+
+### Function 7: remove_duplicates()
+<Challenge
+  id="quest4-part3-duplicates"
+  title="Duplicate Remover"
+  description="Remove duplicate items from a list"
+  steps={[
+    {
+      command: "def remove_duplicates(items):",
+      hint: "Convert to set, then back to list"
+    },
+    {
+      command: "    return list(set(items))",
+      hint: "Sets automatically remove duplicates"
+    }
+  ]}
+  xp={15}
+/>
+
+**Requirements:**
+- Takes a list as input
+- Returns a new list with duplicates removed
+- Example: `remove_duplicates([1, 2, 2, 3, 4, 4, 5])` returns `[1, 2, 3, 4, 5]`
+
+### Function 8: find_common_items()
+<Challenge
+  id="quest4-part3-common"
+  title="Common Item Finder"
+  description="Find items that appear in both lists"
+  steps={[
+    {
+      command: "def find_common_items(list1, list2):",
+      hint: "Use set intersection"
+    },
+    {
+      command: "    return list(set(list1) & set(list2))",
+      hint: "& operator finds intersection"
+    }
+  ]}
+  xp={20}
+/>
+
+**Requirements:**
+- Takes two lists as input
+- Returns a list of items that appear in both
+- Example: `find_common_items([1, 2, 3], [2, 3, 4])` returns `[2, 3]`
+
+## Part 4: Practical Utilities
+
+Create these real-world functions:
+
+### Function 9: validate_password()
+<Challenge
+  id="quest4-part4-password"
+  title="Password Validator"
+  description="Check if a password is strong enough"
+  steps={[
+    {
+      command: "def validate_password(password):",
+      hint: "Check length, uppercase, lowercase, and numbers"
+    },
+    {
+      command: "    if len(password) < 8:",
+      hint: "Must be at least 8 characters"
+    },
+    {
+      command: "        return False",
+      hint: "Too short"
+    },
+    {
+      command: "    has_upper = any(c.isupper() for c in password)",
+      hint: "Check for uppercase"
+    },
+    {
+      command: "    has_lower = any(c.islower() for c in password)",
+      hint: "Check for lowercase"
+    },
+    {
+      command: "    has_digit = any(c.isdigit() for c in password)",
+      hint: "Check for number"
+    },
+    {
+      command: "    return has_upper and has_lower and has_digit",
+      hint: "All must be true"
+    }
+  ]}
+  xp={25}
+/>
+
+**Requirements:**
+- Takes a password string as input
+- Returns True if valid, False if not
+- Valid password must:
+  - Be at least 8 characters long
+  - Contain at least one uppercase letter
+  - Contain at least one lowercase letter
+  - Contain at least one number
+
+### Function 10: format_price()
+<Challenge
+  id="quest4-part4-price"
+  title="Price Formatter"
+  description="Format a number as a price string"
+  steps={[
+    {
+      command: "def format_price(amount):",
+      hint: "Format with $ and 2 decimal places"
+    },
+    {
+      command: "    return f'${amount:.2f}'",
+      hint: "Use f-string with :.2f for 2 decimals"
+    }
+  ]}
+  xp={10}
+/>
+
+**Requirements:**
+- Takes a number as input
+- Returns a formatted price string with $ and 2 decimal places
+- Example: `format_price(19.5)` returns `"$19.50"`
+
+### Function 11: calculate_discount()
+<Challenge
+  id="quest4-part4-discount"
+  title="Discount Calculator"
+  description="Calculate the final price after discount"
+  steps={[
+    {
+      command: "def calculate_discount(price, discount_percent):",
+      hint: "Subtract percentage from price"
+    },
+    {
+      command: "    discount_amount = price * (discount_percent / 100)",
+      hint: "Calculate discount amount"
+    },
+    {
+      command: "    return round(price - discount_amount, 2)",
+      hint: "Return price minus discount"
+    }
+  ]}
+  xp={15}
+/>
+
+**Requirements:**
+- Takes original price and discount percentage
+- Returns the final price rounded to 2 decimals
+- Example: `calculate_discount(100, 20)` returns `80.0`
+
+## Part 5: Test Your Library
+
+Create a test function that demonstrates all your functions:
+
+<TerminalDemo>
+{`def test_library():
+    print("=== MATH UTILITIES ===")
+    print(f"Average of [10, 20, 30]: {calculate_average([10, 20, 30])}")
+    print(f"Range of [5, 10, 15, 20]: {find_range([5, 10, 15, 20])}")
+    print(f"25 is what % of 200: {calculate_percentage(25, 200)}%")
+
+    print("\\n=== STRING UTILITIES ===")
+    print(f"Reverse 'Python': {reverse_string('Python')}")
+    print(f"Vowels in 'Hello World': {count_vowels('Hello World')}")
+    print(f"Title case 'hello world': {title_case('hello world')}")
+
+    print("\\n=== LIST UTILITIES ===")
+    print(f"Remove duplicates [1,2,2,3]: {remove_duplicates([1,2,2,3])}")
+    print(f"Common items [1,2,3] & [2,3,4]: {find_common_items([1,2,3], [2,3,4])}")
+
+    print("\\n=== PRACTICAL UTILITIES ===")
+    print(f"Password 'Abc123456' valid: {validate_password('Abc123456')}")
+    print(f"Format price 19.5: {format_price(19.5)}")
+    print(f"$100 with 20% off: ${calculate_discount(100, 20)}")
+
+# Run the tests
+test_library()`}
+</TerminalDemo>
+
+## Bonus Challenges
+
+If you're feeling ambitious, try these extra functions:
+
+### Bonus 1: is_palindrome()
+Check if a string reads the same forwards and backwards
+- Example: `is_palindrome("racecar")` returns `True`
+
+### Bonus 2: count_words()
+Count the number of words in a string
+- Example: `count_words("Hello Python World")` returns `3`
+
+### Bonus 3: celsius_to_fahrenheit()
+Convert Celsius to Fahrenheit
+- Formula: (C × 9/5) + 32
+- Example: `celsius_to_fahrenheit(25)` returns `77.0`
+
+## Final Quiz!
+
+<Quiz questions={[
+  {
+    question: "What's the best way to calculate an average?",
+    options: ["Add all numbers manually", "Use sum() and len()", "Use max() and min()", "Use sorted()"],
+    correct: 1,
+    explanation: "sum(numbers) / len(numbers) efficiently calculates the average!"
+  },
+  {
+    question: "How do you reverse a string in Python?",
+    options: ["Use reverse()", "Use text[::-1]", "Use backwards()", "Loop and rebuild"],
+    correct: 1,
+    explanation: "String slicing with [::-1] reverses the string in one line!"
+  },
+  {
+    question: "What does set() do to a list?",
+    options: ["Sorts it", "Reverses it", "Removes duplicates", "Counts items"],
+    correct: 2,
+    explanation: "Converting to a set removes all duplicate values!"
+  },
+  {
+    question: "Why use return instead of print in functions?",
+    options: ["return is faster", "return gives back a value you can use", "print doesn't work in functions", "No difference"],
+    correct: 1,
+    explanation: "return gives back a value that can be stored and used, while print just displays!"
+  },
+  {
+    question: "What makes a function reusable?",
+    options: ["Using parameters to make it flexible", "Writing lots of code", "Using only print statements", "Avoiding return values"],
+    correct: 0,
+    explanation: "Parameters let you customize the function's behavior, making it reusable in many situations!"
+  }
+]} />
+
+## Quest Complete!
+
+<StoryBox character="python_pete">
+  INCREDIBLE WORK! You've built your own function library from scratch!
+
+  You've created:
+  - 11 utility functions (plus bonuses!)
+  - Math, string, and list helpers
+  - Real-world practical tools
+  - A complete, reusable code library
+
+  This is what professional programming looks like! You're not just learning Python anymore - you're BUILDING with Python!
+
+  Every programmer has their own collection of useful functions they've built over time. You've just started yours!
+</StoryBox>
+
+## What You've Mastered
+
+| Concept | Skills Gained |
+|---------|--------------|
+| Function Creation | def, naming, structure |
+| Parameters | Passing data, multiple params |
+| Return Values | Getting results back |
+| Built-in Functions | len(), max(), min(), sum(), abs() |
+| String Methods | .lower(), .upper(), .title() |
+| List Operations | Removing duplicates, finding common items |
+| Validation | Password strength, data checking |
+| Formatting | Prices, percentages |
+
+## Your Rewards
+
+- **XP:** +150
+- **Badge:** Function Master
+- **Achievement:** Library Creator
+- **Unlocked:** Chapter 5 - Lists and Data Structures
+
+## Skills You Can Show Off
+
+You can now:
+- Create functions from scratch
+- Write reusable, parameterized code
+- Use Python's built-in functions effectively
+- Build utility libraries
+- Validate and format data
+- Organize code professionally
+
+<StoryBox character="python_pete">
+  Keep this function library! Add to it as you learn new things. Every time you write a useful function, add it to your library.
+
+  Professional developers do this all the time - they build up a personal toolkit of functions they can drop into any project. You've just started yours!
+
+  You're officially a Function Master! 🏆
+</StoryBox>
+
+## Code Template to Get Started
+
+Here's a template for your `function_library.py`:
+
+<TerminalDemo>
+{`# Function Library - Your Name
+# Chapter 4 Quest - Function Master
+
+# ===== MATH UTILITIES =====
+
+def calculate_average(numbers):
+    """Calculate the average of a list of numbers."""
+    # Your code here
+    pass
+
+def find_range(numbers):
+    """Find the range (max - min) of numbers."""
+    # Your code here
+    pass
+
+def calculate_percentage(part, whole):
+    """Calculate what percentage part is of whole."""
+    # Your code here
+    pass
+
+# ===== STRING UTILITIES =====
+
+def reverse_string(text):
+    """Reverse a string."""
+    # Your code here
+    pass
+
+def count_vowels(text):
+    """Count vowels in a string."""
+    # Your code here
+    pass
+
+def title_case(text):
+    """Convert string to title case."""
+    # Your code here
+    pass
+
+# ===== LIST UTILITIES =====
+
+def remove_duplicates(items):
+    """Remove duplicate items from a list."""
+    # Your code here
+    pass
+
+def find_common_items(list1, list2):
+    """Find items that appear in both lists."""
+    # Your code here
+    pass
+
+# ===== PRACTICAL UTILITIES =====
+
+def validate_password(password):
+    """Check if password is strong enough."""
+    # Your code here
+    pass
+
+def format_price(amount):
+    """Format a number as a price string."""
+    # Your code here
+    pass
+
+def calculate_discount(price, discount_percent):
+    """Calculate final price after discount."""
+    # Your code here
+    pass
+
+# ===== TEST FUNCTION =====
+
+def test_library():
+    """Test all functions to make sure they work."""
+    print("Testing Function Library...")
+    # Add your tests here
+    pass
+
+# Run tests when file is executed
+if __name__ == "__main__":
+    test_library()`}
+</TerminalDemo>
+
+## What's Next?
+
+You've conquered functions! Now it's time to level up with Lists and Data Structures - where you'll learn to work with collections of data like a pro!
+
+<NextLesson
+  track="python"
+  lesson="21-introduction-to-lists"
+  teaser="Master lists, tuples, sets, and dictionaries in Chapter 5!"
+/>

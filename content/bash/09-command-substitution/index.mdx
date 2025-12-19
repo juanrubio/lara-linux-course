@@ -1,0 +1,478 @@
+---
+title: "Command Substitution"
+track: "bash"
+chapter: 2
+lesson: 9
+slug: "09-command-substitution"
+prerequisites: ["08-user-input"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Master $(command) syntax
+  - Capture command output in variables
+  - Chain commands together
+  - Build powerful automation scripts
+nextLesson: "10-chapter2-quest"
+prevLesson: "08-user-input"
+---
+
+# Command Substitution
+
+<StoryBox character="bash_betty">
+  Ready to unlock one of bash's most powerful features? COMMAND SUBSTITUTION!
+
+  Imagine you want to know what time it is RIGHT NOW and use that in a file name. Or capture the output of a command and use it in a message. Or count how many files you have and do math with that number!
+
+  Command substitution lets you run a command and CAPTURE its output to use in your script. It's like giving your script X-ray vision!
+</StoryBox>
+
+## What is Command Substitution?
+
+**Command substitution** runs a command and replaces it with its output. You can then store that output in a variable or use it directly!
+
+The syntax is:
+```bash
+$(command)
+```
+
+Let's see it in action:
+
+<TerminalDemo>
+{`$ echo "The current date is: $(date)"
+The current date is: Fri Dec 19 11:30:00 PST 2025
+
+$ current_user=$(whoami)
+$ echo "You are logged in as: $current_user"
+You are logged in as: betty`}
+</TerminalDemo>
+
+<FunFact>
+  There's an older syntax using backticks: \`command\` but $(command) is better because it's easier to read and you can nest them! Always use $(command).
+</FunFact>
+
+## Storing Command Output
+
+You can capture any command's output in a variable:
+
+<TerminalDemo>
+{`$ # Capture current directory
+$ current_dir=$(pwd)
+$ echo "You are in: $current_dir"
+You are in: /home/betty
+
+$ # Capture number of files
+$ file_count=$(ls | wc -l)
+$ echo "You have $file_count files"
+You have 12 files
+
+$ # Capture system uptime
+$ uptime_info=$(uptime)
+$ echo "System: $uptime_info"
+System: 11:30:42 up 5 days, 3:25, 1 user, load average: 0.42, 0.37, 0.35`}
+</TerminalDemo>
+
+## Creating Dynamic Filenames
+
+One of the best uses is creating timestamped files:
+
+<TerminalDemo>
+{`$ # Create backup with current date
+$ backup_date=$(date +%Y%m%d)
+$ echo "Creating backup: backup_$backup_date.tar.gz"
+Creating backup: backup_20251219.tar.gz
+
+$ # Create log file with timestamp
+$ timestamp=$(date +%Y%m%d_%H%M%S)
+$ echo "Error occurred" > "log_$timestamp.txt"
+$ ls log_*
+log_20251219_113042.txt`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  The date command has tons of format options! Try these:
+  - `date +%Y` → 2025 (year)
+  - `date +%m` → 12 (month)
+  - `date +%d` → 19 (day)
+  - `date +%H` → 11 (hour)
+  - `date +%M` → 30 (minute)
+  - `date +%S` → 42 (second)
+
+  Combine them: `date +%Y-%m-%d_%H:%M:%S` → 2025-12-19_11:30:42
+</StoryBox>
+
+## Command Substitution in Strings
+
+You can use it anywhere - even inside strings:
+
+<TerminalDemo>
+{`$ echo "Hello $(whoami), welcome to $(hostname)!"
+Hello betty, welcome to bash-server!
+
+$ echo "System has been up for: $(uptime -p)"
+System has been up for: up 5 days, 3 hours, 27 minutes`}
+</TerminalDemo>
+
+## Doing Math with Command Output
+
+Capture numbers and do calculations:
+
+<TerminalDemo>
+{`$ # Count files in current directory
+$ file_count=$(ls -1 | wc -l)
+$ echo "You have $file_count files"
+You have 12 files
+
+$ # Calculate if we're over limit
+$ limit=10
+$ if [ $file_count -gt $limit ]
+> then
+>     echo "Warning: Too many files! ($file_count > $limit)"
+> else
+>     echo "File count OK: $file_count files"
+> fi
+Warning: Too many files! (12 > 10)
+
+$ # Calculate free space percentage
+$ free_space=$(df -h / | tail -1 | awk '{print $5}' | sed 's/%//')
+$ echo "Disk is $free_space% full"
+Disk is 58% full`}
+</TerminalDemo>
+
+## Nested Command Substitution
+
+You can nest $(commands) inside each other!
+
+<TerminalDemo>
+{`$ # Get the owner of the current directory
+$ echo "This directory is owned by: $(ls -ld $(pwd) | awk '{print $3}')"
+This directory is owned by: betty
+
+$ # Count lines in the most recently modified file
+$ recent_file=$(ls -t | head -1)
+$ line_count=$(wc -l < "$recent_file")
+$ echo "Most recent file '$recent_file' has $line_count lines"
+Most recent file 'notes.txt' has 42 lines`}
+</TerminalDemo>
+
+## Real-World Example: Smart Backup Script
+
+<TerminalDemo>
+{`$ cat > smart_backup.sh << 'EOF'
+#!/bin/bash
+
+echo "=== SMART BACKUP SCRIPT ==="
+echo
+
+# Get current date and time
+backup_date=$(date +%Y%m%d)
+backup_time=$(date +%H%M%S)
+timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+
+# Create backup directory with date
+backup_dir="$HOME/backups/$backup_date"
+mkdir -p "$backup_dir"
+
+# Get hostname for backup name
+hostname=$(hostname)
+
+# Create backup filename
+backup_file="backup_${hostname}_${backup_time}.tar.gz"
+
+echo "Backup started at: $timestamp"
+echo "Backing up to: $backup_dir/$backup_file"
+echo
+
+# Count files being backed up
+file_count=$(find "$HOME/Documents" -type f | wc -l)
+echo "Found $file_count files to backup..."
+
+# Create backup
+tar -czf "$backup_dir/$backup_file" "$HOME/Documents" 2>/dev/null
+
+# Get backup size
+backup_size=$(du -h "$backup_dir/$backup_file" | cut -f1)
+
+# Get total backup directory size
+total_size=$(du -sh "$backup_dir" | cut -f1)
+
+echo
+echo "✓ Backup complete!"
+echo "  File: $backup_file"
+echo "  Size: $backup_size"
+echo "  Total backups today: $total_size"
+echo "  Timestamp: $timestamp"
+EOF
+
+$ chmod +x smart_backup.sh
+$ ./smart_backup.sh
+=== SMART BACKUP SCRIPT ===
+
+Backup started at: 2025-12-19 11:45:30
+Backing up to: /home/betty/backups/20251219/backup_bash-server_114530.tar.gz
+
+Found 156 files to backup...
+
+✓ Backup complete!
+  File: backup_bash-server_114530.tar.gz
+  Size: 2.3M
+  Total backups today: 2.3M
+  Timestamp: 2025-12-19 11:45:30`}
+</TerminalDemo>
+
+## Real-World Example: System Report
+
+<TerminalDemo>
+{`$ cat > system_report.sh << 'EOF'
+#!/bin/bash
+
+echo "========================================"
+echo "       SYSTEM REPORT"
+echo "========================================"
+echo "Generated: $(date)"
+echo
+
+echo "--- SYSTEM INFO ---"
+echo "Hostname: $(hostname)"
+echo "Kernel: $(uname -r)"
+echo "Uptime: $(uptime -p)"
+echo "Current User: $(whoami)"
+echo "Home Directory: $(pwd)"
+echo
+
+echo "--- RESOURCE USAGE ---"
+echo "CPU Cores: $(nproc)"
+echo "Memory Total: $(free -h | awk '/^Mem:/ {print $2}')"
+echo "Memory Used: $(free -h | awk '/^Mem:/ {print $3}')"
+echo "Memory Free: $(free -h | awk '/^Mem:/ {print $4}')"
+echo "Disk Usage: $(df -h / | tail -1 | awk '{print $5}')"
+echo
+
+echo "--- FILE STATISTICS ---"
+echo "Files in home: $(find $HOME -type f 2>/dev/null | wc -l)"
+echo "Directories in home: $(find $HOME -type d 2>/dev/null | wc -l)"
+echo "Largest file: $(find $HOME -type f -exec ls -lh {} + 2>/dev/null | sort -k5 -hr | head -1 | awk '{print $9, "("$5")"}')"
+echo
+
+echo "--- NETWORK ---"
+echo "IP Address: $(hostname -I | awk '{print $1}')"
+echo "Active connections: $(netstat -tn 2>/dev/null | grep ESTABLISHED | wc -l)"
+echo
+
+echo "========================================"
+echo "Report complete!"
+EOF
+
+$ chmod +x system_report.sh
+$ ./system_report.sh
+========================================
+       SYSTEM REPORT
+========================================
+Generated: Fri Dec 19 11:50:15 PST 2025
+
+--- SYSTEM INFO ---
+Hostname: bash-server
+Kernel: 6.8.0-90-generic
+Uptime: up 5 days, 3 hours, 45 minutes
+Current User: betty
+Home Directory: /home/betty
+
+--- RESOURCE USAGE ---
+CPU Cores: 4
+Memory Total: 8.0Gi
+Memory Used: 3.2Gi
+Memory Free: 4.8Gi
+Disk Usage: 58%
+
+--- FILE STATISTICS ---
+Files in home: 1247
+Directories in home: 89
+Largest file: /home/betty/videos/tutorial.mp4 (125M)
+
+--- NETWORK ---
+IP Address: 192.168.1.100
+Active connections: 3
+
+========================================
+Report complete!`}
+</TerminalDemo>
+
+## Filtering Command Output
+
+Combine command substitution with text processing:
+
+<TerminalDemo>
+{`$ # Get just the hour from date
+$ current_hour=$(date +%H)
+$ echo "It's hour $current_hour"
+It's hour 11
+
+$ # Check if it's morning, afternoon, or evening
+$ if [ $current_hour -lt 12 ]
+> then
+>     echo "Good morning!"
+> elif [ $current_hour -lt 18 ]
+> then
+>     echo "Good afternoon!"
+> else
+>     echo "Good evening!"
+> fi
+Good morning!
+
+$ # Get only the username from a full email
+$ email="betty@bash.com"
+$ username=$(echo "$email" | cut -d@ -f1)
+$ echo "Username: $username"
+Username: betty`}
+</TerminalDemo>
+
+## Practice Time!
+
+<Challenge
+  id="bash-command-sub-logger"
+  title="Log File Creator"
+  description="Create a script that generates log entries with timestamps"
+  steps={[
+    {
+      command: 'timestamp=$(date +"%Y-%m-%d %H:%M:%S")',
+      hint: "Capture current date and time"
+    },
+    {
+      command: 'user=$(whoami)',
+      hint: "Capture current username"
+    },
+    {
+      command: 'echo "[$timestamp] User $user logged an event" >> activity.log',
+      hint: "Write to log file"
+    },
+    {
+      command: 'echo "Log entry created! Total entries: $(wc -l < activity.log)"',
+      hint: "Show count of log entries"
+    }
+  ]}
+  xp={30}
+  badge="substitution_master"
+/>
+
+## Common Use Cases
+
+1. **Timestamped filenames:**
+   ```bash
+   cp important.txt "important_$(date +%Y%m%d).txt"
+   ```
+
+2. **Count items:**
+   ```bash
+   total=$(ls *.txt | wc -l)
+   echo "Found $total text files"
+   ```
+
+3. **Get system info:**
+   ```bash
+   user=$(whoami)
+   host=$(hostname)
+   echo "$user@$host"
+   ```
+
+4. **Capture grep results:**
+   ```bash
+   errors=$(grep ERROR log.txt | wc -l)
+   echo "Found $errors errors"
+   ```
+
+5. **Calculate values:**
+   ```bash
+   total_size=$(du -sh ~/Documents | cut -f1)
+   echo "Documents folder size: $total_size"
+   ```
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What is the modern syntax for command substitution?",
+    options: ["`command`", "$(command)", "{command}", "[command]"],
+    correct: 1,
+    explanation: "$(command) is the modern, recommended syntax for command substitution!"
+  },
+  {
+    question: "What does: backup_$(date +%Y%m%d).tar.gz create?",
+    options: ["backup_date.tar.gz", "backup_20251219.tar.gz", "backup_$(date).tar.gz", "An error"],
+    correct: 1,
+    explanation: "It creates a filename with the current date in YYYYMMDD format, like backup_20251219.tar.gz!"
+  },
+  {
+    question: "What happens when you run: user=$(whoami)?",
+    options: ["Prints your username", "Stores your username in 'user' variable", "Changes your username", "Logs you out"],
+    correct: 1,
+    explanation: "It runs whoami and stores the output (your username) in the variable called 'user'!"
+  },
+  {
+    question: "Can you nest command substitutions?",
+    options: ["No, never", "Yes, like $(cmd1 $(cmd2))", "Only twice", "Only on Tuesdays"],
+    correct: 1,
+    explanation: "Yes! You can nest them like $(outer $(inner)) - the inner one runs first!"
+  },
+  {
+    question: "What does this do: echo \"Files: $(ls | wc -l)\"?",
+    options: ["Lists files", "Counts and displays number of files", "Deletes files", "Creates files"],
+    correct: 1,
+    explanation: "It counts the files (ls | wc -l) and displays that count in a message!"
+  }
+]} />
+
+## Command Substitution Cheat Sheet
+
+```bash
+# Basic syntax
+result=$(command)
+
+# With date formatting
+today=$(date +%Y-%m-%d)
+time=$(date +%H:%M:%S)
+timestamp=$(date +%Y%m%d_%H%M%S)
+
+# Counting things
+file_count=$(ls | wc -l)
+line_count=$(wc -l < file.txt)
+word_count=$(wc -w < file.txt)
+
+# System information
+user=$(whoami)
+hostname=$(hostname)
+home=$(pwd)
+ip=$(hostname -I | awk '{print $1}')
+
+# File operations
+size=$(du -h file.txt | cut -f1)
+largest=$(ls -lh | sort -k5 -hr | head -1)
+
+# Text processing
+uppercase=$(echo "hello" | tr '[:lower:]' '[:upper:]')
+first_line=$(head -1 file.txt)
+last_line=$(tail -1 file.txt)
+
+# Math with command output
+total=$(expr $(wc -l < file1.txt) + $(wc -l < file2.txt))
+
+# Nested substitution
+owner=$(ls -l $(pwd) | awk '{print $3}')
+```
+
+<StoryBox character="bash_betty">
+  You're now a command substitution wizard! You can capture any command's output and use it in your scripts!
+
+  You've learned ALL the control flow tools:
+  - ✓ Conditionals (if/then/else)
+  - ✓ Loops (for/while)
+  - ✓ User Input (read)
+  - ✓ Command Substitution $(command)
+
+  Time for the FINAL QUEST of Chapter 2! You'll combine everything you've learned to build an interactive menu system. Let's do this!
+</StoryBox>
+
+<NextLesson
+  track="bash"
+  lesson="10-chapter2-quest"
+  teaser="Build an interactive menu-driven script using all your new skills!"
+/>

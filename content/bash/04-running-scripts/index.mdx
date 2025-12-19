@@ -1,0 +1,483 @@
+---
+title: "Running Scripts"
+track: "bash"
+chapter: 1
+lesson: 4
+slug: "04-running-scripts"
+prerequisites: ["03-variables"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand file permissions
+  - Make scripts executable with chmod
+  - Run scripts with ./script.sh
+  - Learn the difference between running methods
+nextLesson: "05-chapter1-quest"
+prevLesson: "03-variables"
+---
+
+# Running Scripts
+
+<StoryBox character="bash_betty">
+  Ready for the final piece of the puzzle?
+
+  You've learned to write scripts, but now let's make them run like REAL programs! No more typing `bash script.sh` every time!
+
+  We're going to make your scripts executable - turning them into proper commands! Let's unlock this power!
+</StoryBox>
+
+## Remember the Permission Denied Error?
+
+In lesson 2, when we tried to run a script with `./hello.sh`, we got this:
+
+<TerminalDemo>
+{`$ ./hello.sh
+bash: ./hello.sh: Permission denied`}
+</TerminalDemo>
+
+Why does this happen? Let's understand file permissions!
+
+## Understanding File Permissions
+
+In Linux, every file has **permissions** that control:
+1. Who can READ the file
+2. Who can WRITE (modify) the file
+3. Who can EXECUTE (run) the file
+
+Let's look at a file's permissions:
+
+<TerminalDemo>
+{`$ ls -l hello.sh
+-rw-r--r-- 1 pi pi 45 Dec 19 10:30 hello.sh`}
+</TerminalDemo>
+
+Let's break down those weird letters:
+
+```
+-rw-r--r--
+│││ │ │
+│││ │ └─ Others can Read
+│││ └─── Group can Read
+││└───── Owner can Read & Write
+│└────── No directory flag
+└─────── Regular file
+```
+
+Notice something missing? There's no `x` (execute) permission! That's why we can't run it!
+
+<FunFact>
+  Linux permissions are like a security guard - they decide who can do what with each file. This keeps your system safe!
+</FunFact>
+
+## Making Scripts Executable
+
+To make a script executable, we use the `chmod` command (change mode):
+
+<TerminalDemo>
+{`$ chmod +x hello.sh`}
+</TerminalDemo>
+
+Now check the permissions again:
+
+<TerminalDemo>
+{`$ ls -l hello.sh
+-rwxr-xr-x 1 pi pi 45 Dec 19 10:30 hello.sh`}
+</TerminalDemo>
+
+See those `x` letters? Now everyone can execute the file!
+
+## Running Executable Scripts
+
+Now you can run your script with `./`:
+
+<TerminalDemo>
+{`$ ./hello.sh
+Hello, World!
+This is my first shell script!
+I'm learning Bash scripting!`}
+</TerminalDemo>
+
+It works! The `./` means "run the file in the current directory."
+
+<StoryBox character="bash_betty">
+  Why do we need `./`?
+
+  Because Linux doesn't automatically look in the current directory for programs. The `./` tells it "run the script that's RIGHT HERE!"
+
+  Think of `./` as pointing and saying "this one, right here!"
+</StoryBox>
+
+## Three Ways to Run Scripts
+
+Let's compare all three methods:
+
+### Method 1: Using bash command
+```bash
+bash hello.sh
+```
+- ✅ Works without execute permission
+- ✅ Simple and safe
+- ❌ Have to type "bash" every time
+- ❌ Not how "real" programs work
+
+### Method 2: Making it executable with chmod
+```bash
+chmod +x hello.sh
+./hello.sh
+```
+- ✅ Runs like a real program
+- ✅ Shorter to type
+- ✅ Professional way to do it
+- ❌ Need to remember chmod first
+
+### Method 3: Using sh command
+```bash
+sh hello.sh
+```
+- ✅ Works without execute permission
+- ⚠️ Uses basic shell (might miss Bash features)
+
+**Most professional scripters use Method 2!**
+
+## Understanding chmod
+
+The `chmod` command has several options:
+
+```bash
+# Add execute permission
+chmod +x script.sh
+
+# Remove execute permission
+chmod -x script.sh
+
+# Make it executable only for you
+chmod u+x script.sh
+
+# Make it executable for everyone
+chmod a+x script.sh
+```
+
+Let's break down `chmod +x`:
+- `chmod` - Change mode (permissions)
+- `+` - Add permission
+- `x` - Execute permission
+
+<FunFact>
+  chmod can also use numbers! `chmod 755 script.sh` does the same as `chmod +x`. The numbers represent different permission combinations!
+</FunFact>
+
+## The Shebang is Important!
+
+Remember the `#!/bin/bash` line? It's SUPER important when running with `./`!
+
+```bash
+#!/bin/bash
+# ↑ This tells Linux: "Use Bash to run this script!"
+```
+
+Without it, Linux might use the wrong shell and your script might not work correctly!
+
+## Practice: Make Your Scripts Executable
+
+Let's create and run a script the professional way:
+
+<TerminalDemo>
+{`$ nano greet.sh`}
+</TerminalDemo>
+
+Type this:
+```bash
+#!/bin/bash
+
+name="Script Master"
+echo "Hello, $name!"
+echo "Welcome to the world of executable scripts!"
+```
+
+Save and exit, then:
+
+<TerminalDemo>
+{`$ chmod +x greet.sh
+$ ./greet.sh
+Hello, Script Master!
+Welcome to the world of executable scripts!`}
+</TerminalDemo>
+
+## Creating a System Information Script
+
+Let's build something useful:
+
+```bash
+#!/bin/bash
+
+# System Info Display Script
+# Created by: [Your Name]
+
+echo "=================================="
+echo "   SYSTEM INFORMATION"
+echo "=================================="
+echo ""
+
+echo "Current User:"
+whoami
+echo ""
+
+echo "Current Directory:"
+pwd
+echo ""
+
+echo "Disk Usage:"
+df -h / | tail -1
+echo ""
+
+echo "Memory Info:"
+free -h | grep Mem
+echo ""
+
+echo "=================================="
+echo "Script completed successfully!"
+echo "=================================="
+```
+
+Make it executable and run it:
+
+<TerminalDemo>
+{`$ chmod +x sysinfo.sh
+$ ./sysinfo.sh`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  Now you're thinking like a systems administrator! They create scripts like this to quickly check system health!
+
+  Imagine running this on 100 computers at once - you could monitor an entire network with one script!
+</StoryBox>
+
+## Your Turn to Create!
+
+<Challenge
+  id="ch1-executable"
+  title="Executable Script Master"
+  description="Create, make executable, and run your own script"
+  steps={[
+    {
+      command: 'nano myprogram.sh',
+      hint: "Create a new script"
+    },
+    {
+      command: '#!/bin/bash',
+      hint: "Start with shebang"
+    },
+    {
+      command: 'echo "This is MY program!"',
+      hint: "Add an echo command"
+    },
+    {
+      command: 'echo "I am $(whoami)"',
+      hint: "Show current user"
+    },
+    {
+      command: 'Save and exit nano',
+      hint: "Ctrl+O, Enter, Ctrl+X"
+    },
+    {
+      command: 'chmod +x myprogram.sh',
+      hint: "Make it executable"
+    },
+    {
+      command: './myprogram.sh',
+      hint: "Run your program!"
+    }
+  ]}
+  xp={30}
+  badge="executable_expert"
+/>
+
+## Where Do Programs Live?
+
+You might wonder - why don't we need `./` for commands like `ls` or `cd`?
+
+Because they're stored in special directories that Linux always checks. To see these directories:
+
+<TerminalDemo>
+{`$ echo $PATH
+/usr/local/bin:/usr/bin:/bin`}
+</TerminalDemo>
+
+These directories are in your `PATH` - Linux automatically looks there for programs!
+
+Want to run your script from anywhere? Move it to one of these directories (we'll learn this later)!
+
+## Creating a Useful Daily Reminder Script
+
+Let's create something practical:
+
+```bash
+#!/bin/bash
+
+# Daily Reminder Script
+# Run this every morning!
+
+clear  # Clear the screen
+
+echo "╔═══════════════════════════════════════╗"
+echo "║      GOOD MORNING, CODER!             ║"
+echo "╚═══════════════════════════════════════╝"
+echo ""
+
+# Show the date
+echo "📅 Today is: $(date +%A,\ %B\ %d,\ %Y)"
+echo ""
+
+# Show a motivational message
+echo "💪 Daily Goal:"
+echo "   - Learn something new"
+echo "   - Build something cool"
+echo "   - Practice coding skills"
+echo ""
+
+# Show system status
+echo "💻 System Status:"
+echo "   User: $(whoami)"
+echo "   Computer: $(hostname)"
+echo ""
+
+echo "╔═══════════════════════════════════════╗"
+echo "║    Have an AWESOME coding day!        ║"
+echo "╚═══════════════════════════════════════╝"
+```
+
+Make it executable:
+```bash
+chmod +x morning.sh
+./morning.sh
+```
+
+<FunFact>
+  Professional developers often create "startup scripts" that run automatically when they open their terminal. These scripts set up their coding environment!
+</FunFact>
+
+## Troubleshooting Common Issues
+
+### Issue 1: Command not found
+```bash
+$ hello.sh
+bash: hello.sh: command not found
+```
+**Solution:** Use `./hello.sh` instead!
+
+### Issue 2: Permission denied
+```bash
+$ ./hello.sh
+bash: ./hello.sh: Permission denied
+```
+**Solution:** Run `chmod +x hello.sh` first!
+
+### Issue 3: Bad interpreter
+```bash
+$ ./hello.sh
+bash: ./hello.sh: bad interpreter: No such file or directory
+```
+**Solution:** Check your shebang line - it should be `#!/bin/bash`
+
+## Quiz Time!
+
+<Quiz questions={[
+  {
+    question: "What command makes a script executable?",
+    options: ["chmod +x script.sh", "execute script.sh", "run script.sh", "make script.sh"],
+    correct: 0,
+    explanation: "chmod +x adds execute permission to the file!"
+  },
+  {
+    question: "How do you run an executable script named test.sh?",
+    options: ["test.sh", "./test.sh", "run test.sh", "execute test.sh"],
+    correct: 1,
+    explanation: "Use ./ to run scripts in the current directory!"
+  },
+  {
+    question: "What does the ./ mean?",
+    options: ["Previous directory", "Home directory", "Current directory", "Root directory"],
+    correct: 2,
+    explanation: "./ means 'in the current directory'"
+  },
+  {
+    question: "Why is the shebang line important?",
+    options: ["It makes the file bigger", "It tells Linux which interpreter to use", "It adds colors", "It's not important"],
+    correct: 1,
+    explanation: "The shebang (#!/bin/bash) tells Linux to use Bash to run the script!"
+  },
+  {
+    question: "What does chmod stand for?",
+    options: ["Change mode", "Check mode", "Chmod mode", "Choose mode"],
+    correct: 0,
+    explanation: "chmod means 'change mode' - it changes file permissions!"
+  }
+]} />
+
+## Best Practices for Executable Scripts
+
+Follow these professional tips:
+
+1. **Always start with a shebang**
+   ```bash
+   #!/bin/bash
+   ```
+
+2. **Add comments at the top**
+   ```bash
+   #!/bin/bash
+   # Script: backup.sh
+   # Purpose: Backup important files
+   # Author: Your Name
+   # Date: 2024-01-15
+   ```
+
+3. **Make scripts executable right after creating them**
+   ```bash
+   chmod +x script.sh
+   ```
+
+4. **Use descriptive names**
+   - ✅ `backup_photos.sh`
+   - ✅ `system_check.sh`
+   - ❌ `script1.sh`
+   - ❌ `test.sh`
+
+5. **Test before using on important data!**
+
+## What You've Learned!
+
+Congratulations! You can now:
+- Understand Linux file permissions
+- Make scripts executable with chmod
+- Run scripts with ./script.sh
+- Know three different ways to run scripts
+- Create professional executable scripts
+- Troubleshoot common permission issues
+
+<StoryBox character="bash_betty">
+  You're officially a Bash script wizard now!
+
+  You can write scripts, store data in variables, AND make them run like real programs!
+
+  In the next lesson - the FINAL QUEST - you'll put EVERYTHING together and build a real automation tool!
+
+  Are you ready for the challenge? Let's do this!
+</StoryBox>
+
+## Command Reference
+
+| Command | What It Does |
+|---------|--------------|
+| `ls -l script.sh` | View file permissions |
+| `chmod +x script.sh` | Make script executable |
+| `chmod -x script.sh` | Remove execute permission |
+| `./script.sh` | Run executable script |
+| `bash script.sh` | Run script with bash |
+
+<NextLesson
+  track="bash"
+  lesson="05-chapter1-quest"
+  teaser="Build your first automation tool - a greeting script that does it all!"
+/>

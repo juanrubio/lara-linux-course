@@ -1,0 +1,796 @@
+---
+title: "Mini Game Console"
+track: "raspberry-pi"
+chapter: 3
+lesson: 9
+slug: "09-mini-game-console"
+prerequisites: ["08-automation-station"]
+estimatedTime: 60
+difficulty: "intermediate"
+xpReward: 150
+objectives:
+  - Install and use pygame for game development
+  - Create interactive games with keyboard/button input
+  - Build a simple reaction game
+  - Add sound effects and graphics
+  - Wire physical buttons for controls
+nextLesson: "10-final-project"
+prevLesson: "08-automation-station"
+---
+
+import StoryBox from '@/components/StoryBox'
+import FunFact from '@/components/FunFact'
+import TerminalDemo from '@/components/TerminalDemo'
+import Challenge from '@/components/Challenge'
+import Quiz from '@/components/Quiz'
+import NextLesson from '@/components/NextLesson'
+
+<StoryBox character="pi_princess" mood="excited">
+Ready to have some FUN? We've built servers, automated tasks, and monitored systems. Now it's time to build something purely for enjoyment - GAMES!
+
+Today we're turning your Raspberry Pi into a mini game console! We'll use **pygame** to create games with graphics, sounds, and controls. And if you want, we can wire up physical buttons to make it feel like a real arcade machine!
+
+This is where coding becomes play. Let's make some games!
+</StoryBox>
+
+## What is Pygame?
+
+**Pygame** is a Python library for making games. It handles:
+- Drawing graphics and shapes
+- Playing sounds
+- Detecting keyboard/mouse/button input
+- Game loops and timing
+- Sprites and collisions
+
+It's perfect for 2D games and has been used to create thousands of games!
+
+<FunFact title="Pygame History">
+Pygame was created in 2000 and is built on SDL (Simple DirectMedia Layer), a library used by professional game developers. Games made with pygame have been featured in game jams, educational programs, and even commercial releases!
+
+The Raspberry Pi's creator, Eben Upton, wanted the Pi to be great for learning programming - including game programming. That's why pygame runs so well on it!
+</FunFact>
+
+## Components You'll Need
+
+### Software Only Version
+- Raspberry Pi (any model)
+- Monitor/screen
+- Keyboard
+- Mouse (optional)
+
+### Physical Controls Version (Optional)
+- 4x Push buttons
+- 4x 10kΩ resistors
+- Breadboard
+- Jumper wires
+- (You can use keyboard first, then add buttons later!)
+
+## Step 1: Install Pygame
+
+Let's get pygame installed:
+
+<TerminalDemo>
+{`$ sudo apt update
+$ sudo apt install python3-pygame -y
+
+Reading package lists... Done
+Installing python3-pygame...
+Success!`}
+</TerminalDemo>
+
+Test it:
+
+<TerminalDemo>
+{`$ python3
+>>> import pygame
+>>> pygame.init()
+>>> pygame.quit()
+>>> exit()
+
+No errors? Perfect! Pygame is ready!`}
+</TerminalDemo>
+
+## Step 2: Your First Pygame Window
+
+Let's create a simple window! Create a new file:
+
+<TerminalDemo>
+{`$ nano first_game.py`}
+</TerminalDemo>
+
+```python
+import pygame
+import sys
+
+# Initialize pygame
+pygame.init()
+
+# Set up the display
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("My First Game!")
+
+# Colors (RGB format)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+
+# Game loop
+running = True
+while running:
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Fill screen with color
+    screen.fill(WHITE)
+
+    # Draw a rectangle
+    pygame.draw.rect(screen, RED, (100, 100, 200, 150))
+
+    # Draw a circle
+    pygame.draw.circle(screen, BLUE, (600, 300), 75)
+
+    # Update display
+    pygame.display.flip()
+
+# Clean up
+pygame.quit()
+sys.exit()
+```
+
+Run it:
+
+<TerminalDemo>
+{`$ python3 first_game.py`}
+</TerminalDemo>
+
+You should see a window with a red rectangle and blue circle!
+
+<StoryBox character="pi_princess" mood="teaching">
+Let me explain the key parts:
+
+**Game Loop** - The `while running:` loop runs forever (until you close the window). Every game has this loop!
+
+**Event Handling** - We check for events (like clicking the X button) in the loop
+
+**Drawing** - We draw shapes to the screen
+
+**Display Update** - `pygame.display.flip()` shows what we drew
+
+This is the foundation of EVERY game!
+</StoryBox>
+
+## Step 3: Adding Movement
+
+Let's make something move! Update the code:
+
+```python
+import pygame
+import sys
+
+pygame.init()
+
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Moving Square Game")
+
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+
+# Player position
+player_x = 400
+player_y = 300
+player_size = 50
+player_speed = 5
+
+# Game clock (for smooth movement)
+clock = pygame.time.Clock()
+
+running = True
+while running:
+    # Limit to 60 FPS
+    clock.tick(60)
+
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Get pressed keys
+    keys = pygame.key.get_pressed()
+
+    # Move player
+    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+        player_x -= player_speed
+    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+        player_x += player_speed
+    if keys[pygame.K_UP] or keys[pygame.K_w]:
+        player_y -= player_speed
+    if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+        player_y += player_speed
+
+    # Keep player on screen
+    player_x = max(0, min(player_x, WIDTH - player_size))
+    player_y = max(0, min(player_y, HEIGHT - player_size))
+
+    # Draw everything
+    screen.fill(WHITE)
+    pygame.draw.rect(screen, RED, (player_x, player_y, player_size, player_size))
+
+    # Display FPS
+    font = pygame.font.Font(None, 36)
+    fps_text = font.render(f"FPS: {int(clock.get_fps())}", True, (0, 0, 0))
+    screen.blit(fps_text, (10, 10))
+
+    pygame.display.flip()
+
+pygame.quit()
+sys.exit()
+```
+
+Now you can move the square with arrow keys or WASD!
+
+<FunFact title="What is FPS?">
+FPS means "Frames Per Second" - how many times the screen updates per second. Movies are 24 FPS, TV is 30 FPS, and games aim for 60 FPS for smooth motion!
+
+`clock.tick(60)` limits our game to 60 FPS so it doesn't run too fast.
+</FunFact>
+
+## Step 4: A Complete Game - Catch the Falling Objects
+
+Let's build a full game! You control a basket and catch falling items:
+
+```python
+import pygame
+import random
+import sys
+
+pygame.init()
+
+# Screen setup
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Catch the Berries!")
+
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (100, 150, 255)
+
+# Player (basket)
+player_x = WIDTH // 2
+player_y = HEIGHT - 100
+player_width = 100
+player_height = 20
+player_speed = 8
+
+# Falling objects
+berries = []
+berry_spawn_time = 0
+berry_spawn_delay = 800  # milliseconds
+
+# Game variables
+score = 0
+lives = 3
+game_over = False
+
+# Fonts
+font_large = pygame.font.Font(None, 72)
+font_medium = pygame.font.Font(None, 48)
+font_small = pygame.font.Font(None, 36)
+
+clock = pygame.time.Clock()
+
+def spawn_berry():
+    """Create a new falling berry"""
+    x = random.randint(20, WIDTH - 20)
+    y = 0
+    size = 20
+    speed = random.randint(3, 7)
+    berries.append({"x": x, "y": y, "size": size, "speed": speed})
+
+running = True
+while running:
+    dt = clock.tick(60)  # Delta time in milliseconds
+
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and game_over:
+                # Restart game
+                score = 0
+                lives = 3
+                berries = []
+                game_over = False
+
+    if not game_over:
+        # Player movement
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            player_x -= player_speed
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            player_x += player_speed
+
+        # Keep player on screen
+        player_x = max(0, min(player_x, WIDTH - player_width))
+
+        # Spawn berries
+        berry_spawn_time += dt
+        if berry_spawn_time > berry_spawn_delay:
+            spawn_berry()
+            berry_spawn_time = 0
+
+        # Update berries
+        for berry in berries[:]:
+            berry["y"] += berry["speed"]
+
+            # Check collision with player
+            if (berry["y"] + berry["size"] >= player_y and
+                berry["y"] <= player_y + player_height and
+                berry["x"] >= player_x and
+                berry["x"] <= player_x + player_width):
+                # Caught!
+                berries.remove(berry)
+                score += 10
+
+            # Missed the berry
+            elif berry["y"] > HEIGHT:
+                berries.remove(berry)
+                lives -= 1
+                if lives <= 0:
+                    game_over = True
+
+    # Draw everything
+    screen.fill(BLUE)
+
+    if not game_over:
+        # Draw player (basket)
+        pygame.draw.rect(screen, GREEN, (player_x, player_y, player_width, player_height))
+        pygame.draw.rect(screen, BLACK, (player_x, player_y, player_width, player_height), 3)
+
+        # Draw berries
+        for berry in berries:
+            pygame.draw.circle(screen, RED, (int(berry["x"]), int(berry["y"])), berry["size"])
+
+        # Draw score
+        score_text = font_small.render(f"Score: {score}", True, WHITE)
+        screen.blit(score_text, (10, 10))
+
+        # Draw lives
+        lives_text = font_small.render(f"Lives: {lives}", True, WHITE)
+        screen.blit(lives_text, (WIDTH - 150, 10))
+
+    else:
+        # Game over screen
+        game_over_text = font_large.render("GAME OVER!", True, RED)
+        score_text = font_medium.render(f"Final Score: {score}", True, WHITE)
+        restart_text = font_small.render("Press SPACE to restart", True, WHITE)
+
+        screen.blit(game_over_text,
+                   (WIDTH // 2 - game_over_text.get_width() // 2, HEIGHT // 2 - 100))
+        screen.blit(score_text,
+                   (WIDTH // 2 - score_text.get_width() // 2, HEIGHT // 2))
+        screen.blit(restart_text,
+                   (WIDTH // 2 - restart_text.get_width() // 2, HEIGHT // 2 + 80))
+
+    pygame.display.flip()
+
+pygame.quit()
+sys.exit()
+```
+
+<StoryBox character="pi_princess" mood="excited">
+You just made a REAL GAME! You can play it, score points, lose lives, and restart!
+
+This has all the elements of professional games:
+- Player control
+- Spawning objects
+- Collision detection
+- Score tracking
+- Game over condition
+- Restart functionality
+
+You're a game developer now!
+</StoryBox>
+
+## Step 5: Adding Sound Effects
+
+Let's add sound! First, we need sound files. You can:
+1. Download free sounds from freesound.org
+2. Record your own sounds
+3. Use text-to-speech to generate sounds
+
+Here's how to add sound to your game:
+
+```python
+# After pygame.init()
+pygame.mixer.init()
+
+# Load sounds (you need these files)
+# catch_sound = pygame.mixer.Sound("catch.wav")
+# miss_sound = pygame.mixer.Sound("miss.wav")
+# game_over_sound = pygame.mixer.Sound("gameover.wav")
+
+# When player catches a berry:
+# catch_sound.play()
+
+# When player misses:
+# miss_sound.play()
+
+# When game ends:
+# game_over_sound.play()
+```
+
+Create a simple beep sound with code:
+
+```python
+import os
+
+# Generate a beep sound file
+os.system('speaker-test -t sine -f 1000 -l 1 -s 1 > /dev/null 2>&1')
+```
+
+## Step 6: Physical Button Controls!
+
+Want to make it feel like a real arcade? Let's add physical buttons!
+
+### Wiring the Buttons
+
+Wire 4 buttons like this:
+
+```
+Button 1 (LEFT)   → GPIO 17 + Ground
+Button 2 (RIGHT)  → GPIO 27 + Ground
+Button 3 (UP)     → GPIO 22 + Ground  (optional)
+Button 4 (DOWN)   → GPIO 23 + Ground  (optional)
+```
+
+Each button needs:
+- One leg to GPIO pin
+- Other leg to Ground (GND)
+- 10kΩ resistor between GPIO and 3.3V (pull-up)
+
+Or use the Pi's internal pull-ups in software!
+
+### Code with GPIO Buttons
+
+```python
+import pygame
+import sys
+try:
+    import RPi.GPIO as GPIO
+    HAS_GPIO = True
+except ImportError:
+    HAS_GPIO = False
+    print("GPIO not available, using keyboard only")
+
+# GPIO Setup
+if HAS_GPIO:
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+
+    # Button pins
+    BTN_LEFT = 17
+    BTN_RIGHT = 27
+    BTN_UP = 22
+    BTN_DOWN = 23
+
+    # Setup pins with internal pull-up resistors
+    GPIO.setup(BTN_LEFT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(BTN_RIGHT, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(BTN_UP, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(BTN_DOWN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+# In your game loop, check buttons:
+if HAS_GPIO:
+    if GPIO.input(BTN_LEFT) == GPIO.LOW:  # Button pressed
+        player_x -= player_speed
+    if GPIO.input(BTN_RIGHT) == GPIO.LOW:
+        player_x += player_speed
+
+# Also keep keyboard controls
+keys = pygame.key.get_pressed()
+if keys[pygame.K_LEFT]:
+    player_x -= player_speed
+if keys[pygame.K_RIGHT]:
+    player_x += player_speed
+
+# Don't forget cleanup!
+if HAS_GPIO:
+    GPIO.cleanup()
+```
+
+Now you can play with physical buttons OR keyboard!
+
+<FunFact title="Arcade Button Mods">
+Want to make it even more arcade-like? You can buy:
+- Large arcade buttons (30mm or larger)
+- Microswitches for clicky feedback
+- A joystick module
+- LED buttons that light up
+- Even a small screen and build a handheld console!
+
+Search for "Raspberry Pi arcade kit" for pre-made solutions, or build your own custom design!
+</FunFact>
+
+## More Game Ideas
+
+Now that you know the basics, here are more games to build:
+
+### 1. Pong
+Classic paddle game - bounce the ball back and forth!
+
+```python
+# Two paddles, one ball
+# Move paddles with buttons
+# Ball bounces off paddles and walls
+# Score points when opponent misses
+```
+
+### 2. Snake
+Eat food, grow longer, don't hit yourself!
+
+```python
+# Snake moves continuously
+# Turn with buttons
+# Eat food to grow
+# Game over if you hit yourself
+```
+
+### 3. Space Shooter
+Shoot enemies falling from the sky!
+
+```python
+# Player at bottom shoots up
+# Enemies fall from top
+# Dodge bullets, shoot back
+# Power-ups for multi-shot
+```
+
+### 4. Memory Game
+Simon Says style - remember the pattern!
+
+```python
+# Show sequence of colored buttons
+# Player repeats the sequence
+# Add one more each round
+# How long can you remember?
+```
+
+### 5. Reaction Timer
+Test your reflexes!
+
+```python
+# Wait for random time
+# Show indicator
+# Press button as fast as possible
+# Record best time
+```
+
+<Challenge
+  title="Create Your Own Game"
+  description="Design and build your own original game"
+  steps={[
+    "Plan your game - what's the objective?",
+    "Create the player/character",
+    "Add at least one type of obstacle or target",
+    "Implement scoring system",
+    "Add game over and restart functionality",
+    "Make it fun! Tweak speeds and difficulty",
+    "Add at least 3 visual elements (colors, shapes, text)",
+    "Bonus: Add your own creative feature!"
+  ]}
+  xp={75}
+/>
+
+## Performance Tips
+
+Games need to run smoothly! Here are tips:
+
+### 1. Limit Drawing
+Only draw what changed:
+```python
+# Don't redraw static background every frame
+# Use dirty rect updating for sprites
+```
+
+### 2. Use Sprites
+Pygame's sprite system is optimized:
+```python
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((50, 50))
+        self.rect = self.image.get_rect()
+```
+
+### 3. Optimize Collision Detection
+Don't check every object against every object:
+```python
+# Use pygame.sprite.spritecollide()
+# Only check nearby objects
+```
+
+### 4. Lower Resolution
+If game is slow, use smaller window:
+```python
+WIDTH, HEIGHT = 640, 480  # Instead of 1920, 1080
+```
+
+## Publishing Your Game
+
+Want to share your game?
+
+### 1. Make it Easy to Run
+Create a startup script:
+```bash
+#!/bin/bash
+cd /home/pi/games
+python3 my_game.py
+```
+
+### 2. Add Instructions
+Create a README.txt:
+```
+MY AWESOME GAME
+===============
+
+Controls:
+- Arrow Keys: Move
+- Space: Jump
+- ESC: Quit
+
+How to Play:
+[Instructions here]
+
+Credits:
+Made by [Your Name]
+```
+
+### 3. Package It
+Put everything in one folder:
+```
+my_game/
+├── game.py
+├── sounds/
+│   └── beep.wav
+├── images/
+│   └── player.png
+├── README.txt
+└── run.sh
+```
+
+### 4. Share It!
+- Upload to GitHub
+- Share on itch.io
+- Post on Reddit's r/pygame
+- Show your friends!
+
+<Quiz
+  questions={[
+    {
+      question: "What is the main loop in a game called?",
+      options: [
+        "The graphics loop",
+        "The game loop",
+        "The event loop",
+        "The render loop"
+      ],
+      correctAnswer: 1,
+      explanation: "The game loop is the main while loop that runs continuously, handling events, updating game state, and drawing to the screen!"
+    },
+    {
+      question: "What does clock.tick(60) do?",
+      options: [
+        "Makes a ticking sound",
+        "Counts to 60",
+        "Limits the game to 60 frames per second",
+        "Waits 60 seconds"
+      ],
+      correctAnswer: 2,
+      explanation: "clock.tick(60) limits the game loop to run at most 60 times per second, giving smooth animation!"
+    },
+    {
+      question: "How do you detect if a key is being pressed in pygame?",
+      options: [
+        "pygame.key.get_pressed()",
+        "pygame.get_keys()",
+        "keyboard.is_pressed()",
+        "pygame.input.keys()"
+      ],
+      correctAnswer: 0,
+      explanation: "pygame.key.get_pressed() returns a list of all keys and whether they're currently pressed!"
+    },
+    {
+      question: "What does pygame.display.flip() do?",
+      options: [
+        "Flips the screen upside down",
+        "Rotates the display",
+        "Updates the display with what you drew",
+        "Clears the screen"
+      ],
+      correctAnswer: 2,
+      explanation: "pygame.display.flip() updates the screen to show everything you drew since the last flip. Without it, you wouldn't see anything!"
+    },
+    {
+      question: "Why would you add physical buttons to your game?",
+      options: [
+        "To make it feel like an arcade machine",
+        "To make it easier to play",
+        "For a more tactile experience",
+        "All of the above"
+      ],
+      correctAnswer: 3,
+      explanation: "Physical buttons make games more fun and arcade-like! They give tactile feedback and can make games feel more real and engaging."
+    }
+  ]}
+/>
+
+<StoryBox character="pi_princess" mood="proud">
+WOW! You just built games on your Raspberry Pi! REAL, playable games that you created from scratch!
+
+You learned:
+- Pygame basics and game loops
+- Drawing graphics and handling input
+- Collision detection and scoring
+- Game states (playing, game over, restart)
+- Adding physical controls with GPIO buttons
+- Performance optimization
+
+This is the same way indie game developers create games! You have all the fundamentals now.
+
+Next up is your FINAL PROJECT - where you'll combine EVERYTHING you've learned into one epic creation. This is it - the final boss battle! Are you ready?
+</StoryBox>
+
+## Quick Reference
+
+### Pygame Basics
+```python
+import pygame
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+clock = pygame.time.Clock()
+
+while running:
+    clock.tick(60)  # 60 FPS
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Update game logic here
+
+    screen.fill((255, 255, 255))  # Clear screen
+    # Draw here
+    pygame.display.flip()
+
+pygame.quit()
+```
+
+### Common Drawing Commands
+| Command | Purpose |
+|---------|---------|
+| `screen.fill(color)` | Fill screen with color |
+| `pygame.draw.rect(screen, color, (x, y, w, h))` | Draw rectangle |
+| `pygame.draw.circle(screen, color, (x, y), radius)` | Draw circle |
+| `screen.blit(surface, (x, y))` | Draw image/text |
+
+### Input
+| Command | Purpose |
+|---------|---------|
+| `pygame.key.get_pressed()` | Get all pressed keys |
+| `pygame.mouse.get_pos()` | Get mouse position |
+| `pygame.mouse.get_pressed()` | Get mouse buttons |
+
+<NextLesson
+  track="raspberry-pi"
+  lesson="10-final-project"
+  teaser="The ultimate challenge - combine everything into your masterpiece project!"
+/>

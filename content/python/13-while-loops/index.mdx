@@ -1,0 +1,391 @@
+---
+title: "While Loops"
+track: "python"
+chapter: 3
+lesson: 13
+slug: "13-while-loops"
+prerequisites: ["12-for-loops"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand while loops and condition-based looping
+  - Learn when to use while vs for loops
+  - Master break and continue statements
+  - Avoid infinite loops
+nextLesson: "14-list-operations"
+prevLesson: "12-for-loops"
+---
+
+# While Loops: Loop Until Conditions Change
+
+<StoryBox character="python_pete">
+  Welcome back, coding champion! Today we're learning about the WHILE loop - the for loop's clever cousin!
+
+  Remember how for loops repeat a specific number of times? Well, while loops are different. They keep going AS LONG AS a condition is true!
+
+  It's like saying "Keep playing video games WHILE you have battery left" or "Keep eating cookies WHILE there are cookies in the jar!"
+</StoryBox>
+
+## What's a While Loop?
+
+A **while loop** repeats code as long as a condition stays `True`. When the condition becomes `False`, the loop stops!
+
+Think of real-life examples:
+- Keep swimming WHILE you're not at the shore
+- Keep waiting WHILE the pizza isn't ready
+- Keep playing WHILE the timer hasn't hit zero
+
+<TerminalDemo>
+{`# Count to 5 using a while loop
+counter = 1
+
+while counter <= 5:
+    print(f"Count: {counter}")
+    counter = counter + 1
+
+print("Blast off!")
+
+# Output:
+# Count: 1
+# Count: 2
+# Count: 3
+# Count: 4
+# Count: 5
+# Blast off!`}
+</TerminalDemo>
+
+Let's break it down:
+1. Start with `counter = 1`
+2. Check: Is `counter <= 5`? Yes! Run the loop
+3. Print the counter
+4. Add 1 to counter
+5. Repeat from step 2 until counter is 6 (not <= 5)
+
+<FunFact>
+  While loops are PERFECT for games! "While player is alive, keep playing" or "While enemies remain, keep fighting!" The game doesn't know how long it will last - it depends on the player!
+</FunFact>
+
+## For Loop vs While Loop
+
+When should you use each?
+
+| Use For Loop When... | Use While Loop When... |
+|---------------------|----------------------|
+| You know how many times to loop | You don't know how many times |
+| Looping through a list | Waiting for something to happen |
+| Counting specific numbers | Repeating until a condition changes |
+| "Do this 10 times" | "Do this until user says stop" |
+
+<TerminalDemo>
+{`# FOR LOOP: You know exactly how many items
+games = ["Minecraft", "Roblox", "Fortnite"]
+for game in games:
+    print(game)
+
+# WHILE LOOP: You don't know when user will quit
+playing = True
+score = 0
+while playing:
+    score = score + 10
+    print(f"Score: {score}")
+    if score >= 50:
+        playing = False
+        print("You win!")
+
+# Output:
+# Score: 10
+# Score: 20
+# Score: 30
+# Score: 40
+# Score: 50
+# You win!`}
+</TerminalDemo>
+
+## The Danger: Infinite Loops!
+
+Be careful! If your condition never becomes `False`, the loop runs FOREVER!
+
+<TerminalDemo>
+{`# DON'T DO THIS! (Infinite loop)
+# counter = 1
+# while counter <= 5:
+#     print(counter)
+#     # Oops! Forgot to add 1 to counter!
+#     # This will print 1 forever!
+
+# THE FIX: Always change the variable in your condition!
+counter = 1
+while counter <= 5:
+    print(counter)
+    counter = counter + 1  # This makes the loop end eventually!`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  If you accidentally create an infinite loop, don't panic! Just press Ctrl+C in the terminal to stop it.
+
+  Always make sure your while loop's condition will eventually become False. Otherwise, your program will run forever!
+</StoryBox>
+
+## Break: Escape the Loop Early!
+
+Sometimes you want to exit a loop before it naturally ends. Use `break`!
+
+<TerminalDemo>
+{`# Search for a specific item
+items = ["apple", "banana", "cherry", "date", "elderberry"]
+
+for item in items:
+    print(f"Checking: {item}")
+    if item == "cherry":
+        print("Found cherry! Stopping search.")
+        break  # Exit the loop immediately!
+
+print("Loop ended")
+
+# Output:
+# Checking: apple
+# Checking: banana
+# Checking: cherry
+# Found cherry! Stopping search.
+# Loop ended`}
+</TerminalDemo>
+
+`break` is useful for:
+- Finding something in a list (stop when found!)
+- User wants to quit
+- Error occurs and you need to stop
+
+<TerminalDemo>
+{`# Guess the number game
+secret_number = 7
+guesses = 0
+
+while True:  # Infinite loop! But we'll use break to exit
+    guess = int(input("Guess the number (1-10): "))
+    guesses = guesses + 1
+
+    if guess == secret_number:
+        print(f"Correct! You guessed it in {guesses} tries!")
+        break  # Exit the loop!
+    elif guess < secret_number:
+        print("Too low! Try again.")
+    else:
+        print("Too high! Try again.")`}
+</TerminalDemo>
+
+## Continue: Skip to Next Loop
+
+`continue` skips the rest of the current loop and jumps to the next one!
+
+<TerminalDemo>
+{`# Print only odd numbers from 1 to 10
+for num in range(1, 11):
+    if num % 2 == 0:  # If even
+        continue  # Skip the rest and go to next number
+    print(num)
+
+# Output:
+# 1
+# 3
+# 5
+# 7
+# 9`}
+</TerminalDemo>
+
+<TerminalDemo>
+{`# Process items but skip damaged ones
+items = ["sword", "damaged shield", "potion", "damaged helmet", "map"]
+
+for item in items:
+    if "damaged" in item:
+        print(f"Skipping {item}...")
+        continue  # Skip to next item
+    print(f"Adding {item} to inventory!")
+
+# Output:
+# Adding sword to inventory!
+# Skipping damaged shield...
+# Adding potion to inventory!
+# Skipping damaged helmet...
+# Adding map to inventory!`}
+</TerminalDemo>
+
+<FunFact>
+  Think of `break` as "EXIT THE BUILDING!" and `continue` as "SKIP TO THE NEXT ROOM!" Both are powerful tools for controlling your loops!
+</FunFact>
+
+## Real-World Example: Game Loop
+
+Most games use a while loop for the main game logic!
+
+<TerminalDemo>
+{`# Simple game loop
+health = 100
+playing = True
+turn = 1
+
+while playing:
+    print(f"\n--- Turn {turn} ---")
+    print(f"Health: {health}")
+
+    action = input("What do you do? (attack/heal/quit): ").lower()
+
+    if action == "attack":
+        damage = 10
+        health = health - damage
+        print(f"You took {damage} damage!")
+
+        if health <= 0:
+            print("Game Over! You were defeated!")
+            playing = False
+            break
+
+    elif action == "heal":
+        heal_amount = 20
+        health = health + heal_amount
+        print(f"You healed {heal_amount} HP!")
+
+    elif action == "quit":
+        print("Thanks for playing!")
+        playing = False
+        break
+    else:
+        print("Invalid action!")
+        continue  # Skip turn counter
+
+    turn = turn + 1
+
+print(f"Final score: {turn} turns survived!")`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  See how the game keeps running while playing is True? The player can break out by choosing quit or losing all health!
+
+  This is exactly how real games work. One big while loop that keeps running until the game ends!
+</StoryBox>
+
+## Common While Loop Patterns
+
+### Pattern 1: Input Validation
+
+<TerminalDemo>
+{`# Keep asking until valid input
+age = -1
+while age < 0 or age > 120:
+    age = int(input("Enter your age (0-120): "))
+    if age < 0 or age > 120:
+        print("That's not a valid age!")
+
+print(f"Thanks! Your age is {age}")`}
+</TerminalDemo>
+
+### Pattern 2: Countdown
+
+<TerminalDemo>
+{`# Countdown from 10
+countdown = 10
+while countdown > 0:
+    print(countdown)
+    countdown = countdown - 1
+print("Happy New Year!")`}
+</TerminalDemo>
+
+### Pattern 3: Process Until Done
+
+<TerminalDemo>
+{`# Process tasks until list is empty
+tasks = ["homework", "chores", "practice"]
+
+while tasks:  # While list is not empty
+    current_task = tasks.pop(0)  # Remove first item
+    print(f"Doing: {current_task}")
+
+print("All tasks complete!")`}
+</TerminalDemo>
+
+## Practice Time!
+
+<Challenge
+  id="ch3-while-loops"
+  title="While Loop Warrior"
+  description="Master while loops, break, and continue"
+  steps={[
+    {
+      command: "Create a countdown from 5 to 1 using a while loop",
+      hint: "Start with counter = 5, loop while counter > 0"
+    },
+    {
+      command: "Write a loop that adds numbers until the sum reaches 50",
+      hint: "total = 0, while total < 50, keep adding"
+    },
+    {
+      command: "Loop through numbers 1-10 and skip (continue) even numbers",
+      hint: "if num % 2 == 0: continue"
+    },
+    {
+      command: "Create a loop that breaks when it finds the word 'stop' in a list",
+      hint: "for word in words: if word == 'stop': break"
+    }
+  ]}
+  xp={35}
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does a while loop do?",
+    options: ["Runs forever", "Runs a specific number of times", "Runs while a condition is True", "Runs once"],
+    correct: 2,
+    explanation: "While loops keep running as long as their condition is True!"
+  },
+  {
+    question: "What does the 'break' statement do?",
+    options: ["Pauses the loop", "Skips to next loop", "Exits the loop completely", "Breaks your code"],
+    correct: 2,
+    explanation: "break exits the loop immediately, jumping to the code after the loop!"
+  },
+  {
+    question: "What does 'continue' do?",
+    options: ["Exits the loop", "Skips the rest of this loop and goes to next", "Continues forever", "Pauses the program"],
+    correct: 1,
+    explanation: "continue skips the remaining code in the current loop and jumps to the next iteration!"
+  },
+  {
+    question: "What happens if a while loop's condition never becomes False?",
+    options: ["Python stops it automatically", "It runs forever (infinite loop)", "It runs once", "It causes an error"],
+    correct: 1,
+    explanation: "If the condition stays True, the loop runs forever! Always make sure your condition can become False."
+  }
+]} />
+
+## Loop Control Cheat Sheet
+
+| Statement | What It Does | When to Use |
+|-----------|--------------|-------------|
+| `while condition:` | Repeat while True | Don't know how many times to loop |
+| `break` | Exit loop immediately | Found what you're looking for, or error occurred |
+| `continue` | Skip to next loop | Skip certain items but keep looping |
+| `while True:` | Infinite loop | Use with break to control when to exit |
+
+<StoryBox character="python_pete">
+  You're becoming a loop master! You now know TWO types of loops:
+
+  - FOR loops: When you know how many times
+  - WHILE loops: When you loop until something changes
+
+  Plus you've got break and continue in your toolkit for precise control!
+
+  Now let's learn some powerful operations you can do with lists. Time to level up your list skills!
+</StoryBox>
+
+## What's Next?
+
+Ready to become a list manipulation expert? In the next lesson, you'll learn powerful operations like append, remove, sort, and more!
+
+<NextLesson
+  track="python"
+  lesson="14-list-operations"
+  teaser="Master list methods to add, remove, sort, and search items!"
+/>

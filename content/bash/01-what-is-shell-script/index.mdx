@@ -1,0 +1,206 @@
+---
+title: "What is a Shell Script?"
+track: "bash"
+chapter: 1
+lesson: 1
+slug: "01-what-is-shell-script"
+prerequisites: []
+estimatedTime: 10
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand what shell scripts are and why they matter
+  - Learn about automation and efficiency
+  - Discover what you can build with Bash
+nextLesson: "02-first-script"
+---
+
+# What is a Shell Script?
+
+<StoryBox character="bash_betty">
+  Hey there, future automation wizard! I'm Bash Betty, the Script Sorceress, and I'm THRILLED to meet you!
+
+  You've already learned Linux commands and Python programming. Now it's time to learn something SUPER powerful - Bash scripting!
+
+  Get ready to automate EVERYTHING and become a command-line wizard!
+</StoryBox>
+
+## Remember the Terminal?
+
+You've already been using the terminal to run Linux commands like `ls`, `cd`, `mkdir`, and more. Each command you type does something useful, right?
+
+But here's the thing - what if you need to run the SAME commands over and over? Or what if you want to run 10 commands in a row every morning? Typing them all out each time is boring and slow!
+
+That's where **shell scripts** come in!
+
+## What is a Shell Script?
+
+A **shell script** is a file that contains a list of commands. Instead of typing commands one by one, you write them all in a file, and then run the whole file at once!
+
+Think of it like this:
+
+| Concept | Real World Example | Shell Script Example |
+|---------|-------------------|---------------------|
+| Single Command | Making one sandwich | Running `ls` |
+| Recipe | Making 20 sandwiches efficiently | A script that backs up files |
+| Instructions | Following step-by-step directions | Commands executed in order |
+
+<FunFact>
+  The "shell" is the program that runs your commands - like Bash (Bourne Again SHell). When you write a shell script, you're writing commands for the shell to execute!
+</FunFact>
+
+## Why Use Shell Scripts?
+
+### 1. Automation
+Instead of typing the same commands every day, write them once and run them anytime!
+
+### 2. Save Time
+Run 50 commands in one second instead of typing for 5 minutes!
+
+### 3. Avoid Mistakes
+Humans make typos. Scripts don't! They do exactly what you tell them, every single time.
+
+### 4. Reusability
+Write a script once, use it forever! Share it with friends or use it on different computers.
+
+### 5. Power
+Combine simple commands to do complex tasks. You become a command-line superhero!
+
+<StoryBox character="bash_betty">
+  Here's the amazing part - shell scripts let you combine ALL the Linux commands you've learned into automated workflows!
+
+  Want to create a folder, move files into it, rename them, and create a backup - all with one command? Shell scripts can do that!
+</StoryBox>
+
+## What Can You Build with Shell Scripts?
+
+The possibilities are ENDLESS! Here are some cool things:
+
+### Everyday Automation
+- Backup your important files automatically
+- Organize your downloads folder
+- Rename hundreds of files at once
+- Clean up old files to free space
+
+### System Management
+- Check disk space and send alerts
+- Monitor running processes
+- Restart services automatically
+- Update multiple computers at once
+
+### Development Tools
+- Compile and test your code
+- Deploy websites
+- Run tests automatically
+- Set up development environments
+
+### Fun Projects
+- Create a daily greeting message
+- Build a simple calculator
+- Make a system information display
+- Create your own custom commands!
+
+## Shell Scripts vs Python Scripts
+
+You might be wondering - "I already know Python. Why learn Bash?"
+
+Great question! Here's when to use each:
+
+| Use Bash When... | Use Python When... |
+|-----------------|-------------------|
+| Running lots of Linux commands | Doing complex calculations |
+| Automating system tasks | Building full applications |
+| Quick one-off scripts | Processing large amounts of data |
+| Working with files and folders | Need advanced logic and data structures |
+| System administration | Web scraping or API calls |
+
+**The Truth:** The best programmers know BOTH! They're tools in your toolbox. Sometimes you need a hammer (Bash), sometimes you need a screwdriver (Python)!
+
+<FunFact>
+  Many professional DevOps engineers and system administrators write shell scripts every single day! It's one of the most valuable skills in the tech industry.
+</FunFact>
+
+## Real-World Examples
+
+Let's look at what shell scripts can do:
+
+### Example 1: Morning Backup Script
+Every morning, automatically backup your homework to a USB drive!
+
+### Example 2: Photo Organizer
+Sort thousands of photos by date automatically!
+
+### Example 3: System Monitor
+Check if your computer is running low on disk space and notify you!
+
+### Example 4: Development Helper
+Automatically start all the programs you need for coding with one command!
+
+## The Power of Bash
+
+Here's what makes Bash scripting special:
+
+1. **It's Built-In** - Every Linux computer has Bash installed!
+2. **It's Fast** - Scripts run super quickly
+3. **It's Everywhere** - Used in servers, Raspberry Pis, and more
+4. **It's Powerful** - Control everything on your system
+5. **It's Simple** - If you can type commands, you can write scripts!
+
+<StoryBox character="bash_betty">
+  I've seen engineers automate tasks that used to take hours and make them happen in seconds with shell scripts!
+
+  By the end of this chapter, you'll create your own automation scripts. You'll feel like a wizard casting spells on your computer!
+</StoryBox>
+
+## Your Journey Begins
+
+In this chapter, you'll learn:
+
+1. **What shell scripts are** (you're here!)
+2. **How to create your first script** - Write a `.sh` file
+3. **Variables** - Store information in your scripts
+4. **Running scripts** - Make your scripts executable
+5. **Your first quest** - Build a real automation tool!
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What is a shell script?",
+    options: ["A type of shell", "A file containing commands", "A programming language", "A terminal window"],
+    correct: 1,
+    explanation: "A shell script is a file that contains a list of commands that the shell will execute!"
+  },
+  {
+    question: "What's the main benefit of shell scripts?",
+    options: ["They make computers faster", "They automate repetitive tasks", "They replace Python", "They install software"],
+    correct: 1,
+    explanation: "The main benefit is automation - write commands once, run them anytime!"
+  },
+  {
+    question: "What does 'Bash' stand for?",
+    options: ["Basic Shell", "Bourne Again SHell", "Best Automated Shell", "Beginner's Shell"],
+    correct: 1,
+    explanation: "Bash stands for 'Bourne Again SHell' - it's an improved version of the original Bourne shell!"
+  },
+  {
+    question: "When should you use Bash instead of Python?",
+    options: ["Always", "Never", "When running lots of Linux commands", "Only on Tuesdays"],
+    correct: 2,
+    explanation: "Bash is perfect for running Linux commands and automating system tasks!"
+  }
+]} />
+
+## What's Coming Next?
+
+Ready to write your very first shell script? In the next lesson, you'll create a `.sh` file and run your first automated command!
+
+<StoryBox character="bash_betty">
+  This is going to be SO much fun! Get ready to feel the power of automation! Let's create your first script!
+</StoryBox>
+
+<NextLesson
+  track="bash"
+  lesson="02-first-script"
+  teaser="Write your first shell script and watch the magic happen!"
+/>

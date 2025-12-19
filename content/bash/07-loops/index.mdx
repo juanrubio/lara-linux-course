@@ -1,0 +1,588 @@
+---
+title: "Loops"
+track: "bash"
+chapter: 2
+lesson: 7
+slug: "07-loops"
+prerequisites: ["06-conditionals"]
+estimatedTime: 25
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Master for loops for iterating over lists
+  - Learn while loops for conditional repetition
+  - Use loop control with break and continue
+  - Create powerful automation scripts
+nextLesson: "08-user-input"
+prevLesson: "06-conditionals"
+---
+
+# Loops
+
+<StoryBox character="bash_betty">
+  Welcome to one of the most powerful concepts in bash scripting: LOOPS!
+
+  Imagine you need to rename 100 files, or check 50 servers, or process 1000 lines of data. You could type 100 commands... OR you could write ONE loop and let the computer do all the work!
+
+  Loops are how we tell the computer: "Do this thing over and over until I tell you to stop!" Let's learn how!
+</StoryBox>
+
+## What is a Loop?
+
+A **loop** repeats a set of commands multiple times. Instead of writing the same command 10 times, you write it once inside a loop!
+
+Think of it like:
+- Playing the same song on repeat
+- Walking around a race track multiple times
+- Checking your phone every 5 minutes
+
+There are two main types of loops in bash:
+1. **for loops** - Repeat for each item in a list
+2. **while loops** - Repeat while a condition is true
+
+## The For Loop
+
+A `for` loop goes through a list of items, one at a time.
+
+The basic structure:
+```bash
+for item in list
+do
+    # Commands to run for each item
+done
+```
+
+Let's see it in action:
+
+<TerminalDemo>
+{`$ for fruit in apple banana cherry
+> do
+>     echo "I like $fruit"
+> done
+I like apple
+I like banana
+I like cherry`}
+</TerminalDemo>
+
+<FunFact>
+  Just like "fi" is "if" backwards, "done" marks the end of a loop. Bash loves symmetry!
+</FunFact>
+
+## Looping Through Numbers
+
+You can loop through a range of numbers:
+
+<TerminalDemo>
+{`$ for number in 1 2 3 4 5
+> do
+>     echo "Count: $number"
+> done
+Count: 1
+Count: 2
+Count: 3
+Count: 4
+Count: 5`}
+</TerminalDemo>
+
+Or use the `seq` command for longer ranges:
+
+<TerminalDemo>
+{`$ for i in $(seq 1 5)
+> do
+>     echo "Number $i squared is $((i * i))"
+> done
+Number 1 squared is 1
+Number 2 squared is 4
+Number 3 squared is 9
+Number 4 squared is 16
+Number 5 squared is 25`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  The {1..5} syntax is even easier! Try `for i in {1..10}` - it creates numbers from 1 to 10!
+
+  ```bash
+  for i in {1..5}
+  do
+      echo "Number: $i"
+  done
+  ```
+</StoryBox>
+
+## Looping Through Files
+
+One of the most powerful uses of loops is processing multiple files:
+
+<TerminalDemo>
+{`$ # Create some test files
+$ touch file1.txt file2.txt file3.txt
+$
+$ # Loop through all .txt files
+$ for file in *.txt
+> do
+>     echo "Processing: $file"
+>     echo "Hello from $file" > "$file"
+> done
+Processing: file1.txt
+Processing: file2.txt
+Processing: file3.txt
+$
+$ # Check the results
+$ cat file1.txt
+Hello from file1.txt`}
+</TerminalDemo>
+
+## Looping Through Command Output
+
+You can loop through the results of a command:
+
+<TerminalDemo>
+{`$ # Loop through current directory items
+$ for item in $(ls)
+> do
+>     if [ -f "$item" ]
+>     then
+>         echo "$item is a file"
+>     elif [ -d "$item" ]
+>     then
+>         echo "$item is a directory"
+>     fi
+> done
+file1.txt is a file
+file2.txt is a file
+scripts is a directory`}
+</TerminalDemo>
+
+## The While Loop
+
+A `while` loop keeps running AS LONG AS a condition is true.
+
+The basic structure:
+```bash
+while [ condition ]
+do
+    # Commands to run
+done
+```
+
+Let's count to 5 with a while loop:
+
+<TerminalDemo>
+{`$ counter=1
+$ while [ $counter -le 5 ]
+> do
+>     echo "Counter: $counter"
+>     counter=$((counter + 1))
+> done
+Counter: 1
+Counter: 2
+Counter: 3
+Counter: 4
+Counter: 5`}
+</TerminalDemo>
+
+<FunFact>
+  While loops are perfect when you don't know how many times you need to loop! They keep going until the condition becomes false.
+</FunFact>
+
+## Reading Files Line by Line
+
+While loops are great for reading files line by line:
+
+<TerminalDemo>
+{`$ # Create a sample file
+$ cat > names.txt << EOF
+Alice
+Bob
+Charlie
+Diana
+EOF
+$
+$ # Read it line by line
+$ while read name
+> do
+>     echo "Hello, $name!"
+> done < names.txt
+Hello, Alice!
+Hello, Bob!
+Hello, Charlie!
+Hello, Diana!`}
+</TerminalDemo>
+
+## Infinite Loops (Use with Caution!)
+
+A loop that runs forever until you stop it:
+
+```bash
+while true
+do
+    echo "This runs forever!"
+    sleep 1  # Wait 1 second
+done
+```
+
+Press `Ctrl+C` to stop an infinite loop!
+
+<StoryBox character="bash_betty">
+  Infinite loops are useful for monitoring scripts that need to run continuously! But be careful - make sure you have a way to stop them!
+
+  Always include a `sleep` command to avoid using 100% of your CPU!
+</StoryBox>
+
+## The Until Loop
+
+An `until` loop is like a while loop in reverse - it runs UNTIL a condition becomes true:
+
+<TerminalDemo>
+{`$ counter=1
+$ until [ $counter -gt 5 ]
+> do
+>     echo "Counter: $counter"
+>     counter=$((counter + 1))
+> done
+Counter: 1
+Counter: 2
+Counter: 3
+Counter: 4
+Counter: 5`}
+</TerminalDemo>
+
+Think of it as: "Keep doing this UNTIL we reach 5" vs "Keep doing this WHILE we're below 5"
+
+## Loop Control: Break and Continue
+
+Sometimes you need to control how loops run:
+
+**break** - Exit the loop immediately:
+
+<TerminalDemo>
+{`$ for i in {1..10}
+> do
+>     if [ $i -eq 6 ]
+>     then
+>         echo "Found 6! Breaking out!"
+>         break
+>     fi
+>     echo "Number: $i"
+> done
+Number: 1
+Number: 2
+Number: 3
+Number: 4
+Number: 5
+Found 6! Breaking out!`}
+</TerminalDemo>
+
+**continue** - Skip to the next iteration:
+
+<TerminalDemo>
+{`$ for i in {1..5}
+> do
+>     if [ $i -eq 3 ]
+>     then
+>         echo "Skipping 3!"
+>         continue
+>     fi
+>     echo "Number: $i"
+> done
+Number: 1
+Number: 2
+Skipping 3!
+Number: 4
+Number: 5`}
+</TerminalDemo>
+
+## Nested Loops
+
+You can put loops inside loops!
+
+<TerminalDemo>
+{`$ for i in {1..3}
+> do
+>     for j in {1..3}
+>     then
+>         echo "i=$i, j=$j"
+>     done
+>     echo "---"
+> done
+i=1, j=1
+i=1, j=2
+i=1, j=3
+---
+i=2, j=1
+i=2, j=2
+i=2, j=3
+---
+i=3, j=1
+i=3, j=2
+i=3, j=3
+---`}
+</TerminalDemo>
+
+## Real-World Example: Backup Script
+
+Let's create a script that backs up multiple directories:
+
+<TerminalDemo>
+{`$ cat > backup.sh << 'EOF'
+#!/bin/bash
+
+echo "=== BACKUP SCRIPT ==="
+date
+
+# Directories to backup
+dirs="Documents Pictures Music"
+
+# Backup location
+backup_dir="$HOME/backups/$(date +%Y%m%d)"
+
+# Create backup directory
+mkdir -p "$backup_dir"
+
+# Loop through directories
+for dir in $dirs
+do
+    if [ -d "$HOME/$dir" ]
+    then
+        echo "Backing up $dir..."
+        cp -r "$HOME/$dir" "$backup_dir/"
+        echo "  ✓ $dir backed up!"
+    else
+        echo "  ✗ $dir not found, skipping"
+    fi
+done
+
+echo
+echo "Backup complete! Files saved to: $backup_dir"
+EOF
+
+$ chmod +x backup.sh
+$ ./backup.sh
+=== BACKUP SCRIPT ===
+Fri Dec 19 10:30:00 PST 2025
+Backing up Documents...
+  ✓ Documents backed up!
+Backing up Pictures...
+  ✓ Pictures backed up!
+Backing up Music...
+  ✓ Music backed up!
+
+Backup complete! Files saved to: /home/betty/backups/20251219`}
+</TerminalDemo>
+
+## Real-World Example: System Monitor
+
+A script that monitors system resources:
+
+<TerminalDemo>
+{`$ cat > monitor.sh << 'EOF'
+#!/bin/bash
+
+echo "=== SYSTEM MONITOR ==="
+
+# Check for 5 iterations
+for i in {1..5}
+do
+    echo
+    echo "Check #$i at $(date +%H:%M:%S)"
+
+    # CPU usage
+    cpu=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}')
+    echo "CPU Usage: $cpu%"
+
+    # Memory usage
+    mem=$(free | grep Mem | awk '{print int($3/$2 * 100)}')
+    echo "Memory Usage: $mem%"
+
+    # Disk usage
+    disk=$(df -h / | tail -1 | awk '{print $5}')
+    echo "Disk Usage: $disk"
+
+    # Wait 2 seconds before next check
+    sleep 2
+done
+
+echo
+echo "=== MONITORING COMPLETE ==="
+EOF
+
+$ chmod +x monitor.sh
+$ ./monitor.sh
+=== SYSTEM MONITOR ===
+
+Check #1 at 10:30:00
+CPU Usage: 15.2%
+Memory Usage: 45%
+Disk Usage: 58%
+
+Check #2 at 10:30:02
+CPU Usage: 12.8%
+Memory Usage: 45%
+Disk Usage: 58%
+...`}
+</TerminalDemo>
+
+## Practice Time!
+
+<Challenge
+  id="bash-loops-countdown"
+  title="Countdown Script"
+  description="Create a countdown timer from 10 to 1"
+  steps={[
+    {
+      command: 'for i in {10..1}\ndo\n    echo "Countdown: $i"\n    sleep 1\ndone\necho "Blast off!"',
+      hint: "Use a for loop with descending range"
+    }
+  ]}
+  xp={25}
+  badge="loop_master"
+/>
+
+## Loop Patterns Cheat Sheet
+
+```bash
+# For loop with list
+for item in item1 item2 item3
+do
+    echo "$item"
+done
+
+# For loop with range
+for i in {1..10}
+do
+    echo "$i"
+done
+
+# For loop with files
+for file in *.txt
+do
+    echo "Processing $file"
+done
+
+# While loop with counter
+counter=1
+while [ $counter -le 10 ]
+do
+    echo "$counter"
+    counter=$((counter + 1))
+done
+
+# Read file line by line
+while read line
+do
+    echo "$line"
+done < file.txt
+
+# Until loop
+counter=1
+until [ $counter -gt 5 ]
+do
+    echo "$counter"
+    counter=$((counter + 1))
+done
+
+# Infinite loop
+while true
+do
+    echo "Forever!"
+    sleep 1
+done
+```
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What command ends a loop in bash?",
+    options: ["end", "done", "finish", "endloop"],
+    correct: 1,
+    explanation: "done marks the end of any loop in bash!"
+  },
+  {
+    question: "Which loop is best when you know exactly how many times to repeat?",
+    options: ["while loop", "until loop", "for loop", "infinite loop"],
+    correct: 2,
+    explanation: "for loops are perfect when you have a specific list or range to iterate over!"
+  },
+  {
+    question: "What does 'break' do in a loop?",
+    options: ["Skips to next iteration", "Exits the loop immediately", "Pauses the loop", "Breaks your computer"],
+    correct: 1,
+    explanation: "break exits the loop completely, stopping all further iterations!"
+  },
+  {
+    question: "What happens if you forget 'done' at the end of a loop?",
+    options: ["Loop runs forever", "Syntax error", "Nothing - it's optional", "Computer crashes"],
+    correct: 1,
+    explanation: "Bash will give you a syntax error because every loop must be closed with 'done'!"
+  },
+  {
+    question: "How do you loop through all .txt files in current directory?",
+    options: ["for file in .txt", "for file in *.txt", "for file in files.txt", "loop *.txt"],
+    correct: 1,
+    explanation: "*.txt is a glob pattern that matches all files ending in .txt!"
+  }
+]} />
+
+## Common Loop Mistakes
+
+1. **Forgetting done:**
+   ```bash
+   # WRONG
+   for i in {1..5}
+   do
+       echo "$i"
+   # Missing done!
+
+   # RIGHT
+   for i in {1..5}
+   do
+       echo "$i"
+   done
+   ```
+
+2. **Not incrementing while loop counter:**
+   ```bash
+   # WRONG - infinite loop!
+   counter=1
+   while [ $counter -le 5 ]
+   do
+       echo "$counter"
+       # Forgot to increment!
+   done
+
+   # RIGHT
+   counter=1
+   while [ $counter -le 5 ]
+   do
+       echo "$counter"
+       counter=$((counter + 1))
+   done
+   ```
+
+3. **Forgetting quotes with filenames:**
+   ```bash
+   # WRONG - breaks on spaces
+   for file in *.txt
+   do
+       cat $file
+   done
+
+   # RIGHT - handles spaces
+   for file in *.txt
+   do
+       cat "$file"
+   done
+   ```
+
+<StoryBox character="bash_betty">
+  You're now a loop master! You can process hundreds of files, automate repetitive tasks, and build powerful monitoring scripts!
+
+  Next, we'll learn how to make your scripts INTERACTIVE by accepting input from users. Get ready to create scripts that talk back!
+</StoryBox>
+
+<NextLesson
+  track="bash"
+  lesson="08-user-input"
+  teaser="Learn to create interactive scripts that respond to user input!"
+/>

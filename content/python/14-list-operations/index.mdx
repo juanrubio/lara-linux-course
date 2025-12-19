@@ -1,0 +1,455 @@
+---
+title: "List Operations"
+track: "python"
+chapter: 3
+lesson: 14
+slug: "14-list-operations"
+prerequisites: ["13-while-loops"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Add items to lists with append() and insert()
+  - Remove items with remove() and pop()
+  - Sort and organize lists
+  - Search and count items in lists
+nextLesson: "15-chapter3-quest"
+prevLesson: "13-while-loops"
+---
+
+# List Operations: Power Up Your Lists!
+
+<StoryBox character="python_pete">
+  Alright, code master! You know how to create lists and loop through them. But what if you want to ADD items? REMOVE items? SORT them?
+
+  That's where list methods come in! Think of them as special powers your lists have. It's like giving your lists superpowers!
+
+  Let's learn how to manipulate lists like a pro!
+</StoryBox>
+
+## Adding Items: append() and insert()
+
+### append() - Add to the End
+
+The `append()` method adds an item to the END of a list:
+
+<TerminalDemo>
+{`# Start with a shopping list
+shopping_list = ["milk", "eggs", "bread"]
+print(shopping_list)
+# Output: ['milk', 'eggs', 'bread']
+
+# Remember to buy cheese!
+shopping_list.append("cheese")
+print(shopping_list)
+# Output: ['milk', 'eggs', 'bread', 'cheese']
+
+# Add multiple items
+shopping_list.append("apples")
+shopping_list.append("cookies")
+print(shopping_list)
+# Output: ['milk', 'eggs', 'bread', 'cheese', 'apples', 'cookies']`}
+</TerminalDemo>
+
+<FunFact>
+  append() is one of the MOST used list methods! Every time you add something to a cart on Amazon or add a friend on social media, append() is probably happening behind the scenes!
+</FunFact>
+
+### insert() - Add at a Specific Position
+
+Want to add something at a specific spot? Use `insert()`:
+
+<TerminalDemo>
+{`# High score list
+high_scores = [1000, 850, 720]
+print(high_scores)
+# Output: [1000, 850, 720]
+
+# You got 900 points! Insert it at position 1 (second place)
+high_scores.insert(1, 900)
+print(high_scores)
+# Output: [1000, 900, 850, 720]
+
+# Insert at the beginning (position 0)
+high_scores.insert(0, 1500)
+print(high_scores)
+# Output: [1500, 1000, 900, 850, 720]`}
+</TerminalDemo>
+
+## Removing Items: remove(), pop(), and clear()
+
+### remove() - Remove by Value
+
+Remove the FIRST occurrence of a specific item:
+
+<TerminalDemo>
+{`# Game inventory
+inventory = ["sword", "potion", "shield", "potion", "map"]
+print(inventory)
+# Output: ['sword', 'potion', 'shield', 'potion', 'map']
+
+# Use the first potion
+inventory.remove("potion")
+print(inventory)
+# Output: ['sword', 'shield', 'potion', 'map']
+# Notice: Only the FIRST potion was removed!
+
+# Try to remove something that doesn't exist - ERROR!
+# inventory.remove("diamond")  # This would crash!`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  Be careful with remove()! If the item doesn't exist, Python throws an error!
+
+  Always check if the item exists first using `if item in list:` before removing!
+</StoryBox>
+
+### pop() - Remove by Position
+
+Remove an item at a specific position AND get it back:
+
+<TerminalDemo>
+{`# Playlist
+songs = ["Song A", "Song B", "Song C", "Song D"]
+print(songs)
+# Output: ['Song A', 'Song B', 'Song C', 'Song D']
+
+# Remove and get the last song
+last_song = songs.pop()
+print(f"Removed: {last_song}")
+# Output: Removed: Song D
+print(songs)
+# Output: ['Song A', 'Song B', 'Song C']
+
+# Remove song at position 1
+second_song = songs.pop(1)
+print(f"Removed: {second_song}")
+# Output: Removed: Song B
+print(songs)
+# Output: ['Song A', 'Song C']`}
+</TerminalDemo>
+
+### clear() - Remove Everything
+
+Delete all items at once:
+
+<TerminalDemo>
+{`# Shopping cart
+cart = ["item1", "item2", "item3"]
+print(cart)
+# Output: ['item1', 'item2', 'item3']
+
+# Changed your mind? Clear the cart!
+cart.clear()
+print(cart)
+# Output: []`}
+</TerminalDemo>
+
+## Organizing Lists: sort() and reverse()
+
+### sort() - Arrange in Order
+
+Sort lists alphabetically or numerically:
+
+<TerminalDemo>
+{`# Sort numbers
+scores = [85, 92, 78, 95, 88]
+print("Before:", scores)
+# Output: Before: [85, 92, 78, 95, 88]
+
+scores.sort()
+print("After:", scores)
+# Output: After: [78, 85, 88, 92, 95]
+
+# Sort in reverse (highest first)
+scores.sort(reverse=True)
+print("Descending:", scores)
+# Output: Descending: [95, 92, 88, 85, 78]`}
+</TerminalDemo>
+
+<TerminalDemo>
+{`# Sort words alphabetically
+names = ["Zoe", "Alex", "Maya", "Ben"]
+print("Before:", names)
+# Output: Before: ['Zoe', 'Alex', 'Maya', 'Ben']
+
+names.sort()
+print("After:", names)
+# Output: After: ['Alex', 'Ben', 'Maya', 'Zoe']`}
+</TerminalDemo>
+
+### reverse() - Flip the List
+
+Reverse the order of items:
+
+<TerminalDemo>
+{`# Countdown
+numbers = [1, 2, 3, 4, 5]
+print("Before:", numbers)
+# Output: Before: [1, 2, 3, 4, 5]
+
+numbers.reverse()
+print("After:", numbers)
+# Output: After: [5, 4, 3, 2, 1]`}
+</TerminalDemo>
+
+<FunFact>
+  sort() and reverse() change the list PERMANENTLY! If you want a sorted copy without changing the original, use sorted(list) instead - it returns a new list!
+</FunFact>
+
+## Searching and Counting
+
+### index() - Find Position
+
+Find where an item is located:
+
+<TerminalDemo>
+{`# Find the position of an item
+fruits = ["apple", "banana", "cherry", "date"]
+
+position = fruits.index("cherry")
+print(f"Cherry is at position {position}")
+# Output: Cherry is at position 2
+
+# Try to find something that doesn't exist - ERROR!
+# position = fruits.index("grape")  # This would crash!`}
+</TerminalDemo>
+
+### count() - Count Occurrences
+
+Count how many times an item appears:
+
+<TerminalDemo>
+{`# Vote counting
+votes = ["pizza", "tacos", "pizza", "burger", "pizza", "tacos"]
+
+pizza_votes = votes.count("pizza")
+tacos_votes = votes.count("tacos")
+burger_votes = votes.count("burger")
+
+print(f"Pizza: {pizza_votes} votes")
+print(f"Tacos: {tacos_votes} votes")
+print(f"Burger: {burger_votes} votes")
+
+# Output:
+# Pizza: 3 votes
+# Tacos: 2 votes
+# Burger: 1 votes`}
+</TerminalDemo>
+
+### in - Check if Item Exists
+
+Check if an item is in the list:
+
+<TerminalDemo>
+{`# Check inventory
+inventory = ["sword", "shield", "potion"]
+
+if "sword" in inventory:
+    print("You have a sword!")
+# Output: You have a sword!
+
+if "dragon" not in inventory:
+    print("You don't have a dragon!")
+# Output: You don't have a dragon!`}
+</TerminalDemo>
+
+## Useful List Functions
+
+### len() - Get List Length
+
+<TerminalDemo>
+{`students = ["Alice", "Bob", "Charlie", "Diana"]
+num_students = len(students)
+print(f"There are {num_students} students")
+# Output: There are 4 students`}
+</TerminalDemo>
+
+### min() and max() - Get Smallest/Largest
+
+<TerminalDemo>
+{`# Find best and worst score
+test_scores = [78, 92, 85, 95, 88]
+
+lowest = min(test_scores)
+highest = max(test_scores)
+
+print(f"Lowest score: {lowest}")
+print(f"Highest score: {highest}")
+
+# Output:
+# Lowest score: 78
+# Highest score: 95`}
+</TerminalDemo>
+
+### sum() - Add All Numbers
+
+<TerminalDemo>
+{`# Calculate total points
+points = [10, 25, 15, 30, 20]
+total_points = sum(points)
+average = total_points / len(points)
+
+print(f"Total points: {total_points}")
+print(f"Average: {average}")
+
+# Output:
+# Total points: 100
+# Average: 20.0`}
+</TerminalDemo>
+
+## Combining Lists
+
+You can join lists together using `+`:
+
+<TerminalDemo>
+{`# Combine lists
+fruits = ["apple", "banana"]
+veggies = ["carrot", "broccoli"]
+
+food = fruits + veggies
+print(food)
+# Output: ['apple', 'banana', 'carrot', 'broccoli']
+
+# Repeat lists using *
+echo = ["hello"] * 3
+print(echo)
+# Output: ['hello', 'hello', 'hello']`}
+</TerminalDemo>
+
+## List Slicing: Get Parts of a List
+
+Get a portion of a list using slicing:
+
+<TerminalDemo>
+{`# Slicing lists
+numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+# Get items 2-5 (position 2 up to but not including 5)
+slice1 = numbers[2:5]
+print(slice1)
+# Output: [2, 3, 4]
+
+# Get first 3 items
+first_three = numbers[:3]
+print(first_three)
+# Output: [0, 1, 2]
+
+# Get last 3 items
+last_three = numbers[-3:]
+print(last_three)
+# Output: [7, 8, 9]
+
+# Get every other item
+every_other = numbers[::2]
+print(every_other)
+# Output: [0, 2, 4, 6, 8]`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  List slicing is SUPER powerful! The format is list[start:stop:step]
+
+  - start: where to begin (included)
+  - stop: where to end (NOT included)
+  - step: how many to skip
+
+  It's like saying "Give me items from here to there, every X steps!"
+</StoryBox>
+
+## Practice Time!
+
+<Challenge
+  id="ch3-list-operations"
+  title="List Operations Master"
+  description="Practice all the list operations you've learned"
+  steps={[
+    {
+      command: "Create an empty list called 'tasks' and append 3 tasks to it",
+      hint: "tasks = [] then use tasks.append() three times"
+    },
+    {
+      command: "Create a list of 5 numbers and find the sum, min, and max",
+      hint: "Use sum(list), min(list), max(list)"
+    },
+    {
+      command: "Create a list of names and sort them alphabetically",
+      hint: "names = [...] then names.sort()"
+    },
+    {
+      command: "Create a list with duplicates and count how many times an item appears",
+      hint: "Use list.count('item')"
+    }
+  ]}
+  xp={35}
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What method adds an item to the END of a list?",
+    options: ["add()", "append()", "insert()", "push()"],
+    correct: 1,
+    explanation: "append() adds items to the end of a list!"
+  },
+  {
+    question: "What's the difference between remove() and pop()?",
+    options: ["No difference", "remove() uses value, pop() uses position", "pop() is faster", "remove() is for numbers only"],
+    correct: 1,
+    explanation: "remove() deletes by value, pop() deletes by position and returns the removed item!"
+  },
+  {
+    question: "What does sort() do to the original list?",
+    options: ["Creates a new list", "Changes it permanently", "Doesn't change it", "Deletes it"],
+    correct: 1,
+    explanation: "sort() modifies the original list permanently! Use sorted() if you want a copy."
+  },
+  {
+    question: "How do you check if 'apple' is in a list called fruits?",
+    options: ["fruits.has('apple')", "if 'apple' in fruits:", "'apple'.check(fruits)", "fruits.contains('apple')"],
+    correct: 1,
+    explanation: "Use 'if item in list:' to check if an item exists in a list!"
+  }
+]} />
+
+## List Operations Cheat Sheet
+
+| Operation | What It Does | Example |
+|-----------|--------------|---------|
+| `list.append(x)` | Add x to end | `nums.append(5)` |
+| `list.insert(i, x)` | Add x at position i | `nums.insert(0, 10)` |
+| `list.remove(x)` | Remove first x | `nums.remove(5)` |
+| `list.pop()` | Remove and return last item | `last = nums.pop()` |
+| `list.pop(i)` | Remove and return item at i | `item = nums.pop(2)` |
+| `list.clear()` | Remove all items | `nums.clear()` |
+| `list.sort()` | Sort list | `nums.sort()` |
+| `list.reverse()` | Reverse list | `nums.reverse()` |
+| `list.count(x)` | Count x occurrences | `nums.count(5)` |
+| `list.index(x)` | Find position of x | `nums.index(5)` |
+| `x in list` | Check if x exists | `if 5 in nums:` |
+| `len(list)` | Get list length | `len(nums)` |
+| `sum(list)` | Sum all numbers | `sum(nums)` |
+| `min(list)` | Get smallest | `min(nums)` |
+| `max(list)` | Get largest | `max(nums)` |
+
+<StoryBox character="python_pete">
+  Wow! You're now a list manipulation expert! You can:
+  - Add and remove items
+  - Sort and organize
+  - Search and count
+  - Slice and combine
+
+  These skills are ESSENTIAL for programming. Every app you use - social media, games, shopping - uses lists and these operations constantly!
+
+  Now it's time for the ultimate test: Your Chapter 3 Quest! You'll build a real Todo List app using everything you've learned!
+</StoryBox>
+
+## What's Next?
+
+Ready for your biggest challenge yet? In the next lesson, you'll put EVERYTHING together and build a real Todo List application!
+
+<NextLesson
+  track="python"
+  lesson="15-chapter3-quest"
+  teaser="Build a complete Todo List app using lists and loops!"
+/>

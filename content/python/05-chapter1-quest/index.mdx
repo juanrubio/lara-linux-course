@@ -1,0 +1,460 @@
+---
+title: "Quest: Calculator Creation"
+track: "python"
+chapter: 1
+lesson: 5
+slug: "05-chapter1-quest"
+prerequisites: ["04-numbers-math"]
+estimatedTime: 30
+difficulty: "beginner"
+xpReward: 100
+objectives:
+  - Build a working calculator program
+  - Apply all Chapter 1 concepts
+  - Earn your first Python quest badge
+nextLesson: "06-strings"
+prevLesson: "04-numbers-math"
+---
+
+# Quest: Calculator Creation
+
+<StoryBox character="python_pete">
+  This is it, champion! Your first REAL programming quest!
+
+  The Code Kingdom needs a powerful calculator to help solve important mathematical problems. Only a skilled Python programmer can build it!
+
+  You'll use EVERYTHING you've learned:
+  - Variables to store numbers
+  - Math operators to perform calculations
+  - Print to display results
+
+  Complete this quest and you'll earn the **Python Pioneer** badge! Let's build something amazing!
+</StoryBox>
+
+## Your Mission
+
+Build a calculator program that performs multiple calculations and displays the results in a friendly way!
+
+### Quest Objectives:
+
+1. Create a basic calculator
+2. Perform all major math operations
+3. Calculate real-world problems
+4. Display results professionally
+
+## Part 1: The Basic Calculator
+
+Let's start by creating a simple calculator that can add, subtract, multiply, and divide!
+
+<Challenge
+  id="quest1-basic-calc"
+  title="Basic Calculator"
+  description="Create variables and perform basic calculations"
+  steps={[
+    {
+      command: 'num1 = 10',
+      hint: "Create first number variable"
+    },
+    {
+      command: 'num2 = 5',
+      hint: "Create second number variable"
+    },
+    {
+      command: 'print("Addition:", num1 + num2)',
+      hint: "Add the numbers and display result"
+    },
+    {
+      command: 'print("Subtraction:", num1 - num2)',
+      hint: "Subtract and display"
+    },
+    {
+      command: 'print("Multiplication:", num1 * num2)',
+      hint: "Multiply and display"
+    },
+    {
+      command: 'print("Division:", num1 / num2)',
+      hint: "Divide and display"
+    }
+  ]}
+  xp={30}
+/>
+
+### Your Calculator Should Show:
+
+<TerminalDemo>
+{`Addition: 15
+Subtraction: 5
+Multiplication: 50
+Division: 2.0`}
+</TerminalDemo>
+
+## Part 2: Advanced Operations
+
+Now let's add the special operators you learned!
+
+<Challenge
+  id="quest1-advanced-calc"
+  title="Advanced Calculator"
+  description="Add power, modulo, and floor division"
+  steps={[
+    {
+      command: 'num1 = 10',
+      hint: "Same numbers as before"
+    },
+    {
+      command: 'num2 = 3',
+      hint: "Change to 3 for interesting results"
+    },
+    {
+      command: 'print("Power:", num1 ** num2)',
+      hint: "Calculate 10 to the power of 3"
+    },
+    {
+      command: 'print("Modulo:", num1 % num2)',
+      hint: "Find the remainder"
+    },
+    {
+      command: 'print("Floor Division:", num1 // num2)',
+      hint: "Divide without decimals"
+    }
+  ]}
+  xp={30}
+/>
+
+<StoryBox character="python_pete">
+  Looking good! Now let's make it more professional with a nice display format!
+</StoryBox>
+
+## Part 3: Professional Calculator Display
+
+Create a calculator with a nice, formatted output!
+
+```python
+# Calculator Title
+print("=" * 30)
+print("   PYTHON CALCULATOR 3000")
+print("=" * 30)
+print()
+
+# Get our numbers
+number1 = 15
+number2 = 4
+
+# Perform calculations
+addition = number1 + number2
+subtraction = number1 - number2
+multiplication = number1 * number2
+division = number1 / number2
+power = number1 ** number2
+modulo = number1 % number2
+floor_div = number1 // number2
+
+# Display results
+print("Numbers:", number1, "and", number2)
+print()
+print("Addition:", addition)
+print("Subtraction:", subtraction)
+print("Multiplication:", multiplication)
+print("Division:", division)
+print("Power:", power)
+print("Modulo (remainder):", modulo)
+print("Floor Division:", floor_div)
+print()
+print("=" * 30)
+print("   CALCULATIONS COMPLETE!")
+print("=" * 30)
+```
+
+<TerminalDemo>
+{`==============================
+   PYTHON CALCULATOR 3000
+==============================
+
+Numbers: 15 and 4
+
+Addition: 19
+Subtraction: 11
+Multiplication: 60
+Division: 3.75
+Power: 50625
+Modulo (remainder): 3
+Floor Division: 3
+
+==============================
+   CALCULATIONS COMPLETE!
+==============================`}
+</TerminalDemo>
+
+## Part 4: Real-World Calculations
+
+Now let's solve some real-world problems!
+
+### Challenge A: Pizza Party Calculator
+
+<Challenge
+  id="quest1-pizza"
+  title="Pizza Party Calculator"
+  description="Calculate how much pizza everyone gets"
+  steps={[
+    {
+      command: 'total_slices = 32',
+      hint: "4 pizzas with 8 slices each"
+    },
+    {
+      command: 'friends = 6',
+      hint: "Number of friends at the party"
+    },
+    {
+      command: 'slices_per_person = total_slices // friends',
+      hint: "Use floor division for whole slices"
+    },
+    {
+      command: 'leftover_slices = total_slices % friends',
+      hint: "Use modulo for leftover slices"
+    },
+    {
+      command: 'print("Each person gets:", slices_per_person, "slices")',
+      hint: "Display the result"
+    },
+    {
+      command: 'print("Leftover slices:", leftover_slices)',
+      hint: "Display leftovers"
+    }
+  ]}
+  xp={25}
+/>
+
+### Challenge B: Gaming Score Tracker
+
+<Challenge
+  id="quest1-gaming"
+  title="Gaming Score Tracker"
+  description="Track and calculate gaming scores"
+  steps={[
+    {
+      command: 'level1_score = 150',
+      hint: "Score from level 1"
+    },
+    {
+      command: 'level2_score = 200',
+      hint: "Score from level 2"
+    },
+    {
+      command: 'level3_score = 175',
+      hint: "Score from level 3"
+    },
+    {
+      command: 'total_score = level1_score + level2_score + level3_score',
+      hint: "Add all scores"
+    },
+    {
+      command: 'average_score = total_score / 3',
+      hint: "Calculate average"
+    },
+    {
+      command: 'print("Total Score:", total_score)',
+      hint: "Show total"
+    },
+    {
+      command: 'print("Average Score:", average_score)',
+      hint: "Show average"
+    }
+  ]}
+  xp={25}
+/>
+
+### Challenge C: Allowance Savings
+
+<Challenge
+  id="quest1-savings"
+  title="Allowance Savings Calculator"
+  description="Calculate savings over time"
+  steps={[
+    {
+      command: 'weekly_allowance = 10',
+      hint: "Money received each week"
+    },
+    {
+      command: 'weeks = 12',
+      hint: "Number of weeks"
+    },
+    {
+      command: 'total_earned = weekly_allowance * weeks',
+      hint: "Calculate total earnings"
+    },
+    {
+      command: 'savings_goal = 100',
+      hint: "Goal amount"
+    },
+    {
+      command: 'amount_over = total_earned - savings_goal',
+      hint: "How much over the goal"
+    },
+    {
+      command: 'print("Total earned:", total_earned)',
+      hint: "Display earnings"
+    },
+    {
+      command: 'print("Goal:", savings_goal)',
+      hint: "Show goal"
+    },
+    {
+      command: 'print("Amount over goal:", amount_over)',
+      hint: "Show surplus"
+    }
+  ]}
+  xp={25}
+/>
+
+## Final Quiz Challenge!
+
+<StoryBox character="python_pete">
+  Before you can claim your badge, prove your mastery with this final quiz!
+</StoryBox>
+
+<Quiz questions={[
+  {
+    question: "What's the result of: 17 % 5?",
+    options: ["2", "3", "4", "12"],
+    correct: 0,
+    explanation: "17 divided by 5 is 3 with remainder 2. The modulo operator (%) gives us that remainder!"
+  },
+  {
+    question: "Which operator calculates 2 to the power of 8?",
+    options: ["2 * 8", "2 ^ 8", "2 ** 8", "2 // 8"],
+    correct: 2,
+    explanation: "The ** operator is used for exponents. 2 ** 8 = 256!"
+  },
+  {
+    question: "What does x += 10 mean?",
+    options: ["x = 10", "x = x + 10", "x = x * 10", "x equals 10"],
+    correct: 1,
+    explanation: "x += 10 is a shortcut for x = x + 10. It adds 10 to x!"
+  },
+  {
+    question: "What type of number is 3.14?",
+    options: ["Integer", "Float", "String", "Boolean"],
+    correct: 1,
+    explanation: "Numbers with decimal points are floats (floating-point numbers)!"
+  },
+  {
+    question: "What's 15 // 4?",
+    options: ["3", "3.75", "4", "11"],
+    correct: 0,
+    explanation: "Floor division (//) gives just the whole number part: 15 // 4 = 3"
+  },
+  {
+    question: "To store a person's name, you would use:",
+    options: ["An integer", "A float", "A string", "A boolean"],
+    correct: 2,
+    explanation: "Names are text, so we use strings (text in quotes)!"
+  }
+]} />
+
+## Bonus Challenge: Build Your Own!
+
+Now it's time to get creative! Build a calculator that solves a problem YOU care about!
+
+Ideas:
+- **Temperature Converter** - Convert Celsius to Fahrenheit
+- **Distance Calculator** - Convert miles to kilometers
+- **Time Calculator** - Calculate hours from minutes
+- **Money Converter** - Calculate change or tips
+- **Age Calculator** - Calculate age in days or hours
+
+Example Temperature Converter:
+```python
+print("=== TEMPERATURE CONVERTER ===")
+celsius = 25
+fahrenheit = (celsius * 9/5) + 32
+print(celsius, "°C =", fahrenheit, "°F")
+```
+
+<StoryBox character="python_pete">
+  Try creating your own! Use variables, math operators, and print statements to build something unique!
+</StoryBox>
+
+## Quest Complete!
+
+<StoryBox character="python_pete">
+  YOU DID IT! You've completed your first Python quest!
+
+  Look at everything you've accomplished:
+  - Built a working calculator from scratch
+  - Used variables to store and manipulate data
+  - Performed complex mathematical operations
+  - Solved real-world problems with code
+  - Created professionally formatted output
+
+  You're not just learning Python - you're USING it to build real things! That's what being a programmer is all about!
+
+  The Code Kingdom is grateful for your service. You've earned the title of **Python Pioneer**!
+</StoryBox>
+
+## Rewards Earned
+
+- **XP:** +100
+- **Badge:** Python Pioneer
+- **Title:** Calculator Creator
+- **Unlocked:** Chapter 2 - Working with Text
+
+## Skills Mastered
+
+| Concept | What You Learned |
+|---------|------------------|
+| Variables | Creating and using variables |
+| Integers | Whole numbers |
+| Floats | Decimal numbers |
+| Operators | +, -, *, /, //, %, ** |
+| Shortcuts | +=, -=, *=, /= |
+| Print | Displaying results |
+
+## Your Programming Journey
+
+Here's what you've mastered in Chapter 1:
+
+1. **What is Python** - Understanding the language
+2. **Hello World** - Your first program
+3. **Variables** - Storing data
+4. **Math** - Performing calculations
+5. **Quest** - Building a real project!
+
+## Code Achievements
+
+```python
+# You can now:
+name = "Python Champion"
+score = 100
+level = 1
+
+print("Congratulations,", name + "!")
+print("Score:", score)
+print("Level:", level)
+print("Ready for Chapter 2:", True)
+```
+
+<StoryBox character="python_pete">
+  Chapter 1 is complete, but your journey is just beginning!
+
+  In Chapter 2, you'll learn about STRINGS - how to work with text, combine words, and create messages! Get ready to make your programs talk in whole sentences!
+
+  Take a break, celebrate your victory, and I'll see you in the next chapter!
+</StoryBox>
+
+## Keep Practicing!
+
+The best way to master programming is to PRACTICE! Try these:
+
+1. Modify your calculator to use different numbers
+2. Add more real-world calculation problems
+3. Create calculators for things you care about
+4. Experiment with different operators
+5. Show your calculator to friends and family!
+
+Remember: Every expert programmer started exactly where you are now. The difference is they kept going!
+
+<NextLesson
+  track="python"
+  lesson="06-strings"
+  teaser="Master the art of working with text and words in Python!"
+/>

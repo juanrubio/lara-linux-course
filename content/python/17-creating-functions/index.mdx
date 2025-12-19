@@ -1,0 +1,323 @@
+---
+title: "Creating Functions"
+track: "python"
+chapter: 4
+lesson: 17
+slug: "17-creating-functions"
+prerequisites: ["16-what-are-functions"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Learn to define functions with the def keyword
+  - Understand function naming conventions
+  - Practice calling functions
+nextLesson: "18-parameters-return"
+prevLesson: "16-what-are-functions"
+---
+
+# Creating Functions
+
+<StoryBox character="python_pete">
+  Time to build your own tools! Creating functions is like crafting your own superpowers. Once you master this, you'll be able to organize code like a pro!
+
+  The magic word you need is `def` - short for "define". Let's learn how to use it!
+</StoryBox>
+
+## The Function Recipe
+
+Every function has the same basic structure:
+
+```python
+def function_name():
+    # Code goes here
+    # Indented by 4 spaces
+    print("This is inside the function!")
+```
+
+Let's break it down:
+1. **`def`** - The keyword that says "I'm defining a function!"
+2. **`function_name`** - The name you choose (like a spell name!)
+3. **`()`** - Parentheses (we'll use these for parameters soon!)
+4. **`:`** - The colon says "here comes the function code!"
+5. **Indented code** - Everything indented belongs to the function
+
+<FunFact>
+  The word "def" is short for "define". Python loves short keywords! Just like "int" is short for "integer" and "str" is short for "string".
+</FunFact>
+
+## Your First Function
+
+Let's create a simple greeting function:
+
+<TerminalDemo>
+{`# DEFINING the function (writing the recipe)
+def greet():
+    print("Hello, brave coder!")
+    print("Welcome to the Python world!")
+
+# CALLING the function (using the recipe)
+greet()
+# Output:
+# Hello, brave coder!
+# Welcome to the Python world!
+
+# You can call it as many times as you want!
+greet()
+greet()
+greet()`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  Important: Defining a function doesn't run it! It's like writing a recipe in a cookbook - the food doesn't appear until you actually COOK it!
+
+  - **def** = Write the recipe
+  - **function_name()** = Cook the food (run the code)
+</StoryBox>
+
+## Naming Your Functions
+
+Function names follow the same rules as variables:
+
+**Good Names:**
+```python
+def say_hello():        # Good: descriptive
+def calculate_score():  # Good: clear action
+def show_menu():        # Good: tells what it does
+def draw_circle():      # Good: verb + noun
+```
+
+**Bad Names:**
+```python
+def x():               # Bad: meaningless
+def DoTheThing():      # Bad: wrong style (use lowercase)
+def 2cool():           # Bad: starts with number
+def my-function():     # Bad: can't use dashes
+```
+
+**Naming Convention:**
+- Use lowercase letters
+- Use underscores between words (snake_case)
+- Use verbs to describe actions
+- Be descriptive but concise
+
+<FunFact>
+  Professional programmers say a good function name should tell you what it does without needing to read the code inside. It's like a good book title - it tells you what to expect!
+</FunFact>
+
+## Functions Can Do Anything!
+
+Let's create some useful functions:
+
+<TerminalDemo>
+{`# A function that draws a line
+def draw_line():
+    print("=" * 40)
+
+# A function that shows a menu
+def show_menu():
+    print("1. New Game")
+    print("2. Load Game")
+    print("3. Quit")
+
+# A function that celebrates
+def celebrate():
+    print("🎉 Congratulations! 🎉")
+    print("You're becoming a Python master!")
+
+# Using our functions
+draw_line()
+show_menu()
+draw_line()
+celebrate()`}
+</TerminalDemo>
+
+## Functions Within Functions
+
+Functions can call OTHER functions! This is super powerful:
+
+<TerminalDemo>
+{`def print_header():
+    print("=" * 30)
+    print("    PYTHON QUEST    ")
+    print("=" * 30)
+
+def print_footer():
+    print("=" * 30)
+    print("  Thanks for playing!  ")
+    print("=" * 30)
+
+def show_welcome_screen():
+    print_header()
+    print()
+    print("Welcome, adventurer!")
+    print("Your quest begins now!")
+    print()
+    print_footer()
+
+# Call just one function, it calls the others!
+show_welcome_screen()`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  This is like building with bigger LEGO sets! You combine small functions (small LEGO pieces) into larger functions (bigger creations). This is how professional programmers organize complex programs!
+</StoryBox>
+
+## The Power of Organization
+
+Compare these two programs. Which is easier to understand?
+
+**Without Functions:**
+```python
+print("=" * 30)
+print("GAME STARTING")
+print("=" * 30)
+player_name = input("Enter your name: ")
+print(f"Welcome, {player_name}!")
+print("=" * 30)
+print("GAME OVER")
+print("=" * 30)
+```
+
+**With Functions:**
+```python
+def show_header():
+    print("=" * 30)
+    print("GAME STARTING")
+    print("=" * 30)
+
+def get_player_info():
+    player_name = input("Enter your name: ")
+    print(f"Welcome, {player_name}!")
+
+def show_footer():
+    print("=" * 30)
+    print("GAME OVER")
+    print("=" * 30)
+
+# Main program - easy to read!
+show_header()
+get_player_info()
+show_footer()
+```
+
+The second version is like a story with clear chapters!
+
+## Practice Time!
+
+<Challenge
+  id="ch4-create-functions"
+  title="Function Creator"
+  description="Create and call your own functions"
+  steps={[
+    {
+      command: "# Create a function called show_score that prints 'Score: 100'",
+      hint: "def show_score():"
+    },
+    {
+      command: "# Create a function called say_goodbye that prints a farewell",
+      hint: "def say_goodbye():"
+    },
+    {
+      command: "# Call both functions",
+      hint: "show_score() and say_goodbye()"
+    }
+  ]}
+  xp={40}
+  badge="function_builder"
+/>
+
+## Common Mistakes to Avoid
+
+### Mistake 1: Forgetting the Colon
+```python
+# WRONG - Missing colon
+def greet()
+    print("Hello")
+
+# RIGHT
+def greet():
+    print("Hello")
+```
+
+### Mistake 2: Forgetting Indentation
+```python
+# WRONG - Not indented
+def greet():
+print("Hello")
+
+# RIGHT - Indented with 4 spaces
+def greet():
+    print("Hello")
+```
+
+### Mistake 3: Calling Before Defining
+```python
+# WRONG - Calling before it's defined
+greet()
+def greet():
+    print("Hello")
+
+# RIGHT - Define first, call later
+def greet():
+    print("Hello")
+greet()
+```
+
+<FunFact>
+  Python reads your code from top to bottom. So you have to teach Python what a function does BEFORE you try to use it. It's like explaining the rules of a game before playing!
+</FunFact>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What keyword do you use to create a function?",
+    options: ["function", "def", "create", "func"],
+    correct: 1,
+    explanation: "The 'def' keyword (short for define) is used to create functions in Python!"
+  },
+  {
+    question: "What must come after the function name?",
+    options: ["Semicolon ;", "Period .", "Parentheses ()", "Brackets []"],
+    correct: 2,
+    explanation: "Parentheses () must come after the function name, followed by a colon!"
+  },
+  {
+    question: "How many times can you call a function after defining it?",
+    options: ["Only once", "Twice", "Three times", "As many times as you want!"],
+    correct: 3,
+    explanation: "Once you define a function, you can call it as many times as you need!"
+  },
+  {
+    question: "What's wrong with this code: def 123function():",
+    options: ["Nothing", "Function names can't start with numbers", "Missing parentheses", "Wrong keyword"],
+    correct: 1,
+    explanation: "Function names must start with a letter or underscore, not a number!"
+  }
+]} />
+
+## Build Your Own Function Library
+
+Try creating these functions on your own:
+
+1. **draw_box()** - Prints a box made of asterisks
+2. **show_divider()** - Prints a line to separate sections
+3. **countdown()** - Prints "3... 2... 1... GO!"
+4. **show_python_logo()** - Prints ASCII art of Python logo
+
+<StoryBox character="python_pete">
+  Remember: Every expert programmer started by writing simple functions like these. The more you practice, the more powerful your functions become!
+
+  You're building the foundation for amazing programs. Keep going!
+</StoryBox>
+
+## What's Next?
+
+Your functions are pretty cool, but they all do the SAME thing every time. What if you want to make them flexible? That's where parameters come in!
+
+<NextLesson
+  track="python"
+  lesson="18-parameters-return"
+  teaser="Learn to give your functions INPUT and get OUTPUT back!"
+/>

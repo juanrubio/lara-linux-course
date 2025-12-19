@@ -1,0 +1,384 @@
+---
+title: "Functions"
+track: "bash"
+chapter: 3
+lesson: 11
+slug: "11-functions"
+prerequisites: ["10-chapter2-quest"]
+estimatedTime: 20
+difficulty: "intermediate"
+xpReward: 50
+objectives:
+  - Understand what functions are in Bash scripts
+  - Learn how to create and define functions
+  - Master calling functions with different syntaxes
+  - Practice organizing code with reusable functions
+nextLesson: "12-working-with-files"
+prevLesson: "10-chapter2-quest"
+---
+
+# Functions
+
+<StoryBox character="bash_betty">
+  Welcome to Chapter 3, script master! You've conquered loops and conditionals, and now it's time to unlock one of the most powerful tools in bash scripting: FUNCTIONS!
+
+  Think of functions like your own custom commands. Just like you use 'ls' or 'cd', you can create 'greet_user' or 'backup_files'. Functions are your secret weapon for writing amazing scripts!
+</StoryBox>
+
+## What Are Functions?
+
+Imagine you're a wizard with a spellbook. Instead of memorizing every tiny detail of a spell each time, you just need to remember its name! Functions work the same way - they're named blocks of code you can use over and over.
+
+**A function is:**
+- A reusable block of bash commands
+- A named group of instructions
+- A way to organize your scripts
+- Your own custom command
+
+<FunFact>
+  Functions in bash don't have to be declared before you use them in the script, but it's a good practice to put them at the top. This makes your scripts easier to read!
+</FunFact>
+
+## Creating Your First Function
+
+There are two ways to create a function in bash. Both work exactly the same!
+
+**Method 1: Using the 'function' keyword**
+```bash
+function say_hello {
+    echo "Hello, World!"
+}
+```
+
+**Method 2: Using parentheses (more common)**
+```bash
+say_hello() {
+    echo "Hello, World!"
+}
+```
+
+<TerminalDemo>
+{`# Create a simple function
+say_hello() {
+    echo "Hello, World!"
+}
+
+# Call the function
+say_hello
+# Output: Hello, World!
+
+# Call it again!
+say_hello
+# Output: Hello, World!
+
+# Functions can be called multiple times!
+say_hello
+# Output: Hello, World!`}
+</TerminalDemo>
+
+<StoryBox character="bash_betty">
+  Notice how we wrote the code once but used it three times? That's the magic of functions! Write once, use forever!
+
+  Most bash programmers prefer the parentheses style (method 2) because it's shorter and clearer.
+</StoryBox>
+
+## Why Use Functions?
+
+Let's see a real example. Imagine you need to print a fancy separator line in your script:
+
+**WITHOUT functions** (repetitive and messy):
+```bash
+#!/bin/bash
+echo "=================================="
+echo "Starting backup..."
+echo "=================================="
+# Do backup stuff
+echo "=================================="
+echo "Backup complete!"
+echo "=================================="
+```
+
+**WITH functions** (clean and reusable):
+```bash
+#!/bin/bash
+
+print_separator() {
+    echo "=================================="
+}
+
+print_separator
+echo "Starting backup..."
+print_separator
+# Do backup stuff
+print_separator
+echo "Backup complete!"
+print_separator
+```
+
+Even better - if you want to change the separator, you only change it in ONE place!
+
+## Functions Can Do Complex Tasks
+
+Functions aren't just for simple things. They can run multiple commands:
+
+<TerminalDemo>
+{`# Create a function that does multiple things
+create_backup_folder() {
+    echo "Creating backup folder..."
+    mkdir -p ~/backups
+    echo "Setting permissions..."
+    chmod 755 ~/backups
+    echo "Backup folder ready!"
+}
+
+# Call the function
+create_backup_folder
+# Output:
+# Creating backup folder...
+# Setting permissions...
+# Backup folder ready!`}
+</TerminalDemo>
+
+## Functions Make Your Scripts Organized
+
+Think of a script like a book. Without functions, it's one long paragraph. With functions, it has chapters and sections!
+
+```bash
+#!/bin/bash
+
+# Function definitions at the top
+show_menu() {
+    echo "1. List files"
+    echo "2. Show date"
+    echo "3. Exit"
+}
+
+list_files() {
+    echo "Files in current directory:"
+    ls -l
+}
+
+show_date() {
+    echo "Today is: $(date)"
+}
+
+# Main script logic
+show_menu
+echo "Script complete!"
+```
+
+<StoryBox character="bash_betty">
+  Professional programmers LOVE functions! They make code easier to:
+  - Read (you can see what each function does by its name)
+  - Debug (if something breaks, you know which function has the problem)
+  - Reuse (write once, use many times)
+  - Test (you can test each function separately)
+
+  It's like building with LEGO blocks instead of one giant piece!
+</StoryBox>
+
+## Calling Functions
+
+Calling a function is super simple - just use its name!
+
+<TerminalDemo>
+{`# Define the function
+celebrate() {
+    echo "🎉 Awesome!"
+    echo "🎊 You did it!"
+    echo "🏆 Champion!"
+}
+
+# Call it by name
+celebrate
+# Output:
+# 🎉 Awesome!
+# 🎊 You did it!
+# 🏆 Champion!`}
+</TerminalDemo>
+
+**Important:** You must define the function BEFORE you call it!
+
+```bash
+# This WON'T work:
+say_hi     # Error! Function doesn't exist yet!
+
+say_hi() {
+    echo "Hi!"
+}
+
+# This WILL work:
+say_hi() {
+    echo "Hi!"
+}
+
+say_hi     # Success! Function was defined first
+```
+
+## Practice: Create Your First Function
+
+<Challenge
+  id="ch3-first-function"
+  title="Create a Greeting Function"
+  description="Write a function that displays a welcome message"
+  steps={[
+    {
+      command: "# Create a file called greet.sh",
+      hint: "Use nano or your favorite editor"
+    },
+    {
+      command: "#!/bin/bash",
+      hint: "Always start with the shebang"
+    },
+    {
+      command: "greet_user() {\n    echo \"Welcome to Bash Functions!\"\n    echo \"You're going to love these!\"\n}",
+      hint: "Define the function with commands inside"
+    },
+    {
+      command: "greet_user",
+      hint: "Call the function to run it"
+    },
+    {
+      command: "chmod +x greet.sh && ./greet.sh",
+      hint: "Make it executable and run it"
+    }
+  ]}
+  xp={30}
+  badge="function_creator"
+/>
+
+## Real-World Function Examples
+
+Here are some practical functions you might use:
+
+<TerminalDemo>
+{`# Check if a command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Create a dated backup
+create_backup() {
+    DATE=$(date +%Y%m%d)
+    mkdir -p backup_$DATE
+    echo "Backup folder created: backup_$DATE"
+}
+
+# Show system information
+show_system_info() {
+    echo "Hostname: $(hostname)"
+    echo "User: $(whoami)"
+    echo "Date: $(date)"
+}
+
+# Display a colorful header
+show_header() {
+    echo "╔════════════════════════════╗"
+    echo "║    MY AWESOME SCRIPT       ║"
+    echo "╚════════════════════════════╝"
+}`}
+</TerminalDemo>
+
+## Functions vs Commands
+
+Functions are like temporary commands that exist only while your script runs:
+
+| Commands | Functions |
+|----------|-----------|
+| Built into bash (ls, cd, etc) | Created by you |
+| Available everywhere | Only in your script |
+| Can't be changed | You can modify them |
+| Limited options | Unlimited possibilities |
+
+<FunFact>
+  You can actually override built-in commands with functions! If you create a function called 'ls', your function will run instead of the real 'ls' command. But be careful - this can be confusing!
+</FunFact>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What is a function in bash?",
+    options: ["A type of variable", "A reusable block of commands with a name", "A loop structure", "A file type"],
+    correct: 1,
+    explanation: "A function is a reusable block of commands that you can call by name, making your scripts more organized and efficient!"
+  },
+  {
+    question: "Which is the correct way to define a function?",
+    options: ["function_name[] { commands }", "function_name() { commands }", "function_name { commands } ()", "def function_name { commands }"],
+    correct: 1,
+    explanation: "The syntax is function_name() { commands }. The parentheses come right after the name, followed by curly braces with your commands inside!"
+  },
+  {
+    question: "When must a function be defined?",
+    options: ["After you call it", "At the end of the script", "Before you call it", "It doesn't matter"],
+    correct: 2,
+    explanation: "Functions must be defined BEFORE you call them. Bash reads your script from top to bottom, so it needs to know about the function before it can run it!"
+  },
+  {
+    question: "How do you call a function named 'show_menu'?",
+    options: ["show_menu()", "call show_menu", "show_menu", "run show_menu"],
+    correct: 2,
+    explanation: "Just use the function name without parentheses or any special keyword. Simply: show_menu"
+  }
+]} />
+
+## Challenge: Build a System Info Script
+
+Put your knowledge to work! Create a script with multiple functions:
+
+<Challenge
+  id="ch3-system-info"
+  title="System Information Dashboard"
+  description="Create a script with functions that display system information"
+  steps={[
+    {
+      command: "# Create sysinfo.sh with these functions",
+      hint: "Create functions for different system info"
+    },
+    {
+      command: "show_banner() {\n    echo \"====== SYSTEM INFO ======\"\n}",
+      hint: "A function to show a banner"
+    },
+    {
+      command: "show_user_info() {\n    echo \"User: $(whoami)\"\n    echo \"Home: $HOME\"\n}",
+      hint: "A function to show user information"
+    },
+    {
+      command: "show_date_time() {\n    echo \"Date: $(date +%Y-%m-%d)\"\n    echo \"Time: $(date +%H:%M:%S)\"\n}",
+      hint: "A function to show current date and time"
+    },
+    {
+      command: "# Call all functions in order",
+      hint: "Call: show_banner, show_user_info, show_date_time"
+    }
+  ]}
+  xp={40}
+  badge="system_analyzer"
+/>
+
+## What You've Learned
+
+You now know how to:
+- Create functions using the () syntax
+- Call functions by their name
+- Organize scripts with reusable code blocks
+- Write cleaner, more maintainable scripts
+
+<StoryBox character="bash_betty">
+  Congratulations! You've unlocked the power of functions! This is a HUGE step in your bash journey.
+
+  But wait - there's more! In the next lesson, you'll learn how to make functions even more powerful by passing them ARGUMENTS. Imagine a function that can greet ANY user, not just print the same message!
+
+  Functions that can accept input are where the real magic happens!
+</StoryBox>
+
+## What's Next?
+
+Now that you can create functions, it's time to learn how to work with files in your scripts!
+
+<NextLesson
+  track="bash"
+  lesson="12-working-with-files"
+  teaser="Learn to read, test, and manipulate files in your bash scripts!"
+/>

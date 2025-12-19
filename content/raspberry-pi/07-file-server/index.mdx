@@ -1,0 +1,516 @@
+---
+title: "File Server"
+track: "raspberry-pi"
+chapter: 2
+lesson: 7
+slug: "07-file-server"
+prerequisites: ["06-web-server"]
+estimatedTime: 40
+difficulty: "intermediate"
+xpReward: 125
+objectives:
+  - Set up Samba file sharing on your Pi
+  - Create shared folders accessible from any device
+  - Transfer files wirelessly between devices
+  - Configure permissions and security
+nextLesson: "08-automation-station"
+prevLesson: "06-web-server"
+---
+
+import StoryBox from '@/components/StoryBox'
+import FunFact from '@/components/FunFact'
+import TerminalDemo from '@/components/TerminalDemo'
+import Challenge from '@/components/Challenge'
+import Quiz from '@/components/Quiz'
+import NextLesson from '@/components/NextLesson'
+
+<StoryBox character="pi_princess" mood="excited">
+Tired of using USB drives to move files between your computer and your Pi? Want to access your files from anywhere in your house?
+
+Today we're turning your Raspberry Pi into a FILE SERVER! It's like having your own personal cloud storage - except it's YOUR hardware, YOUR data, and no monthly fees!
+
+Drop a file on your laptop, instantly access it from your phone. Save a photo on your tablet, see it on your computer. It's pure magic!
+</StoryBox>
+
+## What is a File Server?
+
+A file server shares files over a network so that:
+- Any device can access the files
+- You can read, write, and delete files remotely
+- Multiple people can access the same files
+- Everything is centralized in one place
+
+We'll use **Samba** - the most popular file sharing protocol that works with Windows, Mac, Linux, and even phones!
+
+<FunFact title="Why 'Samba'?">
+The protocol is actually called "SMB" (Server Message Block), which was created by Microsoft. When Linux developers needed to implement it, they created "Samba" - a playful reference to SMB with a Brazilian dance theme!
+
+Fun fact: Samba is so good that even Windows computers use it to share files with each other!
+</FunFact>
+
+## Components You'll Need
+
+For this project:
+- Your Raspberry Pi (any model)
+- Power supply
+- Network connection (WiFi or Ethernet)
+- External USB drive (optional, but recommended for more storage)
+- Other devices to access the files (laptop, phone, tablet)
+
+## Step 1: Install Samba
+
+First, let's install the Samba software:
+
+<TerminalDemo>
+{`$ sudo apt update
+$ sudo apt install samba samba-common-bin -y
+
+Reading package lists... Done
+Building dependency tree...
+Samba installed successfully!`}
+</TerminalDemo>
+
+Check if it's running:
+
+<TerminalDemo>
+{`$ sudo systemctl status smbd
+
+● smbd.service - Samba SMB Daemon
+   Active: active (running)
+
+Perfect! Samba is running!`}
+</TerminalDemo>
+
+## Step 2: Create a Shared Folder
+
+Let's create a folder that will be shared across your network:
+
+<TerminalDemo>
+{`$ mkdir /home/pi/shared
+$ mkdir /home/pi/shared/public
+$ mkdir /home/pi/shared/private`}
+</TerminalDemo>
+
+We've created:
+- `public` - Anyone can access
+- `private` - Password protected
+
+Let's add some test files:
+
+<TerminalDemo>
+{`$ echo "Welcome to your Pi file server!" > /home/pi/shared/public/welcome.txt
+$ echo "This is a test file" > /home/pi/shared/public/test.txt`}
+</TerminalDemo>
+
+## Step 3: Configure Samba
+
+Now we need to tell Samba about our shared folder. Let's edit the configuration:
+
+<TerminalDemo>
+{`$ sudo nano /etc/samba/smb.conf`}
+</TerminalDemo>
+
+Scroll to the bottom and add this:
+
+```ini
+[Public]
+   comment = Public Shared Folder
+   path = /home/pi/shared/public
+   browseable = yes
+   read only = no
+   guest ok = yes
+   create mask = 0777
+   directory mask = 0777
+
+[Private]
+   comment = Private Shared Folder
+   path = /home/pi/shared/private
+   browseable = yes
+   read only = no
+   guest ok = no
+   create mask = 0770
+   directory mask = 0770
+   valid users = pi
+```
+
+Save it (Ctrl+X, Y, Enter).
+
+<StoryBox character="pi_princess" mood="teaching">
+Let me explain what this means:
+
+- **[Public]** - The name that will appear on the network
+- **path** - Where the files actually are on your Pi
+- **browseable = yes** - People can see this folder exists
+- **read only = no** - People can add/modify files (not just read)
+- **guest ok = yes** - No password needed for Public
+- **guest ok = no** - Password required for Private
+- **create mask** - Permissions for new files (0777 = everyone can do everything)
+
+It's like setting rules for who can do what!
+</StoryBox>
+
+## Step 4: Set Up User Password
+
+For the private folder, we need to set a Samba password:
+
+<TerminalDemo>
+{`$ sudo smbpasswd -a pi
+
+New SMB password: [type a password]
+Retype SMB password: [type it again]
+Added user pi.`}
+</TerminalDemo>
+
+This password can be different from your Pi's login password!
+
+## Step 5: Restart Samba
+
+Apply the changes by restarting Samba:
+
+<TerminalDemo>
+{`$ sudo systemctl restart smbd
+$ sudo systemctl restart nmbd`}
+</TerminalDemo>
+
+## Step 6: Access from Other Devices
+
+Now the fun part - accessing your files from other devices!
+
+### From Windows
+
+1. Open File Explorer
+2. In the address bar, type: `\\192.168.1.100` (use your Pi's IP)
+3. Press Enter
+4. You should see **Public** and **Private** folders!
+
+Or map it as a network drive:
+1. Right-click "This PC"
+2. Choose "Map network drive"
+3. Enter `\\192.168.1.100\Public`
+4. It will appear like a regular drive!
+
+### From Mac
+
+1. Open Finder
+2. Press Cmd+K
+3. Type: `smb://192.168.1.100`
+4. Connect as Guest for Public, or enter username/password for Private
+
+### From Linux
+
+1. Open File Manager
+2. Click "Other Locations" or "Network"
+3. Type: `smb://192.168.1.100`
+4. Browse the shared folders!
+
+### From Android/iPhone
+
+1. Install an app like "FE File Explorer" or "Solid Explorer"
+2. Add new connection → SMB/CIFS
+3. Enter your Pi's IP address
+4. Browse and manage files!
+
+<FunFact title="Finding Your Pi's IP">
+Forgot your Pi's IP address? Get it quickly:
+
+```bash
+$ hostname -I
+192.168.1.100
+```
+
+Or give your Pi a memorable hostname:
+
+```bash
+$ sudo nano /etc/hostname
+# Change 'raspberrypi' to something like 'piserver'
+```
+
+Then you can access it at `\\piserver` instead of remembering the IP!
+</FunFact>
+
+## Step 7: Adding an External USB Drive
+
+Want more storage? Let's add a USB drive!
+
+Plug in your USB drive, then:
+
+<TerminalDemo>
+{`$ lsblk
+
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda           8:0    1 14.9G  0 disk
+└─sda1        8:1    1 14.9G  0 part
+
+# Your USB is probably /dev/sda1`}
+</TerminalDemo>
+
+Create a mount point and mount it:
+
+<TerminalDemo>
+{`$ sudo mkdir /mnt/usb
+$ sudo mount /dev/sda1 /mnt/usb
+
+# Make it mount automatically on boot:
+$ sudo nano /etc/fstab
+
+# Add this line at the end:
+/dev/sda1    /mnt/usb    auto    defaults,user,rw    0    0`}
+</TerminalDemo>
+
+Now add it to Samba config:
+
+```ini
+[USB Drive]
+   comment = External USB Storage
+   path = /mnt/usb
+   browseable = yes
+   read only = no
+   guest ok = yes
+   create mask = 0777
+   directory mask = 0777
+```
+
+Restart Samba and now you have TONS of storage!
+
+<TerminalDemo>
+{`$ sudo systemctl restart smbd`}
+</TerminalDemo>
+
+## Advanced Features
+
+### Time Machine Backups (for Mac users)
+
+Want to use your Pi as a Time Machine backup? Add this to smb.conf:
+
+```ini
+[TimeMachine]
+   comment = Time Machine Backup
+   path = /home/pi/timemachine
+   browseable = yes
+   read only = no
+   create mask = 0600
+   directory mask = 0700
+   valid users = pi
+   vfs objects = catia fruit streams_xattr
+   fruit:time machine = yes
+```
+
+### Recycle Bin Feature
+
+Don't want deleted files to disappear immediately? Set up a recycle bin:
+
+```ini
+[Public]
+   # ... other settings ...
+   vfs objects = recycle
+   recycle:repository = .recycle
+   recycle:keeptree = yes
+   recycle:versions = yes
+```
+
+Now deleted files go to a `.recycle` folder instead of being permanently deleted!
+
+<StoryBox character="pi_princess" mood="proud">
+This is SO useful! I use this feature all the time. Can't tell you how many times I've accidentally deleted something and been saved by the recycle bin!
+</StoryBox>
+
+## Security Best Practices
+
+Sharing files is great, but let's keep things secure:
+
+### 1. Use Strong Passwords
+```bash
+# Use a password with letters, numbers, and symbols
+$ sudo smbpasswd -a pi
+```
+
+### 2. Limit Access by IP
+In smb.conf, add:
+```ini
+hosts allow = 192.168.1.0/24
+hosts deny = 0.0.0.0/0
+```
+This only allows devices on your local network!
+
+### 3. Read-Only Folders
+For important files you don't want changed:
+```ini
+[Documents]
+   path = /home/pi/documents
+   read only = yes  # Can't modify or delete!
+   guest ok = yes
+```
+
+### 4. Regular Backups
+Even with a file server, always backup important files!
+
+<FunFact title="RAID for Pi?">
+Super advanced users can set up RAID (multiple drives for redundancy) on a Raspberry Pi! If you have 2+ USB drives, you can configure them so if one fails, your data is safe on the other.
+
+This is getting into server admin territory - but it's totally possible!
+</FunFact>
+
+## Monitoring Your File Server
+
+Check who's connected to your server:
+
+<TerminalDemo>
+{`$ sudo smbstatus
+
+Samba version 4.13.13
+PID     Username     Group        Machine
+-------------------------------------------
+1234    pi           pi           laptop (192.168.1.50)
+
+Service      pid     Machine       Connected at
+------------------------------------------------
+Public       1234    192.168.1.50  Mon Dec 19 15:30:00 2024`}
+</TerminalDemo>
+
+Check disk space:
+
+<TerminalDemo>
+{`$ df -h /home/pi/shared
+
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        29G  4.5G   23G  17% /
+
+Plenty of space left!`}
+</TerminalDemo>
+
+## Troubleshooting
+
+### Can't See the Shared Folders
+- Make sure Samba is running: `sudo systemctl status smbd`
+- Check firewall: `sudo ufw allow samba`
+- Verify you're on the same network as the Pi
+
+### Permission Denied
+- Check folder permissions: `ls -l /home/pi/shared`
+- Make sure the user exists: `sudo smbpasswd -a pi`
+- Try: `sudo chmod -R 777 /home/pi/shared/public`
+
+### Slow Transfer Speeds
+- WiFi is slower than Ethernet - try plugging in
+- Large files take time - be patient!
+- Check network speed: `iperf3 -s` (on Pi) and `iperf3 -c [pi-ip]` (on other device)
+
+### Files Won't Delete
+- Check if they're open on another device
+- Verify permissions in smb.conf
+- Look in the recycle bin (if enabled)
+
+<Challenge
+  title="Build Your Personal Cloud"
+  description="Set up a complete file sharing solution for your home"
+  steps={[
+    "Create at least 3 different shared folders (like Photos, Music, Documents)",
+    "Configure one as read-only and one as writable",
+    "Set up password protection on at least one folder",
+    "Successfully access your shares from 2 different types of devices (e.g., phone and laptop)",
+    "Upload a file from one device and download it on another"
+  ]}
+  xp={50}
+/>
+
+## Project Ideas
+
+Now that you have a file server, you could:
+
+1. **Family Photo Server** - Everyone saves photos to one place
+2. **Media Library** - Store movies and music for streaming
+3. **Homework Backup** - Automatically sync school files
+4. **Game Server** - Share game saves between devices
+5. **Website Hosting** - Develop websites with shared files
+6. **Security Camera Storage** - Save camera footage
+7. **Music Production** - Share projects between devices
+
+<Quiz
+  questions={[
+    {
+      question: "What is Samba?",
+      options: [
+        "A type of dance",
+        "A file sharing protocol for networks",
+        "A web server",
+        "A database system"
+      ],
+      correctAnswer: 1,
+      explanation: "Samba is a file sharing protocol that lets you share files between different devices on a network!"
+    },
+    {
+      question: "What does 'guest ok = yes' mean in Samba config?",
+      options: [
+        "Only guests can access",
+        "No password required",
+        "Files are public on the internet",
+        "The folder is read-only"
+      ],
+      correctAnswer: 1,
+      explanation: "guest ok = yes means anyone can access without entering a username or password. Perfect for public folders!"
+    },
+    {
+      question: "How do you access a Samba share from Windows?",
+      options: [
+        "Type \\\\IP-ADDRESS in File Explorer",
+        "Use a web browser",
+        "Download special software",
+        "It's not possible"
+      ],
+      correctAnswer: 0,
+      explanation: "In Windows File Explorer, type \\\\192.168.1.100 (with your Pi's IP) to access Samba shares!"
+    },
+    {
+      question: "Why would you mount a USB drive to your file server?",
+      options: [
+        "To make it run faster",
+        "To add more storage space",
+        "To improve security",
+        "USB drives don't work with Samba"
+      ],
+      correctAnswer: 1,
+      explanation: "External USB drives give your Pi much more storage space - perfect for storing lots of files, photos, and videos!"
+    }
+  ]}
+/>
+
+<StoryBox character="pi_princess" mood="excited">
+Congratulations! You now have your own personal cloud storage server! No monthly fees, no storage limits (except your drive size), and complete control over your data.
+
+This is exactly how businesses run their file servers - you're using the same technology that companies use!
+
+You learned:
+- Installing and configuring Samba
+- Creating shared folders with different permissions
+- Accessing files from multiple devices
+- Adding external storage
+- Security best practices
+
+Next up: AUTOMATION STATION! We're going to make your Pi do things automatically on a schedule. Imagine having your Pi run tasks while you sleep!
+</StoryBox>
+
+## Quick Reference
+
+| Command | Purpose |
+|---------|---------|
+| `sudo apt install samba` | Install Samba |
+| `sudo nano /etc/samba/smb.conf` | Edit Samba config |
+| `sudo smbpasswd -a username` | Set Samba password |
+| `sudo systemctl restart smbd` | Restart Samba service |
+| `smbstatus` | See who's connected |
+| `hostname -I` | Get Pi's IP address |
+
+### Accessing Shares
+
+| From | How to Connect |
+|------|---------------|
+| Windows | `\\192.168.1.100` in File Explorer |
+| Mac | `smb://192.168.1.100` (Cmd+K in Finder) |
+| Linux | `smb://192.168.1.100` in File Manager |
+| Android/iOS | Use FE File Explorer or similar app |
+
+<NextLesson
+  track="raspberry-pi"
+  lesson="08-automation-station"
+  teaser="Make your Pi work for you 24/7 with scheduled automation tasks!"
+/>

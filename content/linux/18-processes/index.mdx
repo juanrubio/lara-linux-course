@@ -1,0 +1,337 @@
+---
+title: "Processes"
+track: "linux"
+chapter: 4
+lesson: 18
+slug: "18-processes"
+prerequisites: ["17-disk-usage"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 60
+objectives:
+  - List running processes with ps
+  - Monitor processes in real-time with top
+  - Understand process information (PID, CPU, memory)
+  - Learn basic process control with kill
+nextLesson: "19-users-groups"
+prevLesson: "17-disk-usage"
+---
+
+# Processes
+
+<StoryBox character="commander_byte">
+  Welcome to Process Management, recruit!
+
+  Your computer is like a busy city - hundreds of programs are running at the same time! Each running program is called a PROCESS. Some are visible (like your web browser), others work invisibly in the background.
+
+  Today you'll learn to see what's running, monitor resource usage, and even stop misbehaving processes!
+</StoryBox>
+
+## What is a Process?
+
+Every time you run a program, Linux creates a **process** for it. Each process gets:
+- A unique ID number (PID)
+- Memory to work with
+- CPU time to execute
+- A parent process (the program that started it)
+
+Think of processes like tasks on a to-do list that your computer is working on!
+
+## Command 1: ps - Process Status
+
+**ps** shows you a snapshot of currently running processes.
+
+<TerminalDemo>
+{`learner@codequest:~$ ps
+  PID TTY          TIME CMD
+ 1234 pts/0    00:00:00 bash
+ 5678 pts/0    00:00:00 ps`}
+</TerminalDemo>
+
+By default, ps only shows YOUR processes in the current terminal. Not very exciting!
+
+### ps aux - Show ALL Processes
+
+<TerminalDemo>
+{`learner@codequest:~$ ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.1  16808  9128 ?        Ss   Dec15   0:05 /sbin/init
+learner   1234  0.0  0.2  21468  5012 pts/0    Ss   10:23   0:01 bash
+learner   2345  2.3  5.8 892456 234816 ?       Sl   10:25   2:15 firefox
+learner   3456  0.5  1.2  45678 12456 ?        S    11:00   0:30 python script.py`}
+</TerminalDemo>
+
+Now we're talking! Let's decode this:
+
+| Column | Meaning |
+|--------|---------|
+| **USER** | Who owns this process |
+| **PID** | Process ID (unique number) |
+| **%CPU** | Percentage of CPU being used |
+| **%MEM** | Percentage of memory being used |
+| **COMMAND** | What program is running |
+
+<FunFact>
+  PID 1 is always the init system (the first process that starts when your computer boots). Everything else starts from PID 1!
+</FunFact>
+
+### Useful ps Combinations
+
+<TerminalDemo>
+{`# Show all processes with details
+learner@codequest:~$ ps aux
+
+# Show processes in a tree (see parent-child relationships)
+learner@codequest:~$ ps auxf
+
+# Find specific process
+learner@codequest:~$ ps aux | grep firefox
+learner   2345  2.3  5.8 892456 234816 ?  Sl  10:25  2:15 firefox`}
+</TerminalDemo>
+
+<StoryBox character="pixel_the_penguin">
+  The grep command is like a filter - it searches for specific text! "ps aux | grep firefox" means "show all processes, but only the lines containing 'firefox'!"
+</StoryBox>
+
+## Command 2: top - Real-Time Process Monitor
+
+**top** is like a live dashboard showing your system's activity in real-time!
+
+<TerminalDemo>
+{`learner@codequest:~$ top
+
+top - 14:23:45 up 5 days,  3:45,  2 users,  load average: 0.52, 0.48, 0.41
+Tasks: 248 total,   1 running, 247 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  5.2 us,  1.8 sy,  0.0 ni, 92.5 id,  0.5 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   7856.3 total,   1234.5 free,   4321.2 used,   2300.6 buff/cache
+MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   2987.4 avail Mem
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+ 2345 learner   20   0  892456 234816  89256 S   5.3   2.9   2:15.42 firefox
+ 3456 learner   20   0   45678  12456   8234 S   1.0   0.2   0:30.15 python
+ 1234 learner   20   0   21468   5012   3456 S   0.0   0.1   0:01.23 bash`}
+</TerminalDemo>
+
+Top updates every few seconds - it's alive! Press `q` to quit.
+
+### Understanding the top Display
+
+**Header Section:**
+- **Load average**: How busy the system is (lower is better)
+- **Tasks**: Number of processes
+- **%Cpu(s)**: CPU usage breakdown
+- **Mem/Swap**: Memory usage
+
+**Process List:**
+- Sorted by CPU usage (highest first)
+- Shows real-time CPU and memory consumption
+- Updates automatically!
+
+### Useful top Commands
+
+While top is running, you can press:
+- `q` - Quit
+- `h` - Help
+- `k` - Kill a process (we'll learn this soon!)
+- `M` - Sort by memory usage
+- `P` - Sort by CPU usage
+- `1` - Show all CPU cores separately
+
+<FunFact>
+  System administrators keep top running 24/7 to watch for performance problems! It's like having a security camera on your computer's activity!
+</FunFact>
+
+## Command 3: htop - Top's Cooler Cousin
+
+**htop** is like top but with colors, graphs, and easier controls! (You might need to install it first)
+
+<TerminalDemo>
+{`learner@codequest:~$ htop`}
+</TerminalDemo>
+
+htop shows:
+- Colorful CPU and memory bars
+- Easy-to-read process tree
+- Mouse support!
+- Function key commands at the bottom
+
+<StoryBox character="pixel_the_penguin">
+  If htop isn't installed, you might see "command not found". Don't worry! We'll learn how to install software later in the course. For now, top works great!
+</StoryBox>
+
+## Process Control: kill Command
+
+Sometimes a program freezes or goes crazy. You need to stop it! That's where **kill** comes in.
+
+<TerminalDemo>
+{`# Find the process first
+learner@codequest:~$ ps aux | grep frozen_program
+learner   9999  99.0  50.0 999999 500000 ?  R  14:30  10:00 frozen_program
+
+# Kill it by PID
+learner@codequest:~$ kill 9999
+
+# Check if it's gone
+learner@codequest:~$ ps aux | grep frozen_program
+# (no output - it's gone!)`}
+</TerminalDemo>
+
+### Kill Signals
+
+**kill** doesn't always "kill" - it sends signals to processes!
+
+| Signal | Command | What it does |
+|--------|---------|-------------|
+| SIGTERM | `kill PID` | Politely ask to quit (default) |
+| SIGKILL | `kill -9 PID` | Force quit (emergency!) |
+| SIGHUP | `kill -1 PID` | Restart/reload |
+
+<TerminalDemo>
+{`# Try polite termination first
+learner@codequest:~$ kill 9999
+
+# If that doesn't work, force it
+learner@codequest:~$ kill -9 9999`}
+</TerminalDemo>
+
+<StoryBox character="commander_byte">
+  IMPORTANT: Always try `kill PID` first! It lets the program save its work and exit cleanly. Only use `kill -9` as a last resort - it's like pulling the power plug!
+</StoryBox>
+
+## Process Priority
+
+Not all processes are equal! Some are more important than others. This is controlled by "niceness":
+
+- **Nice value**: -20 (highest priority) to 19 (lowest priority)
+- Default is 0
+- Only root can make processes "less nice" (higher priority)
+
+<TerminalDemo>
+{`# Run a command with low priority (nice = 19)
+learner@codequest:~$ nice -n 19 ./slow_script.sh`}
+</TerminalDemo>
+
+## Common Process Scenarios
+
+### Scenario 1: Find a Frozen Browser
+
+<TerminalDemo>
+{`learner@codequest:~$ ps aux | grep firefox
+learner   2345  99.0  25.0 892456 234816 ?  R  10:25  15:00 firefox
+
+learner@codequest:~$ kill 2345`}
+</TerminalDemo>
+
+### Scenario 2: Find What's Using All the CPU
+
+<TerminalDemo>
+{`learner@codequest:~$ top
+# Look at the top of the list - highest %CPU users!`}
+</TerminalDemo>
+
+### Scenario 3: Find What's Using All the Memory
+
+<TerminalDemo>
+{`learner@codequest:~$ top
+# Press 'M' to sort by memory
+# Or use: ps aux --sort=-%mem | head -10`}
+</TerminalDemo>
+
+## Quick Reference
+
+| Task | Command |
+|------|---------|
+| List all processes | `ps aux` |
+| Find specific process | `ps aux \| grep name` |
+| Real-time monitoring | `top` |
+| Better monitoring | `htop` |
+| Stop a process | `kill PID` |
+| Force stop | `kill -9 PID` |
+| Sort by memory | In top, press `M` |
+
+## Practice: Process Manager
+
+<Challenge
+  id="ch4-processes"
+  title="Process Manager"
+  description="Explore and manage processes on your system"
+  steps={[
+    { command: "ps aux", hint: "See all running processes" },
+    { command: "ps aux | grep bash", hint: "Find bash processes" },
+    { command: "top", hint: "Open real-time monitor (press q to quit)" },
+    { command: "sleep 100 &", hint: "Start a background process" },
+    { command: "ps aux | grep sleep", hint: "Find the sleep process and note its PID" },
+    { command: "kill [PID]", hint: "Kill the sleep process (replace [PID] with actual number)" }
+  ]}
+  xp={45}
+  badge="process_master"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does PID stand for?",
+    options: [
+      "Program Identification",
+      "Process ID",
+      "Program Instance Data",
+      "Process Information Display"
+    ],
+    correct: 1,
+    explanation: "PID = Process ID - a unique number assigned to each running process!"
+  },
+  {
+    question: "Which command shows processes in real-time?",
+    options: ["ps", "top", "list", "proc"],
+    correct: 1,
+    explanation: "top shows a live, updating view of processes and system resources!"
+  },
+  {
+    question: "What's the safest way to stop a process?",
+    options: [
+      "kill -9 PID (force kill)",
+      "kill PID (normal termination)",
+      "Turn off computer",
+      "Wait for it to finish"
+    ],
+    correct: 1,
+    explanation: "Always try normal kill first - it lets the program exit cleanly!"
+  },
+  {
+    question: "What does 'ps aux | grep firefox' do?",
+    options: [
+      "Starts firefox",
+      "Stops firefox",
+      "Shows only firefox processes",
+      "Updates firefox"
+    ],
+    correct: 2,
+    explanation: "It lists all processes and filters to show only lines containing 'firefox'!"
+  }
+]} />
+
+## Process States
+
+Processes can be in different states:
+
+| State | Letter | Meaning |
+|-------|--------|---------|
+| Running | R | Currently executing |
+| Sleeping | S | Waiting for something |
+| Stopped | T | Paused (stopped by user) |
+| Zombie | Z | Finished but not cleaned up yet |
+
+<FunFact>
+  Zombie processes aren't dangerous! They're just waiting for their parent process to collect their exit status. They use almost no resources.
+</FunFact>
+
+## What's Next?
+
+You've mastered process management! Next, we'll explore users and groups - how Linux handles different people using the same computer!
+
+<NextLesson
+  track="linux"
+  lesson="19-users-groups"
+  teaser="Learn about users, groups, and how Linux manages multiple people!"
+/>

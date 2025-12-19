@@ -1,0 +1,385 @@
+---
+title: "If and Else"
+track: "python"
+chapter: 2
+lesson: 8
+slug: "08-if-else"
+prerequisites: ["07-input"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand conditional statements
+  - Learn to use if, elif, and else
+  - Master indentation in Python
+  - Create programs that make decisions
+nextLesson: "09-comparisons-logic"
+prevLesson: "07-input"
+---
+
+# If and Else
+
+<StoryBox character="python_pete">
+  Welcome back, code adventurer! Today we're learning one of the most powerful concepts in programming: MAKING DECISIONS!
+
+  Think about your day - you make decisions constantly: "If it's raining, bring an umbrella. Otherwise, leave it home." Computers need to make decisions too!
+
+  The `if` statement is like giving your program a brain. Let's make your code smart!
+</StoryBox>
+
+## What is a Conditional Statement?
+
+A **conditional statement** lets your program choose different actions based on whether something is true or false.
+
+Think of it like a fork in the road:
+- **IF** something is true → Go left (do this action)
+- **ELSE** → Go right (do that action)
+
+Here's the simplest example:
+
+<TerminalDemo>
+{`>>> age = 13
+>>> if age >= 13:
+...     print("You're a teenager!")
+...
+You're a teenager!`}
+</TerminalDemo>
+
+Let's break this down:
+1. `if age >= 13:` - Check if age is 13 or more
+2. The colon `:` starts the conditional block
+3. `print("You're a teenager!")` - This runs ONLY if the condition is true
+4. Notice the **indentation** (spaces) before print? That's crucial in Python!
+
+<FunFact>
+  Python uses indentation (spaces or tabs) to know what code belongs together. Most languages use curly braces {}, but Python chose indentation to make code cleaner and more readable!
+</FunFact>
+
+## Indentation is CRITICAL
+
+In Python, indentation isn't just for looks - it's part of the language! Code that belongs to the `if` statement MUST be indented.
+
+<TerminalDemo>
+{`>>> # CORRECT - indented properly
+>>> if True:
+...     print("This works!")
+...     print("This too!")
+...
+This works!
+This too!
+
+>>> # WRONG - not indented
+>>> if True:
+... print("Error!")
+  File "<stdin>", line 2
+    print("Error!")
+    ^
+IndentationError: expected an indented block`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  Pro tip: Use 4 spaces for indentation (or press Tab, which usually adds 4 spaces). Be consistent! Mixing tabs and spaces will make Python angry!
+</StoryBox>
+
+## The if-else Structure
+
+What if you want to do something ELSE when the condition is false?
+
+<TerminalDemo>
+{`>>> age = 10
+>>> if age >= 13:
+...     print("You're a teenager!")
+... else:
+...     print("You're still a kid!")
+...
+You're still a kid!`}
+</TerminalDemo>
+
+Now let's make it interactive:
+
+<TerminalDemo>
+{`>>> age = int(input("How old are you? "))
+How old are you? 15
+>>>
+>>> if age >= 13:
+...     print("You're a teenager!")
+...     print("Welcome to the teen years!")
+... else:
+...     print("You're still a kid!")
+...     print("Enjoy your childhood!")
+...
+You're a teenager!
+Welcome to the teen years!`}
+</TerminalDemo>
+
+## The elif Statement - Multiple Choices
+
+What if you have MORE than two options? Use `elif` (short for "else if"):
+
+<TerminalDemo>
+{`>>> score = int(input("Enter your test score: "))
+Enter your test score: 85
+>>>
+>>> if score >= 90:
+...     print("Grade: A")
+...     print("Excellent work!")
+... elif score >= 80:
+...     print("Grade: B")
+...     print("Great job!")
+... elif score >= 70:
+...     print("Grade: C")
+...     print("Good effort!")
+... elif score >= 60:
+...     print("Grade: D")
+...     print("You can do better!")
+... else:
+...     print("Grade: F")
+...     print("Time to study more!")
+...
+Grade: B
+Great job!`}
+</TerminalDemo>
+
+<FunFact>
+  Python checks each condition IN ORDER and stops at the first true one! So in our grade example, a score of 95 hits the first condition (>= 90) and never checks the others!
+</FunFact>
+
+## Comparison Operators
+
+To make decisions, you need to compare things! Here are Python's comparison operators:
+
+| Operator | Meaning | Example | Result |
+|----------|---------|---------|--------|
+| `==` | Equal to | `5 == 5` | True |
+| `!=` | Not equal | `5 != 3` | True |
+| `>` | Greater than | `5 > 3` | True |
+| `<` | Less than | `3 < 5` | True |
+| `>=` | Greater or equal | `5 >= 5` | True |
+| `<=` | Less or equal | `3 <= 5` | True |
+
+<StoryBox character="python_pete">
+  SUPER IMPORTANT: Use TWO equal signs `==` to compare! A single `=` is for assignment (storing values). This is the #1 mistake beginners make!
+
+  ```python
+  age = 13        # ASSIGNMENT (stores 13 in age)
+  if age == 13:   # COMPARISON (checks if age equals 13)
+  ```
+</StoryBox>
+
+## Comparing Strings
+
+You can compare text too!
+
+<TerminalDemo>
+{`>>> password = input("Enter password: ")
+Enter password: dragon123
+>>>
+>>> if password == "dragon123":
+...     print("Access granted!")
+...     print("Welcome back!")
+... else:
+...     print("Access denied!")
+...     print("Wrong password!")
+...
+Access granted!
+Welcome back!`}
+</TerminalDemo>
+
+String comparisons are case-sensitive:
+
+<TerminalDemo>
+{`>>> answer = "yes"
+>>> if answer == "YES":
+...     print("Match!")
+... else:
+...     print("No match!")
+...
+No match!
+
+>>> # To ignore case, convert to lowercase:
+>>> if answer.lower() == "yes":
+...     print("Match!")
+...
+Match!`}
+</TerminalDemo>
+
+## Nested If Statements
+
+You can put `if` statements inside other `if` statements! This is called **nesting**.
+
+<TerminalDemo>
+{`>>> age = int(input("How old are you? "))
+How old are you? 16
+>>> has_license = input("Do you have a license? (yes/no) ")
+Do you have a license? (yes/no) yes
+>>>
+>>> if age >= 16:
+...     if has_license == "yes":
+...         print("You can drive!")
+...     else:
+...         print("Get your license first!")
+... else:
+...     print("You're too young to drive.")
+...
+You can drive!`}
+</TerminalDemo>
+
+## A Complete Example - Adventure Game
+
+<TerminalDemo>
+{`>>> print("=== The Cave of Choices ===")
+=== The Cave of Choices ===
+>>> print("You enter a dark cave and see two paths.\\n")
+You enter a dark cave and see two paths.
+
+>>> choice = input("Do you go LEFT or RIGHT? ")
+Do you go LEFT or RIGHT? LEFT
+>>>
+>>> if choice.upper() == "LEFT":
+...     print("\\nYou find a treasure chest!")
+...     print("You win 100 gold coins!")
+... elif choice.upper() == "RIGHT":
+...     print("\\nYou encounter a friendly dragon!")
+...     print("The dragon gives you a magic sword!")
+... else:
+...     print("\\nThat's not a valid choice!")
+...     print("You wander in circles...")
+...
+You find a treasure chest!
+You win 100 gold coins!`}
+</TerminalDemo>
+
+## Practice Time!
+
+<Challenge
+  id="ch2-if-else"
+  title="Decision Maker"
+  description="Create a program that makes decisions based on user input"
+  steps={[
+    {
+      command: 'print("=== Number Checker ===")',
+      hint: "Create a title"
+    },
+    {
+      command: 'number = int(input("Enter a number: "))',
+      hint: "Get a number from the user"
+    },
+    {
+      command: 'if number > 0:\n    print("Positive!")\nelif number < 0:\n    print("Negative!")\nelse:\n    print("Zero!")',
+      hint: "Check if number is positive, negative, or zero"
+    }
+  ]}
+  xp={30}
+  badge="decision_master"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does the colon : do in an if statement?",
+    options: ["Ends the statement", "Starts a conditional block", "Separates conditions", "It's optional"],
+    correct: 1,
+    explanation: "The colon : tells Python 'everything indented after this belongs to the if statement!'"
+  },
+  {
+    question: "How do you check if two values are equal?",
+    options: ["=", "==", "!=", "equals"],
+    correct: 1,
+    explanation: "Use == to compare values! A single = is for assignment, not comparison."
+  },
+  {
+    question: "What is elif short for?",
+    options: ["Else if", "Eliminate if", "Elegant if", "Equal if"],
+    correct: 0,
+    explanation: "elif means 'else if' - it's a shorthand for checking another condition!"
+  },
+  {
+    question: "What happens if NO conditions are true and there's no else?",
+    options: ["Error occurs", "Program crashes", "Nothing happens, code continues", "Python guesses"],
+    correct: 2,
+    explanation: "If no conditions match and there's no else, Python just skips the entire if block and continues!"
+  }
+]} />
+
+## If-Else Decision Tree
+
+Here's how Python evaluates if-elif-else:
+
+```
+Start
+  ↓
+Check if condition
+  ↓
+True? → Execute if block → Done
+  ↓
+False?
+  ↓
+Check elif condition
+  ↓
+True? → Execute elif block → Done
+  ↓
+False?
+  ↓
+Execute else block → Done
+```
+
+<StoryBox character="python_pete">
+  Remember: Once Python finds a TRUE condition, it executes that block and SKIPS the rest! It's like choosing a path in a maze - once you pick a direction, you don't go back and try the others!
+</StoryBox>
+
+## Common Patterns
+
+Here are some patterns you'll use ALL the time:
+
+**1. Simple Yes/No Check**
+```python
+if answer == "yes":
+    print("Great!")
+else:
+    print("Maybe next time!")
+```
+
+**2. Range Check**
+```python
+if score >= 0 and score <= 100:
+    print("Valid score!")
+```
+
+**3. Multiple Options**
+```python
+if choice == "A":
+    print("Option A")
+elif choice == "B":
+    print("Option B")
+elif choice == "C":
+    print("Option C")
+else:
+    print("Invalid option")
+```
+
+## Conditional Cheat Sheet
+
+| Statement | Purpose | Example |
+|-----------|---------|---------|
+| `if` | Check a condition | `if age > 12:` |
+| `elif` | Check another condition | `elif age > 5:` |
+| `else` | Default fallback | `else:` |
+| `==` | Equals | `if x == 5:` |
+| `!=` | Not equals | `if x != 5:` |
+| `>` | Greater than | `if x > 5:` |
+| `<` | Less than | `if x < 5:` |
+| `>=` | Greater or equal | `if x >= 5:` |
+| `<=` | Less or equal | `if x <= 5:` |
+
+## What's Next?
+
+You've learned to make simple decisions, but what if you need to check MULTIPLE things at once? What if you want to know "Is it sunny AND warm?" or "Is it Saturday OR Sunday?"
+
+In the next lesson, we'll learn about **comparisons and logic** - how to combine conditions with AND, OR, and NOT!
+
+<NextLesson
+  track="python"
+  lesson="09-comparisons-logic"
+  teaser="Learn to combine conditions and make complex decisions!"
+/>

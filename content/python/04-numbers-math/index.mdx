@@ -1,0 +1,460 @@
+---
+title: "Numbers and Math"
+track: "python"
+chapter: 1
+lesson: 4
+slug: "04-numbers-math"
+prerequisites: ["03-variables"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand integers and floats
+  - Learn mathematical operators
+  - Perform calculations with variables
+nextLesson: "05-chapter1-quest"
+prevLesson: "03-variables"
+---
+
+# Numbers and Math
+
+<StoryBox character="python_pete">
+  Ready to turn your computer into a super-powered calculator?
+
+  Python is AMAZING at math! It can add, subtract, multiply, divide, and do way more complex calculations in the blink of an eye!
+
+  Today, you'll learn how to use Python like a mathematical wizard! Let's go!
+</StoryBox>
+
+## Two Types of Numbers
+
+Python has two main types of numbers:
+
+### 1. Integers (Whole Numbers)
+```python
+age = 12
+score = 100
+lives = 3
+year = 2024
+```
+
+Integers are whole numbers with no decimal point. They can be positive or negative!
+
+### 2. Floats (Decimal Numbers)
+```python
+price = 9.99
+temperature = 98.6
+pi = 3.14159
+height = 5.8
+```
+
+Floats have decimal points. They're called "floating-point numbers."
+
+<FunFact>
+  Why "float"? Because the decimal point can "float" to different positions! 12.34, 123.4, and 1234.0 all store the same amount of data.
+</FunFact>
+
+## Basic Math Operators
+
+Python uses symbols for math operations. These are called **operators**!
+
+| Operator | Name | Example | Result |
+|----------|------|---------|--------|
+| `+` | Addition | `5 + 3` | `8` |
+| `-` | Subtraction | `10 - 4` | `6` |
+| `*` | Multiplication | `7 * 3` | `21` |
+| `/` | Division | `20 / 4` | `5.0` |
+| `**` | Power (Exponent) | `2 ** 3` | `8` |
+| `%` | Modulo (Remainder) | `10 % 3` | `1` |
+| `//` | Floor Division | `10 // 3` | `3` |
+
+Let's try them all!
+
+## Addition and Subtraction
+
+```python
+print(5 + 3)    # 8
+print(10 - 4)   # 6
+print(100 + 25) # 125
+print(50 - 30)  # 20
+```
+
+<TerminalDemo>
+{`8
+6
+125
+20`}
+</TerminalDemo>
+
+### Using Variables
+```python
+apples = 5
+oranges = 3
+total_fruit = apples + oranges
+print("Total fruit:", total_fruit)
+```
+
+<TerminalDemo>
+{`Total fruit: 8`}
+</TerminalDemo>
+
+## Multiplication and Division
+
+```python
+print(7 * 3)   # 21
+print(20 / 4)  # 5.0
+print(12 * 12) # 144
+print(100 / 10) # 10.0
+```
+
+<StoryBox character="python_pete">
+  Notice that division always gives you a float (decimal number), even if the answer is a whole number! 20 / 4 = 5.0, not 5.
+</StoryBox>
+
+### Real Example: Sharing Candy
+```python
+total_candy = 24
+friends = 4
+candy_per_friend = total_candy / friends
+print("Each friend gets", candy_per_friend, "pieces")
+```
+
+<TerminalDemo>
+{`Each friend gets 6.0 pieces`}
+</TerminalDemo>
+
+## Special Operators
+
+### Power (**)
+Use `**` to raise a number to a power:
+
+```python
+print(2 ** 3)   # 2 * 2 * 2 = 8
+print(5 ** 2)   # 5 * 5 = 25
+print(10 ** 3)  # 10 * 10 * 10 = 1000
+```
+
+<TerminalDemo>
+{`8
+25
+1000`}
+</TerminalDemo>
+
+### Modulo (%)
+The modulo operator gives you the REMAINDER after division:
+
+```python
+print(10 % 3)  # 10 ÷ 3 = 3 remainder 1
+print(15 % 4)  # 15 ÷ 4 = 3 remainder 3
+print(20 % 5)  # 20 ÷ 5 = 4 remainder 0
+```
+
+<TerminalDemo>
+{`1
+3
+0`}
+</TerminalDemo>
+
+<FunFact>
+  Modulo is super useful! You can use it to check if a number is even (number % 2 == 0) or odd (number % 2 == 1)!
+</FunFact>
+
+### Floor Division (//)
+Regular division keeps decimals. Floor division throws them away:
+
+```python
+print(10 / 3)   # 3.333333...
+print(10 // 3)  # 3 (no decimals!)
+```
+
+<TerminalDemo>
+{`3.3333333333333335
+3`}
+</TerminalDemo>
+
+## Order of Operations
+
+Python follows the same math rules you learned in school! Remember **PEMDAS**?
+
+- **P**arentheses
+- **E**xponents
+- **M**ultiplication
+- **D**ivision
+- **A**ddition
+- **S**ubtraction
+
+```python
+print(2 + 3 * 4)     # 14 (multiply first!)
+print((2 + 3) * 4)   # 20 (parentheses first!)
+```
+
+<TerminalDemo>
+{`14
+20`}
+</TerminalDemo>
+
+Always use parentheses to make your calculations clear:
+
+```python
+# Calculating average
+num1 = 10
+num2 = 20
+num3 = 30
+average = (num1 + num2 + num3) / 3
+print("Average:", average)
+```
+
+<TerminalDemo>
+{`Average: 20.0`}
+</TerminalDemo>
+
+## Updating Variables with Math
+
+You can use math to update variables!
+
+```python
+score = 0
+print("Starting score:", score)
+
+score = score + 10
+print("After level 1:", score)
+
+score = score + 15
+print("After level 2:", score)
+```
+
+<TerminalDemo>
+{`Starting score: 0
+After level 1: 10
+After level 2: 25`}
+</TerminalDemo>
+
+### Shortcut Operators
+
+Python has shortcuts for updating variables:
+
+```python
+score = 0
+
+score += 10    # Same as: score = score + 10
+score -= 5     # Same as: score = score - 5
+score *= 2     # Same as: score = score * 2
+score /= 3     # Same as: score = score / 3
+```
+
+| Shortcut | Long Version | Example |
+|----------|--------------|---------|
+| `x += 5` | `x = x + 5` | Add 5 to x |
+| `x -= 3` | `x = x - 3` | Subtract 3 from x |
+| `x *= 2` | `x = x * 2` | Multiply x by 2 |
+| `x /= 4` | `x = x / 4` | Divide x by 4 |
+
+## Mixing Integers and Floats
+
+What happens when you mix integers and floats?
+
+```python
+print(10 + 2.5)    # 12.5 (becomes float)
+print(5 * 3.0)     # 15.0 (becomes float)
+print(7 - 1.5)     # 5.5 (becomes float)
+```
+
+**Rule:** When you mix integers and floats, the result is always a float!
+
+## Real-World Examples
+
+### Example 1: Shopping Cart
+```python
+item1 = 12.99
+item2 = 7.50
+item3 = 4.99
+tax = 0.08  # 8% tax
+
+subtotal = item1 + item2 + item3
+tax_amount = subtotal * tax
+total = subtotal + tax_amount
+
+print("Subtotal: $", subtotal)
+print("Tax: $", tax_amount)
+print("Total: $", total)
+```
+
+<TerminalDemo>
+{`Subtotal: $ 25.48
+Tax: $ 2.0384
+Total: $ 27.5184`}
+</TerminalDemo>
+
+### Example 2: Converting Temperature
+```python
+celsius = 25
+fahrenheit = (celsius * 9/5) + 32
+print(celsius, "°C is", fahrenheit, "°F")
+```
+
+<TerminalDemo>
+{`25 °C is 77.0 °F`}
+</TerminalDemo>
+
+### Example 3: Game Level System
+```python
+xp = 450
+xp_per_level = 100
+
+current_level = xp // xp_per_level
+leftover_xp = xp % xp_per_level
+
+print("Level:", current_level)
+print("XP until next level:", xp_per_level - leftover_xp)
+```
+
+<TerminalDemo>
+{`Level: 4
+XP until next level: 50`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  See how powerful math in Python is? You can calculate anything - from game scores to scientific formulas!
+
+  And here's the best part: computers never make math mistakes. They're PERFECT calculators!
+</StoryBox>
+
+## Practice Time!
+
+<Challenge
+  id="ch1-math"
+  title="Math Wizard"
+  description="Practice using mathematical operators"
+  steps={[
+    {
+      command: 'print(10 + 5)',
+      hint: "Simple addition"
+    },
+    {
+      command: 'print(20 * 3)',
+      hint: "Multiplication"
+    },
+    {
+      command: 'print(2 ** 5)',
+      hint: "Calculate 2 to the power of 5"
+    },
+    {
+      command: 'x = 100; x += 50; print(x)',
+      hint: "Use the += shortcut"
+    }
+  ]}
+  xp={30}
+  badge="math_master"
+/>
+
+## Try These Challenges!
+
+Calculate these using Python:
+
+1. **Area of a rectangle**: length = 12, width = 8
+2. **Circle area**: radius = 5, use pi = 3.14
+3. **Trip cost**: distance = 200 miles, price per gallon = 3.50, mpg = 25
+4. **Age in days**: your age * 365
+
+## Quiz Time!
+
+<Quiz questions={[
+  {
+    question: "What's the result of 10 // 3?",
+    options: ["3.333", "3", "4", "1"],
+    correct: 1,
+    explanation: "Floor division (//) gives you just the whole number part: 3"
+  },
+  {
+    question: "What operator gives you the remainder?",
+    options: ["/", "//", "%", "**"],
+    correct: 2,
+    explanation: "The modulo operator (%) gives you the remainder after division!"
+  },
+  {
+    question: "What's the result of 2 ** 4?",
+    options: ["6", "8", "16", "24"],
+    correct: 2,
+    explanation: "2 ** 4 means 2 * 2 * 2 * 2 = 16"
+  },
+  {
+    question: "What's 10 % 2?",
+    options: ["0", "1", "5", "2"],
+    correct: 0,
+    explanation: "10 divided by 2 is 5 with no remainder, so 10 % 2 = 0"
+  },
+  {
+    question: "What's a shortcut for x = x + 5?",
+    options: ["x++", "x += 5", "x + 5", "x =+ 5"],
+    correct: 1,
+    explanation: "x += 5 is the shortcut for x = x + 5"
+  }
+]} />
+
+## Common Mistakes
+
+### Mistake 1: Using ^ for power
+```python
+# Wrong:
+print(2 ^ 3)  # This is XOR, not power!
+
+# Right:
+print(2 ** 3)
+```
+
+### Mistake 2: Integer division in Python 2 style
+```python
+# Python 3 always gives float for /
+print(10 / 3)  # 3.333... (not 3!)
+
+# Use // for integer division
+print(10 // 3)  # 3
+```
+
+### Mistake 3: Forgetting order of operations
+```python
+# Wrong thinking:
+result = 10 + 5 * 2  # Someone might think: 15 * 2 = 30
+
+# Reality:
+result = 10 + 5 * 2  # Actually: 10 + 10 = 20 (multiply first!)
+
+# Use parentheses to be clear:
+result = (10 + 5) * 2  # Now it's 30!
+```
+
+## Math Operator Cheat Sheet
+
+```python
+# Basic operations
+print(5 + 3)     # Addition: 8
+print(10 - 4)    # Subtraction: 6
+print(7 * 3)     # Multiplication: 21
+print(20 / 4)    # Division: 5.0
+
+# Special operations
+print(2 ** 3)    # Power: 8
+print(10 % 3)    # Modulo: 1
+print(10 // 3)   # Floor division: 3
+
+# Shortcuts
+x = 10
+x += 5           # x is now 15
+x -= 3           # x is now 12
+x *= 2           # x is now 24
+x /= 4           # x is now 6.0
+```
+
+<StoryBox character="python_pete">
+  Awesome work! You've mastered Python math!
+
+  Now you're ready for the ultimate challenge - building your very own calculator program! This is where everything comes together!
+
+  Are you ready to build something REAL? Let's do this!
+</StoryBox>
+
+<NextLesson
+  track="python"
+  lesson="05-chapter1-quest"
+  teaser="Quest Time! Build your own calculator and earn your Chapter 1 badge!"
+/>

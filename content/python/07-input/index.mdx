@@ -1,0 +1,285 @@
+---
+title: "User Input"
+track: "python"
+chapter: 2
+lesson: 7
+slug: "07-input"
+prerequisites: ["06-strings"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Learn to use the input() function
+  - Understand how to get data from users
+  - Store and use user responses
+  - Create interactive programs
+nextLesson: "08-if-else"
+prevLesson: "06-strings"
+---
+
+# User Input
+
+<StoryBox character="python_pete">
+  Alright code champion! So far, our programs have been one-way conversations - we talk, they listen. But real programs are INTERACTIVE!
+
+  Imagine a game that never asks your name, or a calculator that can't take your numbers. Boring, right?
+
+  Today, we're learning the `input()` function - your program's way of listening and responding to users. Let's make some programs that actually talk back!
+</StoryBox>
+
+## The input() Function
+
+The `input()` function is Python's way of asking the user a question and waiting for their answer.
+
+Here's the simplest example:
+
+<TerminalDemo>
+{`>>> name = input("What's your name? ")
+What's your name? Ada
+>>> print("Hello, " + name + "!")
+Hello, Ada!`}
+</TerminalDemo>
+
+Let's break down what happened:
+
+1. `input("What's your name? ")` - Shows the question and waits
+2. User types `Ada` and presses Enter
+3. The text "Ada" gets stored in the `name` variable
+4. We use that variable to create a personalized greeting!
+
+<FunFact>
+  When you use input(), your program PAUSES and waits for the user to type something and press Enter. It's like the program is holding its breath!
+</FunFact>
+
+## Always Use a Prompt
+
+The text inside `input()` is called a **prompt** - it tells the user what to type:
+
+<TerminalDemo>
+{`>>> favorite_color = input("What's your favorite color? ")
+What's your favorite color? blue
+>>> print("Wow, " + favorite_color + " is a great color!")`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  Pro tip: Always add a space at the end of your prompt! Notice the space after the question mark? Without it, the user's typing will run into your question. Try it with and without to see the difference!
+</StoryBox>
+
+## Building Interactive Programs
+
+Let's create a simple program that gets to know the user:
+
+<TerminalDemo>
+{`>>> print("=== Getting to Know You ===")
+=== Getting to Know You ===
+>>> name = input("What's your name? ")
+What's your name? Sam
+>>> age = input("How old are you? ")
+How old are you? 12
+>>> hobby = input("What's your favorite hobby? ")
+What's your favorite hobby? coding
+>>>
+>>> print("\\n--- Your Profile ---")
+--- Your Profile ---
+>>> print("Name: " + name)
+Name: Sam
+>>> print("Age: " + age)
+Age: 12
+>>> print("Hobby: " + hobby)
+Hobby: coding`}
+</TerminalDemo>
+
+## Input Always Returns Strings
+
+Here's something SUPER important: `input()` always gives you back a **string**, even if the user types a number!
+
+<TerminalDemo>
+{`>>> age = input("How old are you? ")
+How old are you? 12
+>>> print(type(age))
+<class 'str'>
+>>> print(age + age)
+1212`}
+</TerminalDemo>
+
+Wait, what? We got `1212` instead of `24`!
+
+That's because `age` is a string, not a number. When you add strings, they concatenate (stick together)!
+
+## Converting Input to Numbers
+
+To do math with input, convert it to a number first:
+
+<TerminalDemo>
+{`>>> age_string = input("How old are you? ")
+How old are you? 12
+>>> age_number = int(age_string)
+>>> print(age_number + 5)
+17
+
+>>> # Or do it all in one line!
+>>> age = int(input("How old are you? "))
+How old are you? 12
+>>> print(age + 5)
+17`}
+</TerminalDemo>
+
+| Function | What it does | Example |
+|----------|--------------|---------|
+| `int()` | Converts to integer (whole number) | `int("42")` → `42` |
+| `float()` | Converts to decimal number | `float("3.14")` → `3.14` |
+| `str()` | Converts to string | `str(42)` → `"42"` |
+
+<FunFact>
+  int() stands for "integer" - a fancy math word for whole numbers (no decimals). float() stands for "floating point number" - numbers with decimal points that "float" around!
+</FunFact>
+
+## A Complete Interactive Program
+
+Let's build a simple calculator:
+
+<TerminalDemo>
+{`>>> print("=== Simple Calculator ===")
+=== Simple Calculator ===
+>>>
+>>> num1 = int(input("Enter first number: "))
+Enter first number: 7
+>>> num2 = int(input("Enter second number: "))
+Enter second number: 3
+>>>
+>>> total = num1 + num2
+>>> print("\\nThe sum is: " + str(total))
+
+The sum is: 10`}
+</TerminalDemo>
+
+Notice we used `str(total)` to convert the number back to a string for printing!
+
+<StoryBox character="python_pete">
+  See what we did? We converted the input TO numbers to do math, then converted the result BACK to a string to display it. It's like being a translator between human text and computer numbers!
+</StoryBox>
+
+## Multiple Inputs in Action
+
+<TerminalDemo>
+{`>>> print("=== Story Generator ===")
+=== Story Generator ===
+>>> noun = input("Enter a noun: ")
+Enter a noun: dragon
+>>> verb = input("Enter a verb: ")
+Enter a verb: dance
+>>> adjective = input("Enter an adjective: ")
+Enter an adjective: purple
+>>>
+>>> story = "Once upon a time, a " + adjective + " " + noun
+>>> story = story + " loved to " + verb + " all day long!"
+>>> print("\\n" + story)
+
+Once upon a time, a purple dragon loved to dance all day long!`}
+</TerminalDemo>
+
+## Practice Time!
+
+<Challenge
+  id="ch2-input"
+  title="Input Master"
+  description="Create an interactive program that collects user information"
+  steps={[
+    {
+      command: 'print("=== Pizza Order ===")',
+      hint: "Start with a title"
+    },
+    {
+      command: 'name = input("Your name: ")',
+      hint: "Get the customer's name"
+    },
+    {
+      command: 'size = input("Size (small/medium/large): ")',
+      hint: "Get the pizza size"
+    },
+    {
+      command: 'topping = input("Favorite topping: ")',
+      hint: "Get their favorite topping"
+    },
+    {
+      command: 'print("\\nOrder for " + name + ": " + size + " pizza with " + topping)',
+      hint: "Display the complete order"
+    }
+  ]}
+  xp={30}
+  badge="input_master"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does the input() function do?",
+    options: ["Prints text to the screen", "Gets text from the user", "Does math calculations", "Creates variables"],
+    correct: 1,
+    explanation: "input() gets text FROM the user - it waits for them to type something and press Enter!"
+  },
+  {
+    question: "What data type does input() always return?",
+    options: ["Integer", "Float", "String", "Boolean"],
+    correct: 2,
+    explanation: "input() ALWAYS returns a string, even if the user types a number!"
+  },
+  {
+    question: "How do you convert user input to a number for math?",
+    options: ["Use str()", "Use int() or float()", "Use input()", "Use print()"],
+    correct: 1,
+    explanation: "Use int() to convert to a whole number or float() to convert to a decimal number!"
+  },
+  {
+    question: "Why should you add a space at the end of your input prompt?",
+    options: ["It's required by Python", "It makes the user's input easier to read", "It prevents errors", "It doesn't matter"],
+    correct: 1,
+    explanation: "Adding a space makes the user's typing appear separated from the prompt, making it clearer and easier to read!"
+  }
+]} />
+
+## Common Mistakes to Avoid
+
+<StoryBox character="python_pete">
+  Let me share some mistakes I see beginners make with input():
+
+  **Mistake 1: Forgetting to convert to int()**
+  ```python
+  age = input("Age: ")  # This is a STRING
+  next_year = age + 1   # ERROR! Can't add string and number
+  ```
+
+  **Mistake 2: Converting when you don't need to**
+  ```python
+  name = int(input("Name: "))  # ERROR! Names aren't numbers!
+  ```
+
+  **Mistake 3: Forgetting quotes in input()**
+  ```python
+  name = input(What's your name?)  # ERROR! Need quotes around prompt
+  ```
+
+  Remember: Only convert to int() or float() when you need to do MATH!
+</StoryBox>
+
+## Input/Output Cheat Sheet
+
+| Operation | Example | Result |
+|-----------|---------|--------|
+| Get text input | `input("Name: ")` | Returns string |
+| Get number input | `int(input("Age: "))` | Returns integer |
+| Get decimal input | `float(input("Price: "))` | Returns float |
+| Display output | `print("Hello")` | Shows text |
+| Combine text | `"Hi " + name` | Concatenates strings |
+| Convert to string | `str(42)` | "42" |
+
+## What's Next?
+
+Now that you can have conversations with users, it's time to make your programs SMART! In the next lesson, we'll learn about **if and else** - how to make decisions based on what users tell you!
+
+<NextLesson
+  track="python"
+  lesson="08-if-else"
+  teaser="Learn to make your programs think and make decisions!"
+/>

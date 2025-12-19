@@ -1,0 +1,247 @@
+---
+title: "Lists"
+track: "python"
+chapter: 3
+lesson: 11
+slug: "11-lists"
+prerequisites: ["10-chapter2-quest"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Understand what lists are and why they're useful
+  - Create lists in Python
+  - Access items by index
+  - Learn about zero-based indexing
+nextLesson: "12-for-loops"
+prevLesson: "10-chapter2-quest"
+---
+
+# Lists: Your Digital Backpack
+
+<StoryBox character="python_pete">
+  Welcome back, code champion! I'm Python Pete the Snake, and I've got something AWESOME to show you today!
+
+  You know how your backpack holds multiple things - books, pencils, snacks? Well, Python has something similar called LISTS!
+
+  Lists let you store multiple items in one container. Instead of creating 100 variables for 100 students' names, you can just use ONE list! Cool, right?
+</StoryBox>
+
+## What's a List?
+
+A **list** is like a digital backpack that can hold multiple items. You can store numbers, text, or even other lists!
+
+Think of it like this:
+- A variable holds ONE thing (a water bottle)
+- A list holds MANY things (your whole backpack!)
+
+<FunFact>
+  In Python, lists can hold different types of data at the same time! You can mix numbers, text, and booleans all in one list. That's like having a backpack that holds books AND snacks AND games!
+</FunFact>
+
+## Creating Your First List
+
+Creating a list is super easy! You use square brackets `[]` and separate items with commas:
+
+<TerminalDemo>
+{`# A list of favorite games
+favorite_games = ["Minecraft", "Roblox", "Fortnite", "Among Us"]
+
+# A list of lucky numbers
+lucky_numbers = [7, 13, 21, 42]
+
+# An empty list (we'll fill it later!)
+my_tasks = []
+
+print(favorite_games)
+# Output: ['Minecraft', 'Roblox', 'Fortnite', 'Among Us']`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  Notice how we use square brackets? That's Python's way of saying "Hey, this is a list!"
+
+  The comma separates each item, like putting dividers in your backpack to keep things organized.
+</StoryBox>
+
+## Accessing Items: The Index System
+
+Here's where it gets interesting! Each item in a list has a position number called an **index**. But there's a twist...
+
+**Python counts starting from ZERO!** (I know, programmers are weird like that!)
+
+```python
+fruits = ["apple", "banana", "cherry", "date"]
+#         0        1         2         3
+```
+
+To get an item, use the list name and the index in square brackets:
+
+<TerminalDemo>
+{`fruits = ["apple", "banana", "cherry", "date"]
+
+# Get the first item (index 0)
+print(fruits[0])
+# Output: apple
+
+# Get the second item (index 1)
+print(fruits[1])
+# Output: banana
+
+# Get the last item
+print(fruits[3])
+# Output: date`}
+</TerminalDemo>
+
+<FunFact>
+  Why does counting start at 0? It's because of how computers store data in memory. The first item is "zero steps away" from the start! Weird but true!
+</FunFact>
+
+## Negative Indexing: Counting Backwards!
+
+Python has a cool trick - you can use negative numbers to count from the END of the list!
+
+<TerminalDemo>
+{`fruits = ["apple", "banana", "cherry", "date"]
+#         -4      -3        -2       -1
+
+# Get the last item
+print(fruits[-1])
+# Output: date
+
+# Get the second-to-last item
+print(fruits[-2])
+# Output: cherry`}
+</TerminalDemo>
+
+Think of it like this:
+- Positive numbers: count from the START (0, 1, 2, 3...)
+- Negative numbers: count from the END (-1, -2, -3...)
+
+## Changing List Items
+
+Lists are **mutable**, which means you can change them after creating them!
+
+<TerminalDemo>
+{`inventory = ["sword", "shield", "potion", "map"]
+print(inventory)
+# Output: ['sword', 'shield', 'potion', 'map']
+
+# You used the potion! Replace it with a key
+inventory[2] = "key"
+print(inventory)
+# Output: ['sword', 'shield', 'key', 'map']`}
+</TerminalDemo>
+
+## Getting the Length of a List
+
+Want to know how many items are in your list? Use `len()` (short for "length"):
+
+<TerminalDemo>
+{`high_scores = [1000, 850, 720, 650, 500]
+number_of_scores = len(high_scores)
+print(f"We have {number_of_scores} high scores!")
+# Output: We have 5 high scores!
+
+# Works with any list!
+empty_list = []
+print(len(empty_list))
+# Output: 0`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  The `len()` function is super useful! You'll use it ALL the time when working with lists. It's like asking your backpack "How many items are you carrying?"
+</StoryBox>
+
+## Practice Time!
+
+<Challenge
+  id="ch3-lists-basics"
+  title="List Master"
+  description="Practice creating and accessing lists"
+  steps={[
+    {
+      command: "Create a list called 'pokemon' with 5 Pokemon names",
+      hint: "Use square brackets and quotes around each name"
+    },
+    {
+      command: "Print the first Pokemon (index 0)",
+      hint: "Use pokemon[0]"
+    },
+    {
+      command: "Print the last Pokemon using negative indexing",
+      hint: "Use pokemon[-1]"
+    },
+    {
+      command: "Change the third Pokemon to a different one",
+      hint: "pokemon[2] = 'NewName'"
+    }
+  ]}
+  xp={30}
+/>
+
+## Real-World Uses
+
+Lists are EVERYWHERE in programming:
+
+- **Shopping apps**: List of items in your cart
+- **Music apps**: Your playlist is a list of songs
+- **Games**: List of enemies, inventory items, levels
+- **School**: List of students in a class
+- **Social media**: List of your friends or followers
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What index is the FIRST item in a Python list?",
+    options: ["1", "0", "-1", "first"],
+    correct: 1,
+    explanation: "Python uses zero-based indexing, so the first item is at index 0!"
+  },
+  {
+    question: "How do you access the last item using negative indexing?",
+    options: ["list[0]", "list[last]", "list[-1]", "list[end]"],
+    correct: 2,
+    explanation: "Use index -1 to get the last item in any list!"
+  },
+  {
+    question: "What function tells you how many items are in a list?",
+    options: ["size()", "count()", "length()", "len()"],
+    correct: 3,
+    explanation: "The len() function returns the length (number of items) in a list!"
+  },
+  {
+    question: "What punctuation marks are used to create a list?",
+    options: ["Parentheses ()", "Curly braces {}", "Square brackets []", "Angle brackets <>"],
+    correct: 2,
+    explanation: "Square brackets [] are used to create lists in Python!"
+  }
+]} />
+
+## Command Cheat Sheet
+
+| Code | What It Does | Example |
+|------|--------------|---------|
+| `[item1, item2]` | Create a list | `games = ["Mario", "Zelda"]` |
+| `list[0]` | Get first item | `games[0]` returns "Mario" |
+| `list[-1]` | Get last item | `games[-1]` returns "Zelda" |
+| `list[i] = value` | Change an item | `games[0] = "Sonic"` |
+| `len(list)` | Get list length | `len(games)` returns 2 |
+
+<StoryBox character="python_pete">
+  You're doing AMAZING! You now know how to store multiple items in lists and access them by their index!
+
+  But here's the thing - what if you want to do something with EVERY item in a list? Like print all 100 Pokemon names? You wouldn't want to write 100 print statements, right?
+
+  That's where LOOPS come in! Get ready to learn the most powerful tool in programming...
+</StoryBox>
+
+## What's Next?
+
+Ready to make your code more powerful? In the next lesson, you'll learn about **for loops** - a way to automatically do something with every item in a list!
+
+<NextLesson
+  track="python"
+  lesson="12-for-loops"
+  teaser="Learn to loop through lists and repeat code automatically!"
+/>

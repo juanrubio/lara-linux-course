@@ -1,0 +1,309 @@
+---
+title: "Hello, World!"
+track: "python"
+chapter: 1
+lesson: 2
+slug: "02-hello-world"
+prerequisites: ["01-what-is-python"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Write your first Python program
+  - Understand the print() function
+  - Learn how to run Python code
+nextLesson: "03-variables"
+prevLesson: "01-what-is-python"
+---
+
+# Hello, World!
+
+<StoryBox character="python_pete">
+  This is it! The moment every programmer remembers forever - writing your FIRST program!
+
+  For over 40 years, programmers have started their journey with a "Hello, World!" program. It's like a tradition - a rite of passage!
+
+  Today, YOU become a programmer. Let's make some magic happen!
+</StoryBox>
+
+## The Most Famous Program Ever
+
+There's a tradition in programming: your first program should print the words "Hello, World!" to the screen.
+
+Why? Because it proves:
+- Your computer can run the language
+- You can write and execute code
+- You're officially a programmer!
+
+Let's do it! Here's your first Python program:
+
+```python
+print("Hello, World!")
+```
+
+That's it! Just one line! When you run this, you'll see:
+
+<TerminalDemo>
+{`$ python3 hello.py
+Hello, World!`}
+</TerminalDemo>
+
+<FunFact>
+  The first "Hello, World!" program was written by Brian Kernighan in 1972 for the C programming language. Now it's how EVERY programmer starts!
+</FunFact>
+
+## Understanding print()
+
+The `print()` function is your way to talk to the user! It displays text on the screen.
+
+Let's break down the parts:
+
+```python
+print("Hello, World!")
+#  │      │
+#  │      └─ The message (in quotes)
+#  └──────── The function name
+```
+
+**Important parts:**
+- `print` - The function that displays text
+- `()` - Parentheses that hold what you want to print
+- `""` - Quotes around your text (called a "string")
+
+## Try Different Messages!
+
+You can print ANYTHING you want! Try these:
+
+```python
+print("I am learning Python!")
+print("My name is [YOUR NAME]")
+print("Python is awesome!")
+print("I can make the computer talk!")
+```
+
+<TerminalDemo>
+{`$ python3 messages.py
+I am learning Python!
+My name is [YOUR NAME]
+Python is awesome!
+I can make the computer talk!`}
+</TerminalDemo>
+
+## Printing Multiple Things
+
+Want to print more than one thing on a line? Just separate them with commas:
+
+```python
+print("Hello", "there", "friend!")
+```
+
+Output:
+<TerminalDemo>
+{`Hello there friend!`}
+</TerminalDemo>
+
+Python automatically adds spaces between items!
+
+## Print Numbers Too!
+
+You don't need quotes for numbers:
+
+```python
+print(42)
+print(100)
+print(2024)
+```
+
+<TerminalDemo>
+{`42
+100
+2024`}
+</TerminalDemo>
+
+You can mix text and numbers:
+
+```python
+print("I am", 12, "years old")
+print("My favorite number is", 7)
+```
+
+<TerminalDemo>
+{`I am 12 years old
+My favorite number is 7`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  See how easy Python is? You're already making the computer do what you want! That's the power of programming!
+
+  Notice how print() just KNOWS what to do? That's because it's a "function" - a pre-built tool that Python gives you. We'll learn more about functions later!
+</StoryBox>
+
+## Print Blank Lines
+
+Want to add space between your output? Just use print() with nothing inside:
+
+```python
+print("First line")
+print()
+print("Second line with space above!")
+```
+
+<TerminalDemo>
+{`First line
+
+Second line with space above!`}
+</TerminalDemo>
+
+## Fun with Special Characters
+
+You can print emojis and special characters too!
+
+```python
+print("Hello! 👋")
+print("Python 🐍 is fun!")
+print("I love coding! ❤️")
+print("⭐ ⭐ ⭐")
+```
+
+## Common Mistakes (And How to Fix Them!)
+
+Everyone makes mistakes when learning! Here are the most common:
+
+### Mistake 1: Forgetting Quotes
+```python
+# Wrong:
+print(Hello)
+
+# Right:
+print("Hello")
+```
+
+### Mistake 2: Forgetting Parentheses
+```python
+# Wrong:
+print "Hello"
+
+# Right:
+print("Hello")
+```
+
+### Mistake 3: Mismatched Quotes
+```python
+# Wrong:
+print("Hello')
+
+# Right:
+print("Hello")
+# or
+print('Hello')
+```
+
+<FunFact>
+  In Python, you can use "double quotes" or 'single quotes' for text. Both work exactly the same! Just make sure they match on both ends.
+</FunFact>
+
+## Your Turn to Create!
+
+<Challenge
+  id="ch1-hello-world"
+  title="Hello World Master"
+  description="Practice using print() to create your own messages"
+  steps={[
+    {
+      command: 'print("Hello, World!")',
+      hint: "The classic first program!"
+    },
+    {
+      command: 'print("My name is [YOUR NAME]")',
+      hint: "Introduce yourself to Python!"
+    },
+    {
+      command: 'print("I am", 12, "years old")',
+      hint: "Mix text and numbers"
+    },
+    {
+      command: 'print("Python", "is", "awesome!")',
+      hint: "Print multiple words"
+    }
+  ]}
+  xp={30}
+  badge="hello_world_champion"
+/>
+
+## Creative Challenge!
+
+Try creating an ASCII art picture using print()! Here's an example:
+
+```python
+print("  /\\_/\\  ")
+print(" ( o.o ) ")
+print("  > ^ <  ")
+print("  /   \\  ")
+```
+
+This makes a cute cat! Can you create:
+- A smiley face
+- Your initials
+- A simple house
+- Anything you imagine!
+
+## Quiz Time!
+
+<Quiz questions={[
+  {
+    question: "What does the print() function do?",
+    options: ["Prints paper", "Displays text on screen", "Saves a file", "Deletes code"],
+    correct: 1,
+    explanation: "The print() function displays text on the screen!"
+  },
+  {
+    question: "What do you put around text in print()?",
+    options: ["Brackets []", "Quotes \"\"", "Braces {}", "Nothing"],
+    correct: 1,
+    explanation: "Text (strings) must be inside quotes - either 'single' or \"double\" quotes!"
+  },
+  {
+    question: "Which is correct?",
+    options: ['print "Hello"', 'print("Hello")', 'Print("Hello")', 'PRINT("Hello")'],
+    correct: 1,
+    explanation: "print() needs parentheses and is lowercase!"
+  },
+  {
+    question: "Do numbers need quotes in print()?",
+    options: ["Yes, always", "No, never", "Sometimes", "Only big numbers"],
+    correct: 1,
+    explanation: "Numbers don't need quotes! print(42) works perfectly!"
+  }
+]} />
+
+## What You've Learned!
+
+Congratulations! You can now:
+- Write and run Python programs
+- Use the print() function
+- Display text and numbers
+- Combine multiple items in one print
+- Avoid common beginner mistakes
+
+<StoryBox character="python_pete">
+  YOU DID IT! You're officially a programmer now! 🎉
+
+  Every expert programmer started exactly where you are now. The difference is they kept going, kept learning, and kept building!
+
+  Next up, we'll learn about VARIABLES - a way to store information and make your programs even more powerful!
+</StoryBox>
+
+## Command Reference
+
+| Code | What It Does |
+|------|--------------|
+| `print("text")` | Display text |
+| `print(42)` | Display a number |
+| `print("Hi", "there")` | Display multiple things |
+| `print()` | Print a blank line |
+
+<NextLesson
+  track="python"
+  lesson="03-variables"
+  teaser="Learn to store data in variables - like giving your computer a memory!"
+/>

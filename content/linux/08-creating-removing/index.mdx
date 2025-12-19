@@ -1,0 +1,224 @@
+---
+title: "Creating & Removing"
+track: "linux"
+chapter: 2
+lesson: 8
+slug: "08-creating-removing"
+prerequisites: ["07-navigation"]
+estimatedTime: 15
+difficulty: "beginner"
+xpReward: 50
+objectives:
+  - Create directories with mkdir
+  - Create files with touch
+  - Remove files and directories safely
+nextLesson: "09-copying-moving"
+prevLesson: "07-navigation"
+---
+
+# Creating & Removing
+
+<StoryBox character="pixel_the_penguin">
+  Building time! Now that you can navigate, let's learn to CREATE and ORGANIZE your own stuff!
+
+  Think of this as digital LEGO - you'll build directories and files, and if you don't like them, take them apart!
+</StoryBox>
+
+## Creating Directories: mkdir
+
+**mkdir** means "**M**ake **D**irectory". It creates a new folder!
+
+<TerminalDemo>
+{`learner@codequest:~$ ls
+Documents  Downloads  Pictures
+
+learner@codequest:~$ mkdir projects
+learner@codequest:~$ ls
+Documents  Downloads  Pictures  projects
+
+learner@codequest:~$ mkdir projects/python
+learner@codequest:~$ ls projects
+python`}
+</TerminalDemo>
+
+### Create Multiple Directories at Once
+
+<TerminalDemo>
+{`learner@codequest:~$ mkdir games homework music
+
+learner@codequest:~$ ls
+Documents  Downloads  games  homework  music  Pictures  projects`}
+</TerminalDemo>
+
+### Create Nested Directories with -p
+
+What if you want to create `/projects/python/game1` but `projects` doesn't exist yet? Use `-p`:
+
+<TerminalDemo>
+{`learner@codequest:~$ mkdir -p projects/python/game1
+learner@codequest:~$ ls projects/python
+game1`}
+</TerminalDemo>
+
+The `-p` (parent) option creates all the folders in the path!
+
+<FunFact>
+  Without -p, mkdir would fail if any parent folder doesn't exist. With -p, it creates the whole path! It's like building a road AND the bridges along the way!
+</FunFact>
+
+## Creating Files: touch
+
+**touch** creates an empty file (or updates a file's timestamp):
+
+<TerminalDemo>
+{`learner@codequest:~$ touch notes.txt
+learner@codequest:~$ ls
+Documents  notes.txt  projects
+
+learner@codequest:~$ touch project1.py script.sh readme.md
+learner@codequest:~$ ls
+Documents  notes.txt  project1.py  projects  readme.md  script.sh`}
+</TerminalDemo>
+
+<StoryBox character="pixel_the_penguin">
+  Touch creates empty files - like blank sheets of paper ready to be written on! You'll learn how to add content later!
+</StoryBox>
+
+## Removing Files: rm
+
+**rm** means "**R**e**M**ove". BE CAREFUL - there's no recycle bin!
+
+<TerminalDemo>
+{`learner@codequest:~$ ls
+Documents  notes.txt  test.txt
+
+learner@codequest:~$ rm test.txt
+learner@codequest:~$ ls
+Documents  notes.txt`}
+</TerminalDemo>
+
+### Safety First: Use -i
+
+Add `-i` to get a confirmation prompt:
+
+<TerminalDemo>
+{`learner@codequest:~$ rm -i notes.txt
+rm: remove regular file 'notes.txt'? n
+learner@codequest:~$ ls
+Documents  notes.txt`}
+</TerminalDemo>
+
+Type `y` for yes, `n` for no!
+
+## Removing Directories: rmdir and rm -r
+
+**rmdir** removes EMPTY directories only:
+
+<TerminalDemo>
+{`learner@codequest:~$ mkdir empty_folder
+learner@codequest:~$ rmdir empty_folder`}
+</TerminalDemo>
+
+**rm -r** removes directories with contents (CAREFUL!):
+
+<TerminalDemo>
+{`learner@codequest:~$ rm -r projects/old_game`}
+</TerminalDemo>
+
+<StoryBox character="commander_byte">
+  **WARNING, RECRUIT!** The `rm -r` command is POWERFUL and DANGEROUS! There's NO UNDO! Always double-check before using it! Use `rm -ri` to get prompts for each file.
+</StoryBox>
+
+## The Danger Zone: rm -rf
+
+You might see `rm -rf` online. This means:
+- `-r` = recursive (go into folders)
+- `-f` = force (no questions asked)
+
+**NEVER run rm -rf without being ABSOLUTELY SURE!**
+
+Especially avoid:
+- `rm -rf /` (would delete EVERYTHING)
+- `rm -rf ~` (would delete your entire home folder)
+
+<FunFact>
+  Stories of people accidentally deleting everything with rm -rf are legendary in the Linux world! One wrong command can ruin your day. Always double-check!
+</FunFact>
+
+## Practice: Build and Destroy
+
+<Challenge
+  id="ch2-create-remove"
+  title="Builder and Destroyer"
+  description="Practice creating and removing files and folders"
+  steps={[
+    { command: "mkdir test_folder", hint: "Create a new directory" },
+    { command: "touch test_folder/file.txt", hint: "Create a file inside it" },
+    { command: "ls test_folder", hint: "Verify the file exists" },
+    { command: "rm test_folder/file.txt", hint: "Remove the file" },
+    { command: "rmdir test_folder", hint: "Remove the empty directory" }
+  ]}
+  xp={35}
+  badge="builder"
+/>
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "What does 'mkdir -p a/b/c' do?",
+    options: [
+      "Creates only folder c",
+      "Creates all folders: a, a/b, and a/b/c",
+      "Fails if a doesn't exist",
+      "Creates a backup"
+    ],
+    correct: 1,
+    explanation: "The -p option creates the entire path, including all parent directories!"
+  },
+  {
+    question: "Why should you be careful with rm?",
+    options: [
+      "It's slow",
+      "There's no undo or recycle bin",
+      "It asks too many questions",
+      "It only works on weekends"
+    ],
+    correct: 1,
+    explanation: "rm deletes permanently! Always double-check before using it!"
+  },
+  {
+    question: "What's the difference between rmdir and rm -r?",
+    options: [
+      "No difference",
+      "rmdir only removes empty directories",
+      "rm -r is slower",
+      "rmdir is more dangerous"
+    ],
+    correct: 1,
+    explanation: "rmdir only works on empty directories, rm -r removes directories and all contents!"
+  }
+]} />
+
+## Command Cheat Sheet
+
+| Command | What it does |
+|---------|-------------|
+| `mkdir name` | Create a directory |
+| `mkdir -p path/to/dir` | Create nested directories |
+| `touch file.txt` | Create an empty file |
+| `rm file.txt` | Remove a file |
+| `rm -i file.txt` | Remove with confirmation |
+| `rmdir dir` | Remove empty directory |
+| `rm -r dir` | Remove directory with contents |
+| `rm -ri dir` | Remove with confirmations |
+
+## What's Next?
+
+Now you can create and delete! Next, learn to COPY and MOVE things around!
+
+<NextLesson
+  track="linux"
+  lesson="09-copying-moving"
+  teaser="Learn to duplicate and relocate your files!"
+/>

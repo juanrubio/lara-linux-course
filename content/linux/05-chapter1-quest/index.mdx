@@ -1,0 +1,145 @@
+---
+title: "Quest: Terminal Awakening"
+track: "linux"
+chapter: 1
+lesson: 5
+slug: "05-chapter1-quest"
+prerequisites: ["04-getting-help"]
+estimatedTime: 20
+difficulty: "beginner"
+xpReward: 100
+objectives:
+  - Complete your first quest
+  - Demonstrate mastery of basic commands
+  - Earn your first quest badge
+nextLesson: "06-understanding-directories"
+prevLesson: "04-getting-help"
+---
+
+# Quest: Terminal Awakening
+
+<StoryBox character="commander_byte">
+  Attention, recruit! You've completed your basic training, but now comes the real test!
+
+  The Digital Kingdom faces a crisis. Important system information has been scattered across the realm, and only a skilled terminal user can recover it!
+
+  Your mission: Use everything you've learned to complete this quest. Success means earning your first QUEST BADGE!
+</StoryBox>
+
+## Your Mission
+
+Complete the following challenges to prove your worth as a Terminal Apprentice!
+
+### Part 1: Know Yourself
+
+Before any mission, you must know your own identity and position!
+
+<Challenge
+  id="quest1-part1"
+  title="Identity Check"
+  description="Establish your identity in the digital realm"
+  steps={[
+    { command: "whoami", hint: "Discover your username" },
+    { command: "pwd", hint: "Find your current location" }
+  ]}
+  xp={20}
+/>
+
+### Part 2: Survey the Land
+
+A good explorer always surveys their surroundings before moving forward!
+
+<Challenge
+  id="quest1-part2"
+  title="Reconnaissance"
+  description="Examine your current directory thoroughly"
+  steps={[
+    { command: "ls", hint: "Get a quick overview" },
+    { command: "ls -l", hint: "Now with more details!" },
+    { command: "ls -la", hint: "Reveal ALL secrets, even hidden ones" }
+  ]}
+  xp={30}
+/>
+
+### Part 3: Seek Knowledge
+
+The wise ones know that true power comes from knowing where to find answers!
+
+<Challenge
+  id="quest1-part3"
+  title="Wisdom Seeker"
+  description="Demonstrate your ability to find help"
+  steps={[
+    { command: "ls --help", hint: "Ask ls for quick help" },
+    { command: "whatis pwd", hint: "Get a quick description of pwd" }
+  ]}
+  xp={20}
+/>
+
+## Final Challenge
+
+<StoryBox character="commander_byte">
+  For your final challenge, answer these questions from memory! True mastery means not needing to look things up!
+</StoryBox>
+
+<Quiz questions={[
+  {
+    question: "What command shows your current directory path?",
+    options: ["cd", "pwd", "ls", "dir"],
+    correct: 1,
+    explanation: "pwd (Print Working Directory) shows your current location!"
+  },
+  {
+    question: "What option makes ls show hidden files?",
+    options: ["-h", "-l", "-a", "-d"],
+    correct: 2,
+    explanation: "The -a option shows ALL files, including hidden ones!"
+  },
+  {
+    question: "How do you quickly quit a man page?",
+    options: ["Ctrl+C", "Press q", "Type exit", "Press Escape"],
+    correct: 1,
+    explanation: "Press q to quit man pages!"
+  },
+  {
+    question: "What does the tilde (~) represent in the terminal?",
+    options: ["The root folder", "Your home folder", "The previous folder", "Nothing special"],
+    correct: 1,
+    explanation: "The ~ is a shortcut for your home directory!"
+  }
+]} />
+
+## Quest Complete!
+
+<StoryBox character="commander_byte">
+  Outstanding work, recruit! You've proven yourself worthy of the title **Terminal Apprentice**!
+
+  You've learned:
+  - How to find your identity with `whoami`
+  - How to know your location with `pwd`
+  - How to explore with `ls` and its powerful options
+  - How to seek knowledge with `man` and `--help`
+
+  But your journey is just beginning! The file system awaits, filled with directories to explore and files to discover. Are you ready for Chapter 2?
+</StoryBox>
+
+## Rewards Earned
+
+- **XP:** +100
+- **Badge:** Terminal Awakened
+- **Unlocked:** Chapter 2 - Exploring the File System
+
+## Skills Mastered
+
+| Skill | Commands Learned |
+|-------|-----------------|
+| Identity | `whoami` |
+| Navigation | `pwd` |
+| Exploration | `ls`, `ls -l`, `ls -a`, `ls -la` |
+| Help | `man`, `--help`, `whatis` |
+
+<NextLesson
+  track="linux"
+  lesson="06-understanding-directories"
+  teaser="Time to explore the mysterious file system hierarchy!"
+/>

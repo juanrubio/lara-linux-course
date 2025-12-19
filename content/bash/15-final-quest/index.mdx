@@ -1,0 +1,556 @@
+---
+title: "Final Quest: Bash Wizard"
+track: "bash"
+chapter: 3
+lesson: 15
+slug: "15-final-quest"
+prerequisites: ["14-script-arguments"]
+estimatedTime: 60
+difficulty: "intermediate"
+xpReward: 200
+objectives:
+  - Build a complete system automation tool
+  - Apply functions, file operations, and arguments
+  - Create professional output with colors and formatting
+  - Demonstrate mastery of bash scripting
+prevLesson: "14-script-arguments"
+---
+
+# Final Quest: Bash Wizard
+
+<StoryBox character="bash_betty">
+  Congratulations, young apprentice! You've journeyed through the mystical lands of bash scripting, learning functions, file operations, text processing, and arguments.
+
+  Now comes your ULTIMATE CHALLENGE - the test that will prove you're ready to call yourself a BASH WIZARD!
+
+  You're going to build a complete system automation tool called "System Manager" - a professional-grade script that system administrators would actually use!
+
+  Are you ready? Let's do this!
+</StoryBox>
+
+## The Quest Mission
+
+You will create a **System Manager** script that can:
+
+1. Display a colorful, interactive menu
+2. Show system information
+3. Backup files and directories
+4. Clean up temporary files
+5. Search for files
+6. Display disk usage
+7. Handle all operations safely with proper error checking
+
+This script will use EVERYTHING you've learned:
+- Functions for organization
+- Arguments for flexibility
+- File tests for safety
+- Colors for professional output
+- Loops for repeated actions
+- Conditionals for decision making
+
+<FunFact>
+  Real system administrators create scripts like this all the time! Many Linux servers run automated maintenance scripts that do exactly what you're about to build!
+</FunFact>
+
+## Part 1: Project Setup
+
+First, let's set up the basic structure with colors and header:
+
+<Challenge
+  id="quest3-part1"
+  title="Script Foundation"
+  description="Create the basic script structure with colors"
+  steps={[
+    {
+      command: "#!/bin/bash\n# sysmgr.sh - System Manager Tool\n# Created: $(date +%Y-%m-%d)",
+      hint: "Start with shebang and header comments"
+    },
+    {
+      command: "# Color definitions\nRED='\\033[0;31m'\nGREEN='\\033[0;32m'\nYELLOW='\\033[0;33m'\nBLUE='\\033[0;34m'\nMAGENTA='\\033[0;35m'\nCYAN='\\033[0;36m'\nNC='\\033[0m'",
+      hint: "Define all color variables"
+    },
+    {
+      command: "# Status message functions\nsuccess() { echo -e \"${GREEN}[✓]${NC} $1\"; }\nerror() { echo -e \"${RED}[✗]${NC} $1\"; }\nwarning() { echo -e \"${YELLOW}[!]${NC} $1\"; }\ninfo() { echo -e \"${BLUE}[i]${NC} $1\"; }",
+      hint: "Create helper functions for status messages"
+    }
+  ]}
+  xp={30}
+/>
+
+## Part 2: The Header Function
+
+Create a beautiful header that displays at the top:
+
+<Challenge
+  id="quest3-part2"
+  title="Professional Header"
+  description="Design an eye-catching header for the script"
+  steps={[
+    {
+      command: "print_header() {\n    clear\n    echo -e \"${CYAN}╔════════════════════════════════════════╗${NC}\"\n    echo -e \"${CYAN}║${NC}    ${MAGENTA}SYSTEM MANAGER v1.0${NC}           ${CYAN}║${NC}\"\n    echo -e \"${CYAN}║${NC}    ${BLUE}Your System Automation Tool${NC}     ${CYAN}║${NC}\"\n    echo -e \"${CYAN}╚════════════════════════════════════════╝${NC}\"\n    echo \"\"\n}",
+      hint: "Create a boxed header with colors"
+    }
+  ]}
+  xp={20}
+/>
+
+<StoryBox character="bash_betty">
+  A professional script ALWAYS has a nice header! It tells users what the script does and makes it feel polished. First impressions matter!
+</StoryBox>
+
+## Part 3: The Menu Function
+
+Create an interactive menu system:
+
+<Challenge
+  id="quest3-part3"
+  title="Interactive Menu"
+  description="Build a menu that shows all available options"
+  steps={[
+    {
+      command: "show_menu() {\n    echo -e \"${YELLOW}Choose an option:${NC}\"\n    echo \"\"\n    printf \"  ${GREEN}%-3s${NC} %s\\n\" \"1.\" \"System Information\"\n    printf \"  ${GREEN}%-3s${NC} %s\\n\" \"2.\" \"Backup Files\"\n    printf \"  ${GREEN}%-3s${NC} %s\\n\" \"3.\" \"Clean Temp Files\"\n    printf \"  ${GREEN}%-3s${NC} %s\\n\" \"4.\" \"Search Files\"\n    printf \"  ${GREEN}%-3s${NC} %s\\n\" \"5.\" \"Disk Usage\"\n    printf \"  ${GREEN}%-3s${NC} %s\\n\" \"6.\" \"Exit\"\n    echo \"\"\n    echo -n \"Enter choice [1-6]: \"\n}",
+      hint: "Use printf for aligned menu items"
+    }
+  ]}
+  xp={30}
+/>
+
+## Part 4: System Information Function
+
+Display useful system information:
+
+<Challenge
+  id="quest3-part4"
+  title="System Info Display"
+  description="Show hostname, user, date, uptime, and load"
+  steps={[
+    {
+      command: "show_system_info() {\n    echo -e \"${CYAN}=== System Information ===${NC}\"\n    echo \"\"\n    printf \"%-15s: %s\\n\" \"Hostname\" \"$(hostname)\"\n    printf \"%-15s: %s\\n\" \"Username\" \"$(whoami)\"\n    printf \"%-15s: %s\\n\" \"Date\" \"$(date '+%Y-%m-%d %H:%M:%S')\"\n    printf \"%-15s: %s\\n\" \"Uptime\" \"$(uptime -p)\"\n    printf \"%-15s: %s\\n\" \"Kernel\" \"$(uname -r)\"\n    echo \"\"\n    success \"System information displayed\"\n}",
+      hint: "Use command substitution and printf for formatting"
+    }
+  ]}
+  xp={30}
+/>
+
+## Part 5: Backup Function
+
+Create a function that backs up files or directories:
+
+<Challenge
+  id="quest3-part5"
+  title="Smart Backup System"
+  description="Backup files with date stamps and validation"
+  steps={[
+    {
+      command: "backup_files() {\n    echo -e \"${CYAN}=== File Backup ===${NC}\"\n    echo \"\"\n    \n    # Get source\n    echo -n \"Enter file/directory to backup: \"\n    read SOURCE\n    \n    # Validate source\n    if [ ! -e \"$SOURCE\" ]; then\n        error \"$SOURCE does not exist!\"\n        return 1\n    fi\n    \n    # Create backup with timestamp\n    TIMESTAMP=$(date +%Y%m%d_%H%M%S)\n    BACKUP_NAME=\"backup_${TIMESTAMP}_$(basename \"$SOURCE\")\"\n    \n    info \"Creating backup: $BACKUP_NAME\"\n    \n    if cp -r \"$SOURCE\" \"$BACKUP_NAME\" 2>/dev/null; then\n        success \"Backup created successfully!\"\n        info \"Location: $(pwd)/$BACKUP_NAME\"\n    else\n        error \"Backup failed!\"\n        return 1\n    fi\n}",
+      hint: "Check if source exists, create timestamped backup, handle errors"
+    }
+  ]}
+  xp={40}
+/>
+
+<FunFact>
+  Adding timestamps to backups is a professional practice! It prevents overwriting old backups and lets you keep multiple versions. Format: backup_20250319_143022_filename
+</FunFact>
+
+## Part 6: Clean Temp Files Function
+
+Safely clean up temporary files:
+
+<Challenge
+  id="quest3-part6"
+  title="Temp File Cleaner"
+  description="Find and remove temporary files safely"
+  steps={[
+    {
+      command: "clean_temp_files() {\n    echo -e \"${CYAN}=== Clean Temporary Files ===${NC}\"\n    echo \"\"\n    \n    warning \"This will remove files matching: *.tmp, *.temp, *~\"\n    echo -n \"Continue? (yes/no): \"\n    read CONFIRM\n    \n    if [ \"$CONFIRM\" != \"yes\" ]; then\n        info \"Cleanup cancelled\"\n        return 0\n    fi\n    \n    echo \"\"\n    info \"Searching for temporary files...\"\n    \n    COUNT=0\n    for pattern in \"*.tmp\" \"*.temp\" \"*~\"; do\n        while IFS= read -r file; do\n            if [ -f \"$file\" ]; then\n                rm \"$file\"\n                echo \"  Removed: $file\"\n                ((COUNT++))\n            fi\n        done < <(find . -name \"$pattern\" -type f 2>/dev/null)\n    done\n    \n    echo \"\"\n    if [ $COUNT -gt 0 ]; then\n        success \"Removed $COUNT temporary file(s)\"\n    else\n        info \"No temporary files found\"\n    fi\n}",
+      hint: "Ask for confirmation, search for patterns, count removed files"
+    }
+  ]}
+  xp={40}
+/>
+
+## Part 7: File Search Function
+
+Search for files by name:
+
+<Challenge
+  id="quest3-part7"
+  title="File Finder"
+  description="Search for files with pattern matching"
+  steps={[
+    {
+      command: "search_files() {\n    echo -e \"${CYAN}=== File Search ===${NC}\"\n    echo \"\"\n    \n    echo -n \"Enter search term: \"\n    read TERM\n    \n    if [ -z \"$TERM\" ]; then\n        error \"Search term cannot be empty!\"\n        return 1\n    fi\n    \n    echo -n \"Search in directory (press Enter for current): \"\n    read DIR\n    DIR=${DIR:-.}\n    \n    if [ ! -d \"$DIR\" ]; then\n        error \"$DIR is not a valid directory!\"\n        return 1\n    fi\n    \n    echo \"\"\n    info \"Searching for '*$TERM*' in $DIR...\"\n    echo \"\"\n    \n    RESULTS=$(find \"$DIR\" -name \"*$TERM*\" -type f 2>/dev/null)\n    \n    if [ -z \"$RESULTS\" ]; then\n        warning \"No files found matching '$TERM'\"\n    else\n        COUNT=0\n        while IFS= read -r file; do\n            echo \"  📄 $file\"\n            ((COUNT++))\n        done <<< \"$RESULTS\"\n        echo \"\"\n        success \"Found $COUNT file(s)\"\n    fi\n}",
+      hint: "Get search term, validate directory, use find command"
+    }
+  ]}
+  xp={40}
+/>
+
+<StoryBox character="bash_betty">
+  Notice how we validate EVERYTHING? That's professional scripting!
+  - Check if search term is empty
+  - Check if directory exists
+  - Handle cases when nothing is found
+
+  This prevents crashes and gives users helpful messages!
+</StoryBox>
+
+## Part 8: Disk Usage Function
+
+Display disk usage information:
+
+<Challenge
+  id="quest3-part8"
+  title="Disk Usage Monitor"
+  description="Show disk space with color-coded warnings"
+  steps={[
+    {
+      command: "show_disk_usage() {\n    echo -e \"${CYAN}=== Disk Usage ===${NC}\"\n    echo \"\"\n    \n    # Get disk usage for root partition\n    USAGE=$(df -h / | awk 'NR==2 {print $5}' | sed 's/%//')\n    USED=$(df -h / | awk 'NR==2 {print $3}')\n    AVAILABLE=$(df -h / | awk 'NR==2 {print $4}')\n    \n    printf \"%-15s: %s\\n\" \"Used\" \"$USED\"\n    printf \"%-15s: %s\\n\" \"Available\" \"$AVAILABLE\"\n    printf \"%-15s: \" \"Usage\"\n    \n    # Color code based on usage\n    if [ $USAGE -ge 90 ]; then\n        echo -e \"${RED}${USAGE}% - CRITICAL!${NC}\"\n    elif [ $USAGE -ge 75 ]; then\n        echo -e \"${YELLOW}${USAGE}% - Warning${NC}\"\n    else\n        echo -e \"${GREEN}${USAGE}% - OK${NC}\"\n    fi\n    \n    echo \"\"\n    \n    # Show top 5 largest directories in home\n    if [ -d \"$HOME\" ]; then\n        echo -e \"${YELLOW}Top 5 Largest Directories in Home:${NC}\"\n        du -h \"$HOME\" 2>/dev/null | sort -rh | head -5 | while read size dir; do\n            printf \"  %-8s %s\\n\" \"$size\" \"$dir\"\n        done\n    fi\n    \n    echo \"\"\n    success \"Disk usage displayed\"\n}",
+      hint: "Use df for disk info, color code by usage percentage"
+    }
+  ]}
+  xp={40}
+/>
+
+## Part 9: Main Program Logic
+
+Tie everything together with the main loop:
+
+<Challenge
+  id="quest3-part9"
+  title="Main Program Loop"
+  description="Create the main menu loop that calls all functions"
+  steps={[
+    {
+      command: "main() {\n    while true; do\n        print_header\n        show_menu\n        read CHOICE\n        echo \"\"\n        \n        case $CHOICE in\n            1)\n                show_system_info\n                ;;\n            2)\n                backup_files\n                ;;\n            3)\n                clean_temp_files\n                ;;\n            4)\n                search_files\n                ;;\n            5)\n                show_disk_usage\n                ;;\n            6)\n                echo -e \"${GREEN}Thank you for using System Manager!${NC}\"\n                echo -e \"${BLUE}Happy scripting! 🚀${NC}\"\n                exit 0\n                ;;\n            *)\n                error \"Invalid choice! Please enter 1-6\"\n                ;;\n        esac\n        \n        echo \"\"\n        echo -n \"Press Enter to continue...\"\n        read\n    done\n}\n\n# Start the program\nmain",
+      hint: "Create infinite loop with menu, case statement for choices"
+    }
+  ]}
+  xp={40}
+/>
+
+## Complete Script Template
+
+Here's the complete structure to guide you:
+
+<TerminalDemo>
+{`#!/bin/bash
+# sysmgr.sh - System Manager Tool
+# A comprehensive system automation script
+
+#=== Color Definitions ===#
+RED='\\033[0;31m'
+GREEN='\\033[0;32m'
+YELLOW='\\033[0;33m'
+BLUE='\\033[0;34m'
+MAGENTA='\\033[0;35m'
+CYAN='\\033[0;36m'
+NC='\\033[0m'
+
+#=== Status Functions ===#
+success() { echo -e "${GREEN}[✓]${NC} $1"; }
+error() { echo -e "${RED}[✗]${NC} $1"; }
+warning() { echo -e "${YELLOW}[!]${NC} $1"; }
+info() { echo -e "${BLUE}[i]${NC} $1"; }
+
+#=== Header Function ===#
+print_header() {
+    # Your header code here
+}
+
+#=== Menu Function ===#
+show_menu() {
+    # Your menu code here
+}
+
+#=== Feature Functions ===#
+show_system_info() {
+    # Your system info code here
+}
+
+backup_files() {
+    # Your backup code here
+}
+
+clean_temp_files() {
+    # Your cleanup code here
+}
+
+search_files() {
+    # Your search code here
+}
+
+show_disk_usage() {
+    # Your disk usage code here
+}
+
+#=== Main Program ===#
+main() {
+    while true; do
+        print_header
+        show_menu
+        read CHOICE
+        echo ""
+
+        case $CHOICE in
+            1) show_system_info ;;
+            2) backup_files ;;
+            3) clean_temp_files ;;
+            4) search_files ;;
+            5) show_disk_usage ;;
+            6)
+                echo -e "${GREEN}Thank you for using System Manager!${NC}"
+                exit 0
+                ;;
+            *) error "Invalid choice!" ;;
+        esac
+
+        echo ""
+        echo -n "Press Enter to continue..."
+        read
+    done
+}
+
+# Run the program
+main`}
+</TerminalDemo>
+
+## Testing Your Script
+
+Test each feature thoroughly:
+
+1. **System Info**: Should display without errors
+2. **Backup**: Try backing up files and directories
+3. **Clean Temp**: Create test .tmp files first
+4. **Search**: Search for files you know exist
+5. **Disk Usage**: Should show current disk status
+6. **Invalid Input**: Try entering wrong menu choices
+
+<StoryBox character="bash_betty">
+  Professional developers test EVERYTHING! Create test scenarios:
+
+  - What if a file doesn't exist?
+  - What if the user enters nothing?
+  - What if disk is 100% full?
+
+  Good testing makes good software!
+</StoryBox>
+
+## Enhancement Challenges
+
+Want to take it further? Add these advanced features:
+
+### Enhancement 1: Command Line Arguments
+```bash
+# Allow running functions directly
+# ./sysmgr.sh --backup myfile.txt
+# ./sysmgr.sh --search "*.txt"
+```
+
+### Enhancement 2: Log File
+```bash
+# Keep a log of all operations
+LOG_FILE="$HOME/.sysmgr.log"
+log_action() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
+}
+```
+
+### Enhancement 3: Configuration File
+```bash
+# Save user preferences
+CONFIG="$HOME/.sysmgr.conf"
+# Store default backup location, etc.
+```
+
+### Enhancement 4: Progress Indicators
+```bash
+# Show progress for long operations
+show_progress() {
+    echo -n "Processing"
+    for i in {1..5}; do
+        sleep 1
+        echo -n "."
+    done
+    echo " Done!"
+}
+```
+
+## Quick Quiz!
+
+<Quiz questions={[
+  {
+    question: "Why do we use functions in this project?",
+    options: ["To make the script faster", "To organize code and make it reusable", "Because it's required", "To add colors"],
+    correct: 1,
+    explanation: "Functions help organize code into logical blocks, make it easier to debug, and allow you to reuse code without repeating it!"
+  },
+  {
+    question: "Why check if files exist before operating on them?",
+    options: ["It's optional", "To prevent errors and provide helpful messages", "It makes the script faster", "To add more code"],
+    correct: 1,
+    explanation: "Checking files prevents crashes and lets you give users helpful error messages instead of cryptic system errors!"
+  },
+  {
+    question: "What's the purpose of adding timestamps to backups?",
+    options: ["To make names longer", "To prevent overwriting and keep multiple versions", "It's just decoration", "To confuse users"],
+    correct: 1,
+    explanation: "Timestamps ensure each backup has a unique name, so you can keep multiple versions and never accidentally overwrite old backups!"
+  },
+  {
+    question: "Why use a case statement for the menu?",
+    options: ["It's required by bash", "It's cleaner than multiple if-elif for many options", "It's faster", "It adds colors"],
+    correct: 1,
+    explanation: "Case statements are perfect for menus! They're cleaner and easier to read than a long chain of if-elif statements when you have many options!"
+  }
+]} />
+
+## Quest Complete!
+
+<StoryBox character="bash_betty">
+  INCREDIBLE! You've done it! You've built a REAL, professional-grade system automation tool!
+
+  Look at what you've accomplished:
+  - ✓ Created reusable functions
+  - ✓ Added professional error handling
+  - ✓ Implemented colorful, formatted output
+  - ✓ Built an interactive menu system
+  - ✓ Validated all user input
+  - ✓ Handled files safely
+  - ✓ Created a useful, practical tool
+
+  This isn't a toy script - this is something you could actually USE! System administrators create tools like this every day!
+
+  You're not just learning bash anymore - you're MASTERING it!
+</StoryBox>
+
+## Rewards Earned
+
+- **XP:** +200
+- **Badge:** Bash Wizard
+- **Title Unlocked:** "Master of Automation"
+- **Achievement:** "Script Architect"
+
+## Skills Mastered
+
+| Skill | What You Achieved |
+|-------|-------------------|
+| **Functions** | Created organized, reusable code blocks |
+| **File Operations** | Safely checked, read, and manipulated files |
+| **Text Processing** | Formatted output with colors and alignment |
+| **Arguments** | Built flexible scripts that accept input |
+| **Error Handling** | Validated input and handled edge cases |
+| **User Interface** | Created professional menus and prompts |
+| **Integration** | Combined all skills into one project |
+| **Problem Solving** | Designed and implemented a complete system |
+
+## What You Built
+
+You created a complete system automation tool that:
+- Shows system information professionally
+- Backs up files with timestamps
+- Cleans temporary files safely
+- Searches for files efficiently
+- Monitors disk usage with warnings
+- Handles all errors gracefully
+- Provides excellent user experience
+
+This is a portfolio-worthy project! You can show this to others as an example of your bash scripting skills!
+
+## The Journey So Far
+
+You've come so far! Let's look back:
+
+**Chapter 1 - Basics:**
+- Variables and data types
+- Basic input/output
+- Understanding bash syntax
+
+**Chapter 2 - Control Flow:**
+- Conditionals (if/else)
+- Loops (for/while)
+- Case statements
+
+**Chapter 3 - Advanced:**
+- Functions
+- File operations
+- Text processing
+- Script arguments
+
+**Final Quest:**
+- Built a complete, professional application!
+
+<StoryBox character="bash_betty">
+  You started as a beginner, learning what a variable is. Now you're creating professional automation tools!
+
+  That's the power of learning step by step, practicing consistently, and never giving up!
+
+  Remember: Every expert was once a beginner. The difference? They kept going. And so did YOU!
+</StoryBox>
+
+## What's Next?
+
+You've mastered bash scripting! Here are some ideas for continuing your journey:
+
+### Keep Practicing:
+- Automate your daily tasks
+- Create tools to solve YOUR problems
+- Share your scripts with friends
+
+### Learn More:
+- Regular expressions (grep, sed, awk)
+- Advanced text processing
+- Process management
+- Network automation
+- System administration
+
+### Build Projects:
+- Automated backup system
+- Server monitoring dashboard
+- Log file analyzer
+- Deployment automation
+- File organizer
+
+### Join the Community:
+- Share scripts on GitHub
+- Help others learn bash
+- Read other people's scripts
+- Contribute to open source
+
+## Your Bash Journey Continues
+
+This is not the end - it's the BEGINNING! You now have the foundation to:
+- Automate anything on Linux
+- Create professional scripts
+- Solve real-world problems
+- Continue learning advanced topics
+
+<StoryBox character="bash_betty">
+  Congratulations, Bash Wizard! You've completed the bash scripting track!
+
+  But remember - learning never stops. The best programmers are always learning, always experimenting, always building!
+
+  Take what you've learned and CREATE! Make scripts that help you, help others, automate boring tasks, and solve interesting problems!
+
+  The command line is your canvas, bash is your brush, and the possibilities are ENDLESS!
+
+  Now go forth and automate the world! 🚀✨
+
+  Happy Scripting, Wizard!
+  - Bash Betty
+</StoryBox>
+
+## Final Words
+
+You are now a certified Bash Wizard! You have:
+- The knowledge to create powerful scripts
+- The skills to solve real problems
+- The confidence to tackle new challenges
+- The foundation to keep learning
+
+Keep coding, keep learning, and most importantly - keep having FUN!
+
+The terminal is yours. The scripts are yours. The power is YOURS!
+
+**CONGRATULATIONS!** 🎉🏆⭐

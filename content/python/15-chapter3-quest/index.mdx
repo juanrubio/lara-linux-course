@@ -1,0 +1,570 @@
+---
+title: "Quest: Todo List App"
+track: "python"
+chapter: 3
+lesson: 15
+slug: "15-chapter3-quest"
+prerequisites: ["14-list-operations"]
+estimatedTime: 30
+difficulty: "intermediate"
+xpReward: 150
+objectives:
+  - Build a complete Todo List application
+  - Combine lists, loops, and user input
+  - Implement add, remove, and view features
+  - Earn your List Master badge
+nextLesson: "16-functions"
+prevLesson: "14-list-operations"
+---
+
+# Quest: Build a Todo List App
+
+<StoryBox character="python_pete">
+  Congratulations, code warrior! You've learned about lists, loops, and list operations. Now it's time for your BIGGEST challenge yet!
+
+  You're going to build a REAL application - a Todo List Manager! This is the kind of app people actually use every day!
+
+  Your quest: Create a program that lets users add tasks, view tasks, complete tasks, and see their progress. This will test EVERYTHING you've learned in Chapter 3!
+
+  Are you ready? Let's do this!
+</StoryBox>
+
+## Your Mission
+
+Build a fully functional Todo List application with the following features:
+
+1. **Add Tasks** - Users can add new tasks
+2. **View Tasks** - Display all current tasks with numbers
+3. **Complete Tasks** - Mark tasks as done and remove them
+4. **View Stats** - Show how many tasks are left
+5. **Exit** - Let users quit the program
+
+## Part 1: Plan Your App
+
+Before coding, let's plan! Every good programmer plans first.
+
+<StoryBox character="python_pete">
+  Here's what you'll need:
+
+  - A **list** to store all the tasks
+  - A **while loop** to keep the program running
+  - **if/elif/else** to handle user choices
+  - List operations like **append()**, **remove()**, and **len()**
+  - The **enumerate()** function to number tasks
+
+  Think of it as building with LEGO blocks - you already have all the pieces, now you just need to put them together!
+</StoryBox>
+
+## Part 2: Build the Menu System
+
+Let's start with the menu that users see:
+
+<Challenge
+  id="quest3-menu"
+  title="Create the Menu"
+  description="Build the main menu interface"
+  steps={[
+    {
+      command: "Create an empty list called 'tasks'",
+      hint: "tasks = []"
+    },
+    {
+      command: "Create a variable 'running = True' to control the main loop",
+      hint: "This will keep the program running until user quits"
+    },
+    {
+      command: "Start a while loop that runs while running is True",
+      hint: "while running:"
+    },
+    {
+      command: "Print a menu with options: 1) Add task, 2) View tasks, 3) Complete task, 4) Stats, 5) Quit",
+      hint: "Use multiple print() statements to make it look nice"
+    }
+  ]}
+  xp={25}
+/>
+
+Here's a template to get you started:
+
+<TerminalDemo>
+{`# Todo List Manager
+tasks = []
+running = True
+
+print("=== WELCOME TO YOUR TODO LIST ===")
+print()
+
+while running:
+    print("\\n--- MAIN MENU ---")
+    print("1. Add a task")
+    print("2. View all tasks")
+    print("3. Complete a task")
+    print("4. View stats")
+    print("5. Quit")
+    print()
+
+    choice = input("Choose an option (1-5): ")
+
+    # We'll add the if/elif statements next!`}
+</TerminalDemo>
+
+## Part 3: Add Task Feature
+
+Now let's handle adding tasks:
+
+<Challenge
+  id="quest3-add"
+  title="Implement Add Task"
+  description="Let users add new tasks to the list"
+  steps={[
+    {
+      command: "Add an if statement: if choice == '1'",
+      hint: "Check if user chose option 1"
+    },
+    {
+      command: "Ask user for a task using input()",
+      hint: "task = input('Enter a task: ')"
+    },
+    {
+      command: "Append the task to the tasks list",
+      hint: "tasks.append(task)"
+    },
+    {
+      command: "Print a confirmation message",
+      hint: "print(f'Added: {task}')"
+    }
+  ]}
+  xp={25}
+/>
+
+<TerminalDemo>
+{`# Add this inside your while loop:
+if choice == "1":
+    print("\\n--- ADD A TASK ---")
+    task = input("Enter a task: ")
+    if task:  # Make sure they didn't enter empty text
+        tasks.append(task)
+        print(f"✓ Added: {task}")
+    else:
+        print("Task cannot be empty!")`}
+</TerminalDemo>
+
+## Part 4: View Tasks Feature
+
+Show all tasks with numbers:
+
+<Challenge
+  id="quest3-view"
+  title="Implement View Tasks"
+  description="Display all tasks with numbered list"
+  steps={[
+    {
+      command: "Add elif choice == '2'",
+      hint: "Check if user chose option 2"
+    },
+    {
+      command: "Check if tasks list is empty",
+      hint: "if not tasks: or if len(tasks) == 0:"
+    },
+    {
+      command: "If empty, print 'No tasks yet!'",
+      hint: "Handle the empty list case"
+    },
+    {
+      command: "Use a for loop with enumerate() to print tasks with numbers",
+      hint: "for index, task in enumerate(tasks, start=1):"
+    }
+  ]}
+  xp={25}
+/>
+
+<TerminalDemo>
+{`# Add this to your elif chain:
+elif choice == "2":
+    print("\\n--- YOUR TASKS ---")
+    if not tasks:
+        print("No tasks yet! Add some to get started.")
+    else:
+        for index, task in enumerate(tasks, start=1):
+            print(f"{index}. {task}")
+        print(f"\\nTotal tasks: {len(tasks)}")`}
+</TerminalDemo>
+
+<FunFact>
+  enumerate(tasks, start=1) is a clever trick! Normally enumerate starts at 0, but we tell it to start at 1 so the task numbers look natural to users!
+</FunFact>
+
+## Part 5: Complete Task Feature
+
+Let users mark tasks as complete (remove them):
+
+<Challenge
+  id="quest3-complete"
+  title="Implement Complete Task"
+  description="Allow users to mark tasks as done"
+  steps={[
+    {
+      command: "Add elif choice == '3'",
+      hint: "Check if user chose option 3"
+    },
+    {
+      command: "First, show all tasks (like in View Tasks)",
+      hint: "Users need to see task numbers"
+    },
+    {
+      command: "Ask which task number to complete",
+      hint: "task_num = int(input('Which task? '))"
+    },
+    {
+      command: "Remove the task using pop()",
+      hint: "Remember lists are 0-indexed but users see 1-indexed!"
+    }
+  ]}
+  xp={30}
+/>
+
+<TerminalDemo>
+{`# Add this to your elif chain:
+elif choice == "3":
+    print("\\n--- COMPLETE A TASK ---")
+    if not tasks:
+        print("No tasks to complete!")
+    else:
+        # Show all tasks first
+        for index, task in enumerate(tasks, start=1):
+            print(f"{index}. {task}")
+
+        try:
+            task_num = int(input("\\nWhich task number? "))
+            if 1 <= task_num <= len(tasks):
+                completed = tasks.pop(task_num - 1)  # -1 because list is 0-indexed
+                print(f"✓ Completed: {completed}")
+            else:
+                print("Invalid task number!")
+        except ValueError:
+            print("Please enter a number!")`}
+</TerminalDemo>
+
+<StoryBox character="python_pete">
+  Notice the try/except block? This is called error handling!
+
+  If the user types "abc" instead of a number, int() would crash. But try/except catches the error and prints a friendly message instead!
+
+  This makes your program more professional and user-friendly!
+</StoryBox>
+
+## Part 6: Stats Feature
+
+Show statistics about tasks:
+
+<Challenge
+  id="quest3-stats"
+  title="Implement Stats View"
+  description="Display task statistics"
+  steps={[
+    {
+      command: "Add elif choice == '4'",
+      hint: "Check if user chose option 4"
+    },
+    {
+      command: "Count total tasks using len()",
+      hint: "total = len(tasks)"
+    },
+    {
+      command: "Display a nice stats report",
+      hint: "Show total tasks and maybe a motivational message"
+    }
+  ]}
+  xp={20}
+/>
+
+<TerminalDemo>
+{`# Add this to your elif chain:
+elif choice == "4":
+    print("\\n--- TASK STATISTICS ---")
+    total = len(tasks)
+    print(f"Total tasks: {total}")
+
+    if total == 0:
+        print("Great job! You've completed everything!")
+    elif total <= 3:
+        print("You're almost done! Keep going!")
+    else:
+        print(f"You have {total} tasks to tackle. You got this!")`}
+</TerminalDemo>
+
+## Part 7: Quit Feature
+
+Let users exit gracefully:
+
+<Challenge
+  id="quest3-quit"
+  title="Implement Quit"
+  description="Allow users to exit the program"
+  steps={[
+    {
+      command: "Add elif choice == '5'",
+      hint: "Check if user chose option 5"
+    },
+    {
+      command: "Set running = False to exit the loop",
+      hint: "This will stop the while loop"
+    },
+    {
+      command: "Print a goodbye message",
+      hint: "Thank them for using your app!"
+    }
+  ]}
+  xp={15}
+/>
+
+<TerminalDemo>
+{`# Add this to your elif chain:
+elif choice == "5":
+    print("\\nThanks for using Todo List Manager!")
+    print(f"You completed {len(tasks)} tasks today. Great work!")
+    running = False
+
+# Handle invalid choices
+else:
+    print("Invalid choice! Please choose 1-5.")`}
+</TerminalDemo>
+
+## The Complete Code
+
+Here's what your full program should look like:
+
+<TerminalDemo>
+{`# Todo List Manager - Complete Version
+tasks = []
+running = True
+
+print("=== WELCOME TO YOUR TODO LIST ===")
+print()
+
+while running:
+    print("\\n--- MAIN MENU ---")
+    print("1. Add a task")
+    print("2. View all tasks")
+    print("3. Complete a task")
+    print("4. View stats")
+    print("5. Quit")
+    print()
+
+    choice = input("Choose an option (1-5): ")
+
+    if choice == "1":
+        # ADD TASK
+        print("\\n--- ADD A TASK ---")
+        task = input("Enter a task: ")
+        if task:
+            tasks.append(task)
+            print(f"✓ Added: {task}")
+        else:
+            print("Task cannot be empty!")
+
+    elif choice == "2":
+        # VIEW TASKS
+        print("\\n--- YOUR TASKS ---")
+        if not tasks:
+            print("No tasks yet! Add some to get started.")
+        else:
+            for index, task in enumerate(tasks, start=1):
+                print(f"{index}. {task}")
+            print(f"\\nTotal tasks: {len(tasks)}")
+
+    elif choice == "3":
+        # COMPLETE TASK
+        print("\\n--- COMPLETE A TASK ---")
+        if not tasks:
+            print("No tasks to complete!")
+        else:
+            for index, task in enumerate(tasks, start=1):
+                print(f"{index}. {task}")
+
+            try:
+                task_num = int(input("\\nWhich task number? "))
+                if 1 <= task_num <= len(tasks):
+                    completed = tasks.pop(task_num - 1)
+                    print(f"✓ Completed: {completed}")
+                else:
+                    print("Invalid task number!")
+            except ValueError:
+                print("Please enter a number!")
+
+    elif choice == "4":
+        # STATS
+        print("\\n--- TASK STATISTICS ---")
+        total = len(tasks)
+        print(f"Total tasks: {total}")
+
+        if total == 0:
+            print("Great job! You've completed everything!")
+        elif total <= 3:
+            print("You're almost done! Keep going!")
+        else:
+            print(f"You have {total} tasks to tackle. You got this!")
+
+    elif choice == "5":
+        # QUIT
+        print("\\nThanks for using Todo List Manager!")
+        if not tasks:
+            print("You finished all your tasks!")
+        else:
+            print(f"You still have {len(tasks)} tasks pending.")
+        running = False
+
+    else:
+        print("Invalid choice! Please choose 1-5.")
+
+print("\\nGoodbye! Come back soon!")`}
+</TerminalDemo>
+
+## Bonus Challenges
+
+Want to level up even more? Try these enhancements:
+
+<Challenge
+  id="quest3-bonus"
+  title="Bonus Features"
+  description="Add extra features to make your app even better!"
+  steps={[
+    {
+      command: "Add a 'Clear All Tasks' option",
+      hint: "Use tasks.clear()"
+    },
+    {
+      command: "Add priority levels (High, Medium, Low) to tasks",
+      hint: "Store tasks as dictionaries: {'task': 'name', 'priority': 'High'}"
+    },
+    {
+      command: "Save tasks to a file so they persist after closing",
+      hint: "Use file operations (coming in Chapter 4!)"
+    },
+    {
+      command: "Add task categories (Work, School, Personal)",
+      hint: "Include category in task data"
+    }
+  ]}
+  xp={50}
+/>
+
+## Testing Your App
+
+Make sure to test all features:
+
+1. Add several tasks
+2. View the task list
+3. Complete a task
+4. Check stats
+5. Try invalid inputs (like letters when expecting numbers)
+6. Complete all tasks and check stats
+7. Quit the program
+
+<StoryBox character="python_pete">
+  Testing is SUPER important! Professional programmers spend almost as much time testing as writing code!
+
+  Try to "break" your program by entering weird inputs. The more edge cases you handle, the better your program becomes!
+</StoryBox>
+
+## Quest Complete! Final Quiz
+
+<Quiz questions={[
+  {
+    question: "Why do we use tasks.pop(task_num - 1) instead of tasks.pop(task_num)?",
+    options: ["It's a typo", "Lists are 0-indexed but users see 1-indexed numbers", "It's faster", "It prevents errors"],
+    correct: 1,
+    explanation: "Lists start at index 0, but we show users numbers starting at 1. So task #1 is at index 0!"
+  },
+  {
+    question: "What does enumerate(tasks, start=1) do?",
+    options: ["Sorts the tasks", "Gives each task a number starting from 1", "Removes tasks", "Adds tasks"],
+    correct: 1,
+    explanation: "enumerate() pairs each item with a number, and start=1 makes it begin at 1 instead of 0!"
+  },
+  {
+    question: "Why do we use 'while running:' instead of 'while True:'?",
+    options: ["They're the same", "running gives us control to exit the loop", "while True is wrong", "running is faster"],
+    correct: 1,
+    explanation: "Using a variable lets us exit the loop by setting running = False, giving us control!"
+  },
+  {
+    question: "What's the purpose of 'if not tasks:' before displaying tasks?",
+    options: ["It's required", "Check if list is empty to avoid errors", "It deletes tasks", "It adds tasks"],
+    correct: 1,
+    explanation: "Checking if the list is empty lets us show a helpful message instead of nothing!"
+  },
+  {
+    question: "What real-world programming concept did you learn with try/except?",
+    options: ["Loops", "Variables", "Error handling", "Functions"],
+    correct: 2,
+    explanation: "try/except is called error handling - catching errors gracefully instead of crashing!"
+  }
+]} />
+
+## Rewards Earned
+
+<StoryBox character="python_pete">
+  YOU DID IT! You built a REAL application! This is a huge milestone!
+
+  You combined:
+  - Lists to store tasks
+  - While loops to keep the program running
+  - For loops to display tasks
+  - If/elif/else for menu choices
+  - List operations like append(), pop(), and len()
+  - User input for interaction
+  - Error handling with try/except
+
+  That's seriously impressive! You're not just learning Python anymore - you're BUILDING with Python!
+
+  This is the same kind of thinking that professional developers use every day. The only difference is scale - they work on bigger apps, but the concepts are the same!
+</StoryBox>
+
+### What You've Achieved
+
+- **XP:** +150
+- **Badge:** List Master
+- **Badge:** Quest Completed - Chapter 3
+- **Unlocked:** Chapter 4 - Functions and Modules
+
+## Skills Mastered in Chapter 3
+
+| Concept | Skills Learned |
+|---------|----------------|
+| **Lists** | Creating, accessing, indexing (positive & negative) |
+| **For Loops** | Iterating lists, range(), enumerate() |
+| **While Loops** | Condition-based looping, break, continue |
+| **List Operations** | append, insert, remove, pop, sort, reverse |
+| **List Functions** | len, sum, min, max, count, index |
+| **Error Handling** | try/except for user input validation |
+| **Program Flow** | Menu systems, user input, while loop control |
+
+## Real-World Applications
+
+Your Todo List app uses the same concepts as:
+- **Spotify/Apple Music:** Playlist management
+- **Amazon:** Shopping cart operations
+- **Instagram:** Managing followers list
+- **Gmail:** Email inbox management
+- **Games:** Inventory systems
+
+Every app that manages collections of things uses lists and these exact operations!
+
+## Share Your Creation
+
+Take a screenshot or record a video of your Todo List app in action and share it! You've created something real and functional!
+
+<StoryBox character="python_pete">
+  I'm so proud of you! You started Chapter 3 not knowing what a list was, and now you've built a fully functional application!
+
+  Chapter 4 is going to be even more exciting. We'll learn about FUNCTIONS - how to organize your code into reusable blocks. Your programs are about to get WAY more powerful!
+
+  Take a break, celebrate your achievement, and when you're ready, let's dive into functions!
+</StoryBox>
+
+<NextLesson
+  track="python"
+  lesson="16-functions"
+  teaser="Learn to organize your code with functions - reusable code blocks!"
+/>
