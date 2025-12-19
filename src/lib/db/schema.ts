@@ -3,8 +3,8 @@ import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 // Users table
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  username: text('username').notNull().unique().default('Lara'),
-  displayName: text('display_name').default('Space Cadet'),
+  username: text('username').notNull().unique().default('lara'),
+  displayName: text('display_name').default('Lara Rubio-Punal'),
   avatarId: text('avatar_id').default('default'),
   createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
   lastLogin: integer('last_login', { mode: 'timestamp' }).$defaultFn(() => new Date()),

@@ -73,10 +73,16 @@ export function Terminal({
     term.loadAddon(fitAddon);
     term.loadAddon(webLinksAddon);
     term.open(terminalRef.current);
-    fitAddon.fit();
 
     xtermRef.current = term;
     fitAddonRef.current = fitAddon;
+
+    // Delay fit until DOM has rendered with dimensions
+    requestAnimationFrame(() => {
+      if (terminalRef.current && terminalRef.current.offsetWidth > 0) {
+        fitAddon.fit();
+      }
+    });
 
     // Write welcome message
     if (welcomeMessage) {
@@ -96,7 +102,13 @@ export function Terminal({
 
     // Handle resize
     const handleResize = () => {
-      fitAddon.fit();
+      if (terminalRef.current && terminalRef.current.offsetWidth > 0) {
+        try {
+          fitAddon.fit();
+        } catch {
+          // Ignore fit errors if terminal isn't ready
+        }
+      }
     };
     window.addEventListener('resize', handleResize);
 
@@ -235,7 +247,7 @@ export function Terminal({
   }, [commandHistory, historyIndex, onCommand]);
 
   const writePrompt = (term: XTerm) => {
-    term.write('\x1b[1;32mlearner\x1b[0m@\x1b[1;34mcodequest\x1b[0m:\x1b[1;36m~\x1b[0m$ ');
+    term.write('\x1b[1;32mlara\x1b[0m@\x1b[1;34mcodequest\x1b[0m:\x1b[1;36m~\x1b[0m$ ');
   };
 
   const replaceCurrentLine = (term: XTerm, newLine: string) => {
@@ -269,10 +281,10 @@ export function Terminal({
         term.writeln('\x1b[1;33mTip:\x1b[0m Use the up/down arrows to navigate command history!');
         break;
       case 'whoami':
-        term.writeln('learner');
+        term.writeln('lara');
         break;
       case 'pwd':
-        term.writeln('/home/learner');
+        term.writeln('/home/lara');
         break;
       case 'date':
         term.writeln(new Date().toString());

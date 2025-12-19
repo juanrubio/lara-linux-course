@@ -52,9 +52,9 @@ function executeCommand(command: string): string {
 
 Tip: Use the up/down arrows to navigate command history!`;
     case 'whoami':
-      return 'learner';
+      return 'lara';
     case 'pwd':
-      return '/home/learner';
+      return '/home/lara';
     case 'date':
       return new Date().toString();
     case 'echo':

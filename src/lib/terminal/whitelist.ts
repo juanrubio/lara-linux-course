@@ -21,7 +21,7 @@ export const ALLOWED_COMMANDS: Record<string, CommandConfig> = {
   },
   cd: {
     maxArgs: 1,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     description: 'Change directory',
   },
   pwd: {
@@ -30,7 +30,7 @@ export const ALLOWED_COMMANDS: Record<string, CommandConfig> = {
   },
   tree: {
     maxArgs: 3,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     description: 'Display directory tree',
   },
 
@@ -38,63 +38,63 @@ export const ALLOWED_COMMANDS: Record<string, CommandConfig> = {
   cat: {
     maxArgs: 5,
     maxFileSize: 50000,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     allowPipe: true,
     description: 'Concatenate and display files',
   },
   head: {
     maxArgs: 5,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     allowPipe: true,
     description: 'Display first lines of file',
   },
   tail: {
     maxArgs: 5,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     allowPipe: true,
     description: 'Display last lines of file',
   },
   less: {
     maxArgs: 1,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     description: 'View file with pagination',
   },
   more: {
     maxArgs: 1,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     description: 'View file with pagination',
   },
 
   // File Operations (restricted to sandbox)
   touch: {
     maxArgs: 3,
-    pathRestriction: '/home/learner/workspace',
+    pathRestriction: '/home/lara/workspace',
     description: 'Create empty file',
   },
   mkdir: {
     maxArgs: 2,
-    pathRestriction: '/home/learner/workspace',
+    pathRestriction: '/home/lara/workspace',
     description: 'Create directory',
   },
   rmdir: {
     maxArgs: 1,
-    pathRestriction: '/home/learner/workspace',
+    pathRestriction: '/home/lara/workspace',
     description: 'Remove empty directory',
   },
   cp: {
     maxArgs: 3,
-    pathRestriction: '/home/learner/workspace',
+    pathRestriction: '/home/lara/workspace',
     blockedFlags: ['-r', '-R', '--recursive'],
     description: 'Copy files',
   },
   mv: {
     maxArgs: 3,
-    pathRestriction: '/home/learner/workspace',
+    pathRestriction: '/home/lara/workspace',
     description: 'Move/rename files',
   },
   rm: {
     maxArgs: 2,
-    pathRestriction: '/home/learner/workspace',
+    pathRestriction: '/home/lara/workspace',
     blockedFlags: ['-rf', '-fr', '-r', '-R', '--recursive', '-f', '--force'],
     description: 'Remove files (carefully!)',
   },
@@ -107,31 +107,31 @@ export const ALLOWED_COMMANDS: Record<string, CommandConfig> = {
   },
   grep: {
     maxArgs: 5,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     allowPipe: true,
     description: 'Search for patterns',
   },
   sort: {
     maxArgs: 5,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     allowPipe: true,
     description: 'Sort lines',
   },
   wc: {
     maxArgs: 5,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     allowPipe: true,
     description: 'Word, line, character count',
   },
   cut: {
     maxArgs: 5,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     allowPipe: true,
     description: 'Remove sections from lines',
   },
   uniq: {
     maxArgs: 3,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     allowPipe: true,
     description: 'Report or omit repeated lines',
   },
@@ -144,12 +144,12 @@ export const ALLOWED_COMMANDS: Record<string, CommandConfig> = {
   // File Info
   file: {
     maxArgs: 3,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     description: 'Determine file type',
   },
   stat: {
     maxArgs: 2,
-    pathRestriction: '/home/learner',
+    pathRestriction: '/home/lara',
     description: 'Display file status',
   },
 
@@ -198,12 +198,12 @@ export const ALLOWED_COMMANDS: Record<string, CommandConfig> = {
   // Python
   python3: {
     maxArgs: 3,
-    pathRestriction: '/home/learner/workspace',
+    pathRestriction: '/home/lara/workspace',
     description: 'Run Python 3',
   },
   python: {
     maxArgs: 3,
-    pathRestriction: '/home/learner/workspace',
+    pathRestriction: '/home/lara/workspace',
     description: 'Run Python',
   },
 
@@ -258,7 +258,7 @@ export const ALLOWED_COMMANDS: Record<string, CommandConfig> = {
   // Text editors (safe ones)
   nano: {
     maxArgs: 1,
-    pathRestriction: '/home/learner/workspace',
+    pathRestriction: '/home/lara/workspace',
     description: 'Simple text editor',
   },
 
@@ -298,7 +298,7 @@ export const ALLOWED_COMMANDS: Record<string, CommandConfig> = {
 // Patterns that are always blocked regardless of command
 export const BLOCKED_PATTERNS: RegExp[] = [
   /rm\s+(-[a-zA-Z]*[rf][a-zA-Z]*\s+|--recursive|--force)/i, // rm -rf, rm -r, rm -f variants
-  />\s*\/(?!home\/learner\/workspace)/, // Writing outside workspace
+  />\s*\/(?!home\/lara\/workspace)/, // Writing outside workspace
   /sudo/, // No sudo
   /su\s+/, // No su
   /chmod\s+[0-7]*7/, // No world-writable
@@ -306,8 +306,8 @@ export const BLOCKED_PATTERNS: RegExp[] = [
   /curl|wget|nc|netcat|ncat/, // No network tools
   /eval\s/, // No eval
   /exec\s/, // No exec
-  /source\s+(?!\/home\/learner)/, // Restrict source command
-  /\.\s+(?!\/home\/learner)/, // Restrict . command
+  /source\s+(?!\/home\/lara)/, // Restrict source command
+  /\.\s+(?!\/home\/lara)/, // Restrict . command
   /`[^`]*`/, // Backtick command substitution (limit)
   /\$\([^)]*\)/, // $() command substitution (limit for complex cases)
   /;\s*sudo/, // Chained sudo

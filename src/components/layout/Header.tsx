@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useShallow } from 'zustand/react/shallow';
 import { useGameStore, selectXpProgress } from '@/store/gameStore';
 
 const LEVEL_TITLES = [
@@ -33,7 +34,7 @@ const LEVEL_TITLES = [
 
 export function Header() {
   const { displayName, avatarId, stats, toggleSidebar } = useGameStore();
-  const xpProgress = useGameStore(selectXpProgress);
+  const xpProgress = useGameStore(useShallow(selectXpProgress));
 
   const levelTitle = LEVEL_TITLES[stats.currentLevel - 1] || 'Master Hacker';
 

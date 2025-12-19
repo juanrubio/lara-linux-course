@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { useShallow } from 'zustand/react/shallow';
 import { useGameStore, selectXpProgress } from '@/store/gameStore';
 import { getLevelInfo } from '@/lib/gamification';
 
@@ -13,7 +14,7 @@ interface XPBarProps {
 
 export function XPBar({ showDetails = true, className = '' }: XPBarProps) {
   const { stats } = useGameStore();
-  const xpProgress = useGameStore(selectXpProgress);
+  const xpProgress = useGameStore(useShallow(selectXpProgress));
   const levelInfo = getLevelInfo(stats.currentLevel);
   const nextLevelInfo = getLevelInfo(stats.currentLevel + 1);
 

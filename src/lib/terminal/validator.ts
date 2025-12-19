@@ -196,7 +196,7 @@ export function validatePythonCode(code: string): ValidationResult {
     /from\s+os\s+import/,
     /exec\s*\(/,
     /eval\s*\(/,
-    /open\s*\([^)]*['"](\/(?!home\/learner\/workspace))/,
+    /open\s*\([^)]*['"](\/(?!home\/lara\/workspace))/,
     /__import__/,
     /compile\s*\(/,
   ];

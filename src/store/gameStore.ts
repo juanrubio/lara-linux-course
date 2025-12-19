@@ -86,8 +86,8 @@ export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
       userId: 1,
-      username: 'Lara',
-      displayName: 'Space Cadet',
+      username: 'lara',
+      displayName: 'Lara Rubio-Punal',
       avatarId: 'default',
       stats: initialStats,
 
