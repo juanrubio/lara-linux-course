@@ -19,9 +19,9 @@ interface TerminalState {
   messageHandlers: Set<MessageHandler>;
   statusHandlers: Set<StatusHandler>;
   reconnectTimer: ReturnType<typeof setTimeout> | null;
+  keepAliveTimer: ReturnType<typeof setInterval> | null;
   reconnectAttempts: number;
   connectLock: boolean;
-  lastConnectTime: number;
 }
 
 declare global {
@@ -40,9 +40,9 @@ function getState(): TerminalState {
       messageHandlers: new Set(),
       statusHandlers: new Set(),
       reconnectTimer: null,
+      keepAliveTimer: null,
       reconnectAttempts: 0,
       connectLock: false,
-      lastConnectTime: 0,
     };
   }
 
@@ -54,12 +54,36 @@ function getState(): TerminalState {
       messageHandlers: new Set(),
       statusHandlers: new Set(),
       reconnectTimer: null,
+      keepAliveTimer: null,
       reconnectAttempts: 0,
       connectLock: false,
-      lastConnectTime: 0,
     };
   }
   return window.__TERMINAL_STATE__!;
+}
+
+function hasActiveSubscribers(state: TerminalState) {
+  return state.messageHandlers.size > 0 || state.statusHandlers.size > 0;
+}
+
+function startKeepAlive(ws: WebSocket) {
+  const state = getState();
+  if (state.keepAliveTimer) {
+    clearInterval(state.keepAliveTimer);
+  }
+  state.keepAliveTimer = setInterval(() => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: 'ping', time: Date.now() }));
+    }
+  }, 25000);
+}
+
+function stopKeepAlive() {
+  const state = getState();
+  if (state.keepAliveTimer) {
+    clearInterval(state.keepAliveTimer);
+    state.keepAliveTimer = null;
+  }
 }
 
 function setStatus(newStatus: ConnectionStatus) {
@@ -76,13 +100,6 @@ function setStatus(newStatus: ConnectionStatus) {
 
 function connect() {
   const state = getState();
-  const now = Date.now();
-
-  // Debounce: don't connect more than once per 500ms
-  if (now - state.lastConnectTime < 500) {
-    console.log('[TC] Debouncing connection attempt');
-    return;
-  }
 
   // Prevent concurrent connection attempts
   if (state.connectLock) {
@@ -106,11 +123,6 @@ function connect() {
     state.ws = null;
   }
 
-  if (state.reconnectAttempts >= 5) {
-    console.log('[TC] Max reconnect attempts reached');
-    return;
-  }
-
   // Cancel any pending reconnect since we're connecting now
   if (state.reconnectTimer) {
     clearTimeout(state.reconnectTimer);
@@ -118,7 +130,6 @@ function connect() {
   }
 
   state.connectLock = true;
-  state.lastConnectTime = now;
 
   console.log('[TC] Creating WebSocket connection...');
   setStatus(ConnectionStatus.CONNECTING);
@@ -140,6 +151,7 @@ function connect() {
       return;
     }
     s.reconnectAttempts = 0;
+    startKeepAlive(ws);
     setStatus(ConnectionStatus.CONNECTED);
     console.log('[TC] WebSocket fully connected and ready');
   };
@@ -147,6 +159,18 @@ function connect() {
   ws.onmessage = (e) => {
     const s = getState();
     if (s.ws !== ws) return;
+    if (typeof e.data === 'string') {
+      try {
+        const msg = JSON.parse(e.data);
+        if (msg?.type === 'ping') {
+          ws.send(JSON.stringify({ type: 'pong', time: msg.time ?? Date.now() }));
+          return;
+        }
+        if (msg?.type === 'pong') {
+          return;
+        }
+      } catch {}
+    }
     s.messageHandlers.forEach(h => {
       try { h(e.data); } catch (err) { console.error('[TC] Message handler error:', err); }
     });
@@ -162,26 +186,34 @@ function connect() {
       return;
     }
     s.ws = null;
+    stopKeepAlive();
+    if (typeof window !== 'undefined' && window.__TERMINAL_WS__ === ws) {
+      window.__TERMINAL_WS__ = undefined;
+    }
     setStatus(ConnectionStatus.DISCONNECTED);
 
-    // Only schedule reconnect for unexpected closes (not 1000=normal, 1001=going away)
-    if (e.code !== 1000 && e.code !== 1001 && !s.reconnectTimer) {
+    const shouldReconnect = hasActiveSubscribers(s);
+    if (!shouldReconnect) {
+      console.log('[TC] No active subscribers, staying disconnected');
+      s.reconnectAttempts = 0;
+      return;
+    }
+
+    if (!s.reconnectTimer) {
       s.reconnectAttempts++;
+      setStatus(ConnectionStatus.CONNECTING);
       const delay = 1000 * Math.pow(2, Math.min(s.reconnectAttempts - 1, 4));
       console.log(`[TC] Reconnecting in ${delay}ms (attempt ${s.reconnectAttempts})`);
       s.reconnectTimer = setTimeout(() => {
         s.reconnectTimer = null;
         connect();
       }, delay);
-    } else if (e.code === 1001) {
-      console.log('[TC] Navigation close detected, will reconnect on demand');
-      // Reset reconnect attempts for navigation
-      s.reconnectAttempts = 0;
     }
   };
 
   ws.onerror = () => {
     console.log('[TC] WebSocket error');
+    stopKeepAlive();
     getState().connectLock = false;
   };
 }
@@ -241,6 +273,15 @@ export function getTerminalConnection() {
     },
 
     ensureConnected() {
+      const state = getState();
+      if (state.status === ConnectionStatus.DISCONNECTED) {
+        if (state.reconnectTimer) {
+          clearTimeout(state.reconnectTimer);
+          state.reconnectTimer = null;
+        }
+        state.reconnectAttempts = 0;
+        state.connectLock = false;
+      }
       connect();
     },
   };

@@ -154,10 +154,19 @@ app.prepare().then(() => {
 
     // Handle incoming WebSocket messages
     ws.on('message', (message) => {
+      ws.isAlive = true;
       try {
         const data = JSON.parse(message.toString());
 
         switch (data.type) {
+          case 'ping':
+            if (ws.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ type: 'pong', time: data.time || Date.now() }));
+            }
+            break;
+          case 'pong':
+            // Keepalive response, no-op
+            break;
           case 'input':
             // Direct input to PTY
             ptyProcess.write(data.data);
@@ -246,4 +255,3 @@ process.on('SIGINT', () => {
   }
   process.exit(0);
 });
-

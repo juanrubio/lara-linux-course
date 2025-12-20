@@ -24,9 +24,10 @@ export function Terminal({
   const fitAddonRef = useRef<FitAddon | null>(null);
   const onCommandRef = useRef<TerminalProps['onCommand']>(onCommand);
   const welcomeMessageRef = useRef(welcomeMessage);
-  const [isConnected, setIsConnected] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState(ConnectionStatus.DISCONNECTED);
 
   const { preferences } = useGameStore();
+  const isConnected = connectionStatus === ConnectionStatus.CONNECTED;
 
   useEffect(() => {
     onCommandRef.current = onCommand;
@@ -172,7 +173,7 @@ export function Terminal({
 
     // Subscribe to status
     const unsubStatus = connection.onStatus((status) => {
-      setIsConnected(status === ConnectionStatus.CONNECTED);
+      setConnectionStatus(status);
       if (status === ConnectionStatus.CONNECTED) {
         setTimeout(() => {
           try {
@@ -185,9 +186,10 @@ export function Terminal({
 
     // Input handler
     const inputDisp = term.onData((data) => {
-      if (connection.isConnected()) {
+      const status = connection.getStatus();
+      if (status === ConnectionStatus.CONNECTED) {
         connection.send(JSON.stringify({ type: 'input', data }));
-      } else {
+      } else if (status === ConnectionStatus.DISCONNECTED) {
         handleDemoInput(term, data);
       }
     });
@@ -227,8 +229,14 @@ export function Terminal({
   return (
     <div className={`terminal-container relative ${className}`}>
       {!isConnected && (
-        <div className="absolute top-2 right-2 z-10 px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded">
-          Demo Mode
+        <div
+          className={`absolute top-2 right-2 z-10 px-2 py-1 text-xs rounded ${
+            connectionStatus === ConnectionStatus.CONNECTING
+              ? 'bg-blue-500/20 text-blue-300'
+              : 'bg-yellow-500/20 text-yellow-400'
+          }`}
+        >
+          {connectionStatus === ConnectionStatus.CONNECTING ? 'Connecting...' : 'Demo Mode'}
         </div>
       )}
       <div
