@@ -23,6 +23,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { AppShell, Navigation } from '@/components/layout';
 import { useGameStore } from '@/store/gameStore';
+import { useProgressStore } from '@/store/progressStore';
 
 const THEMES = [
   {
@@ -56,9 +57,16 @@ const THEMES = [
 ];
 
 export default function SettingsPage() {
-  const { currentLevel, preferences, updatePreferences, resetProgress } = useGameStore();
+  const { currentLevel, preferences, updatePreferences, resetProgress: resetGameProgress } = useGameStore();
+  const { reset: resetProgressStore } = useProgressStore();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showDbResetConfirm, setShowDbResetConfirm] = useState(false);
+  const [dbResetStatus, setDbResetStatus] = useState<'idle' | 'working' | 'success' | 'error'>('idle');
+  const [dbResetMessage, setDbResetMessage] = useState('');
   const [saveMessage, setSaveMessage] = useState('');
+  const canResetDb =
+    process.env.NEXT_PUBLIC_ALLOW_DB_RESET === 'true' ||
+    process.env.NODE_ENV !== 'production';
 
   const handleThemeChange = (themeId: string) => {
     const theme = THEMES.find((t) => t.id === themeId);
@@ -79,8 +87,31 @@ export default function SettingsPage() {
   };
 
   const handleResetProgress = () => {
-    resetProgress();
+    resetGameProgress();
+    resetProgressStore();
     setShowResetConfirm(false);
+  };
+
+  const handleResetDatabase = async () => {
+    setDbResetStatus('working');
+    setDbResetMessage('');
+    try {
+      const response = await fetch('/api/db/reset', { method: 'POST' });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data?.error || 'Failed to reset database');
+      }
+      resetGameProgress();
+      resetProgressStore();
+      setDbResetStatus('success');
+      setDbResetMessage('Database reset to initial state.');
+      setShowDbResetConfirm(false);
+    } catch (error) {
+      setDbResetStatus('error');
+      setDbResetMessage(
+        error instanceof Error ? error.message : 'Failed to reset database'
+      );
+    }
   };
 
   return (
@@ -336,43 +367,101 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {!showResetConfirm ? (
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-[var(--color-text)]">
-                      Reset All Progress
-                    </p>
-                    <p className="text-sm text-[var(--color-text-muted)]">
-                      This will erase all your XP, achievements, and lesson progress
-                    </p>
-                  </div>
-                  <Button
-                    variant="destructive"
-                    onClick={() => setShowResetConfirm(true)}
-                  >
-                    Reset Progress
-                  </Button>
-                </div>
-              ) : (
-                <div className="p-4 rounded-lg bg-red-900/30 border border-red-700">
-                  <p className="font-bold text-red-400 mb-2">Are you sure?</p>
-                  <p className="text-sm text-[var(--color-text-muted)] mb-4">
-                    This action cannot be undone. All your progress, achievements,
-                    and stats will be permanently deleted.
-                  </p>
-                  <div className="flex gap-2">
+              <div className="space-y-6">
+                {!showResetConfirm ? (
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-[var(--color-text)]">
+                        Reset All Progress
+                      </p>
+                      <p className="text-sm text-[var(--color-text-muted)]">
+                        This will erase all your XP, achievements, and lesson progress
+                      </p>
+                    </div>
                     <Button
-                      variant="outline"
-                      onClick={() => setShowResetConfirm(false)}
+                      variant="destructive"
+                      onClick={() => setShowResetConfirm(true)}
                     >
-                      Cancel
-                    </Button>
-                    <Button variant="destructive" onClick={handleResetProgress}>
-                      Yes, Reset Everything
+                      Reset Progress
                     </Button>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="p-4 rounded-lg bg-red-900/30 border border-red-700">
+                    <p className="font-bold text-red-400 mb-2">Are you sure?</p>
+                    <p className="text-sm text-[var(--color-text-muted)] mb-4">
+                      This action cannot be undone. All your progress, achievements,
+                      and stats will be permanently deleted.
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowResetConfirm(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button variant="destructive" onClick={handleResetProgress}>
+                        Yes, Reset Everything
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {canResetDb && (
+                  <div className="border-t border-red-900/40 pt-6">
+                    {!showDbResetConfirm ? (
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-[var(--color-text)]">
+                            Reset Database
+                          </p>
+                          <p className="text-sm text-[var(--color-text-muted)]">
+                            Clears all database tables back to their initial state
+                          </p>
+                        </div>
+                        <Button
+                          variant="destructive"
+                          onClick={() => setShowDbResetConfirm(true)}
+                          disabled={dbResetStatus === 'working'}
+                        >
+                          {dbResetStatus === 'working' ? 'Resetting...' : 'Reset Database'}
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-lg bg-red-900/30 border border-red-700">
+                        <p className="font-bold text-red-400 mb-2">Reset database?</p>
+                        <p className="text-sm text-[var(--color-text-muted)] mb-4">
+                          This clears all tables and cannot be undone.
+                        </p>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => setShowDbResetConfirm(false)}
+                            disabled={dbResetStatus === 'working'}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            onClick={handleResetDatabase}
+                            disabled={dbResetStatus === 'working'}
+                          >
+                            {dbResetStatus === 'working' ? 'Resetting...' : 'Yes, Reset Database'}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                    {dbResetMessage && (
+                      <p
+                        className={`text-sm mt-3 ${
+                          dbResetStatus === 'error' ? 'text-red-400' : 'text-green-400'
+                        }`}
+                      >
+                        {dbResetMessage}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </motion.div>

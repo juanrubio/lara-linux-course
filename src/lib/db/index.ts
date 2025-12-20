@@ -7,7 +7,7 @@ import path from 'path';
 const dbPath = path.join(process.cwd(), 'data', 'codequest.db');
 
 // Create database connection
-const sqlite = new Database(dbPath);
+export const sqlite = new Database(dbPath);
 
 // Enable WAL mode for better performance
 sqlite.pragma('journal_mode = WAL');

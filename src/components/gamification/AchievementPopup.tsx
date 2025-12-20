@@ -8,6 +8,30 @@ import { useGameStore } from '@/store/gameStore';
 import { getAchievementById } from '@/lib/gamification';
 import type { AchievementRarity } from '@/types';
 
+function playAchievementSound() {
+  try {
+    const AudioContext =
+      window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof window.AudioContext }).webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+    oscillator.type = 'triangle';
+    oscillator.frequency.value = 660;
+    gain.gain.value = 0.08;
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+    oscillator.start();
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18);
+    oscillator.stop(ctx.currentTime + 0.2);
+    oscillator.onended = () => {
+      ctx.close().catch(() => {});
+    };
+  } catch {
+    // Ignore audio errors; UI should still function.
+  }
+}
+
 export function AchievementPopup() {
   const { showAchievementPopup, pendingAchievements, dismissAchievement, preferences } =
     useGameStore();
@@ -29,10 +53,19 @@ export function AchievementPopup() {
 
   // Play sound effect
   useEffect(() => {
-    if (showAchievementPopup && preferences.soundEnabled) {
-      // TODO: Play achievement sound
+    if (
+      showAchievementPopup &&
+      currentAchievementId &&
+      preferences.soundEnabled &&
+      preferences.notificationsEnabled
+    ) {
+      playAchievementSound();
     }
-  }, [showAchievementPopup, preferences.soundEnabled]);
+  }, [showAchievementPopup, currentAchievementId, preferences.soundEnabled, preferences.notificationsEnabled]);
+
+  if (!preferences.notificationsEnabled) {
+    return null;
+  }
 
   const rarityStyles = achievement
     ? getRarityStyles(achievement.rarity)

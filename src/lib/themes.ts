@@ -1,4 +1,5 @@
 export type ThemeId = 'space' | 'forest' | 'ocean' | 'desert';
+export type ThemeMode = 'dark' | 'light';
 
 export interface Theme {
   id: ThemeId;
@@ -123,21 +124,43 @@ export function getTheme(themeId: ThemeId): Theme {
   return THEMES[themeId] || THEMES.space;
 }
 
-export function getThemeCSSVariables(theme: Theme): string {
+export function getThemeTokens(theme: Theme, mode: ThemeMode) {
+  if (mode === 'dark') {
+    return { colors: theme.colors, gradients: theme.gradients };
+  }
+
+  const lightColors = {
+    ...theme.colors,
+    background: '#f8fafc',
+    surface: '#ffffff',
+    text: '#0f172a',
+    textMuted: '#475569',
+  };
+
+  const lightGradients = {
+    hero: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%)',
+    card: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)',
+  };
+
+  return { colors: lightColors, gradients: lightGradients };
+}
+
+export function getThemeCSSVariables(theme: Theme, mode: ThemeMode = 'dark'): string {
+  const { colors, gradients } = getThemeTokens(theme, mode);
   return `
-    --color-primary: ${theme.colors.primary};
-    --color-secondary: ${theme.colors.secondary};
-    --color-accent: ${theme.colors.accent};
-    --color-background: ${theme.colors.background};
-    --color-surface: ${theme.colors.surface};
-    --color-text: ${theme.colors.text};
-    --color-text-muted: ${theme.colors.textMuted};
-    --color-success: ${theme.colors.success};
-    --color-error: ${theme.colors.error};
-    --color-warning: ${theme.colors.warning};
-    --color-terminal-bg: ${theme.colors.terminalBg};
-    --color-terminal-text: ${theme.colors.terminalText};
-    --gradient-hero: ${theme.gradients.hero};
-    --gradient-card: ${theme.gradients.card};
+    --color-primary: ${colors.primary};
+    --color-secondary: ${colors.secondary};
+    --color-accent: ${colors.accent};
+    --color-background: ${colors.background};
+    --color-surface: ${colors.surface};
+    --color-text: ${colors.text};
+    --color-text-muted: ${colors.textMuted};
+    --color-success: ${colors.success};
+    --color-error: ${colors.error};
+    --color-warning: ${colors.warning};
+    --color-terminal-bg: ${colors.terminalBg};
+    --color-terminal-text: ${colors.terminalText};
+    --gradient-hero: ${gradients.hero};
+    --gradient-card: ${gradients.card};
   `;
 }

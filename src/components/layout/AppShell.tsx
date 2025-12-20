@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { useGameStore } from '@/store/gameStore';
-import { getTheme, getThemeCSSVariables } from '@/lib/themes';
+import { getTheme, getThemeCSSVariables, getThemeTokens } from '@/lib/themes';
 import { cn } from '@/lib/utils';
 
 interface AppShellProps {
@@ -14,11 +15,13 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   const { preferences, sidebarOpen, updateStreak } = useGameStore();
   const theme = getTheme(preferences.theme);
+  const themeMode = preferences.darkMode ? 'dark' : 'light';
+  const themeTokens = getThemeTokens(theme, themeMode);
 
   // Apply theme CSS variables
   useEffect(() => {
     const root = document.documentElement;
-    const cssVars = getThemeCSSVariables(theme);
+    const cssVars = getThemeCSSVariables(theme, themeMode);
     const pairs = cssVars
       .split(';')
       .filter((s) => s.trim())
@@ -30,9 +33,12 @@ export function AppShell({ children }: AppShellProps) {
       }
     });
 
+    root.classList.toggle('dark', preferences.darkMode);
+    root.dataset.motion = preferences.animationsEnabled ? 'on' : 'off';
+
     // Set background color on body
-    document.body.style.backgroundColor = theme.colors.background;
-  }, [theme]);
+    document.body.style.backgroundColor = themeTokens.colors.background;
+  }, [preferences.animationsEnabled, preferences.darkMode, theme, themeMode, themeTokens.colors.background]);
 
   // Update streak on mount
   useEffect(() => {
@@ -40,20 +46,22 @@ export function AppShell({ children }: AppShellProps) {
   }, [updateStreak]);
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ background: theme.gradients.hero }}
-    >
-      <Header />
-      <Sidebar />
-      <main
-        className={cn(
-          'min-h-[calc(100vh-4rem)] transition-all duration-300',
-          sidebarOpen ? 'ml-64' : 'ml-0'
-        )}
+    <MotionConfig reducedMotion={preferences.animationsEnabled ? 'never' : 'always'}>
+      <div
+        className="min-h-screen"
+        style={{ background: themeTokens.gradients.hero }}
       >
-        {children}
-      </main>
-    </div>
+        <Header />
+        <Sidebar />
+        <main
+          className={cn(
+            'min-h-[calc(100vh-4rem)] transition-all duration-300',
+            sidebarOpen ? 'ml-64' : 'ml-0'
+          )}
+        >
+          {children}
+        </main>
+      </div>
+    </MotionConfig>
   );
 }
