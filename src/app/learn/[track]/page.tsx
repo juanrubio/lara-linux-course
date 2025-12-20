@@ -1,6 +1,6 @@
 'use client';
 
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight, Clock, CheckCircle2, Lock, PlayCircle } from 'lucide-react';
@@ -11,13 +11,33 @@ import { AppShell, Navigation } from '@/components/layout';
 import { useProgressStore } from '@/store/progressStore';
 import { TRACKS, type Track } from '@/types';
 
+interface LessonSummary {
+  slug: string;
+  title: string;
+  time: number;
+  xp: number;
+  difficulty: string;
+  lessonNumber: number;
+}
+
+interface ChapterSummary {
+  number: number;
+  title: string;
+  lessons: LessonSummary[];
+}
+
 interface PageProps {
   params: Promise<{ track: string }>;
 }
 
 export default function TrackPage({ params }: PageProps) {
   const { track: trackId } = use(params);
-  const { tracks, lessons, isLessonAvailable, isLessonCompleted } = useProgressStore();
+  const { tracks, lessons } = useProgressStore();
+  const [chaptersData, setChaptersData] = useState<ChapterSummary[]>([]);
+  const [totalLessons, setTotalLessons] = useState<number | null>(null);
+  const [totalMinutes, setTotalMinutes] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const track = TRACKS.find((t) => t.id === trackId);
   const trackProgress = tracks[trackId as Track];
@@ -40,8 +60,45 @@ export default function TrackPage({ params }: PageProps) {
       )
     : 0;
 
-  // Sample lessons structure (in a real app, this would come from the content loader)
-  const chaptersData = getChaptersForTrack(trackId);
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadChapters = async () => {
+      setIsLoading(true);
+      setLoadError(null);
+      try {
+        const response = await fetch(`/api/lesson/${trackId}`);
+        if (!response.ok) {
+          throw new Error('Failed to load track lessons');
+        }
+        const data = await response.json();
+        if (!cancelled) {
+          setChaptersData(data.chapters || []);
+          setTotalLessons(typeof data.totalLessons === 'number' ? data.totalLessons : null);
+          setTotalMinutes(typeof data.totalMinutes === 'number' ? data.totalMinutes : null);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setLoadError('Unable to load lessons. Please try again.');
+          setChaptersData([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadChapters();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [trackId]);
+
+  const displayLessonCount = totalLessons ?? track.totalLessons;
+  const minutesEstimate = totalMinutes ?? track.totalLessons * 15;
+  const hourEstimate = Math.max(1, Math.round(minutesEstimate / 60));
 
   return (
     <AppShell>
@@ -80,9 +137,15 @@ export default function TrackPage({ params }: PageProps) {
                 {track.description}
               </p>
               <div className="flex items-center gap-4 mt-3 text-sm text-[var(--color-text-muted)]">
-                <span>{track.totalLessons} lessons</span>
+                <span>{displayLessonCount} lessons</span>
+                {chaptersData.length > 0 && (
+                  <>
+                    <span>•</span>
+                    <span>{chaptersData.length} chapters</span>
+                  </>
+                )}
                 <span>•</span>
-                <span>~{Math.round((track.totalLessons * 15) / 60)} hours</span>
+                <span>~{hourEstimate} hours</span>
               </div>
             </div>
             <div className="text-right">
@@ -99,6 +162,18 @@ export default function TrackPage({ params }: PageProps) {
 
         {/* Chapters */}
         <div className="space-y-6">
+          {isLoading && (
+            <div className="space-y-4">
+              <div className="h-6 w-48 bg-white/10 rounded animate-pulse" />
+              <div className="h-20 bg-white/5 rounded animate-pulse" />
+              <div className="h-20 bg-white/5 rounded animate-pulse" />
+            </div>
+          )}
+          {loadError && (
+            <div className="p-4 rounded-lg border border-red-500/40 bg-red-500/10 text-red-300">
+              {loadError}
+            </div>
+          )}
           {chaptersData.map((chapter, chapterIndex) => (
             <motion.div
               key={chapter.number}
@@ -109,6 +184,9 @@ export default function TrackPage({ params }: PageProps) {
               <h2 className="text-xl font-bold text-[var(--color-text)] mb-4">
                 Chapter {chapter.number}: {chapter.title}
               </h2>
+              <p className="text-sm text-[var(--color-text-muted)] mb-3">
+                {chapter.lessons.length} lessons
+              </p>
 
               <div className="space-y-2">
                 {chapter.lessons.map((lesson, lessonIndex) => {
@@ -191,73 +269,4 @@ export default function TrackPage({ params }: PageProps) {
       </div>
     </AppShell>
   );
-}
-
-// Helper function to get chapter structure for each track
-function getChaptersForTrack(trackId: string) {
-  const trackData: Record<string, { number: number; title: string; lessons: { slug: string; title: string; time: number; xp: number }[] }[]> = {
-    linux: [
-      {
-        number: 1,
-        title: 'Getting Started',
-        lessons: [
-          { slug: '01-what-is-linux', title: 'What is Linux?', time: 10, xp: 50 },
-          { slug: '02-the-terminal', title: 'The Terminal - Your Command Center', time: 15, xp: 50 },
-          { slug: '03-first-commands', title: 'Your First Commands', time: 15, xp: 50 },
-          { slug: '04-getting-help', title: 'Getting Help', time: 10, xp: 50 },
-          { slug: '05-chapter1-quest', title: 'Quest: Terminal Awakening', time: 20, xp: 100 },
-        ],
-      },
-      {
-        number: 2,
-        title: 'Exploring the File System',
-        lessons: [
-          { slug: '06-understanding-directories', title: 'Understanding Directories', time: 15, xp: 50 },
-          { slug: '07-navigation', title: 'Navigation', time: 15, xp: 50 },
-          { slug: '08-creating-removing', title: 'Creating & Removing', time: 15, xp: 50 },
-          { slug: '09-copying-moving', title: 'Copying & Moving', time: 15, xp: 50 },
-          { slug: '10-chapter2-quest', title: 'Quest: The Lost Files', time: 20, xp: 150 },
-        ],
-      },
-    ],
-    python: [
-      {
-        number: 1,
-        title: 'First Steps',
-        lessons: [
-          { slug: '01-what-is-python', title: 'What is Python?', time: 10, xp: 50 },
-          { slug: '02-hello-world', title: 'Hello, World!', time: 15, xp: 50 },
-          { slug: '03-variables', title: 'Variables', time: 15, xp: 50 },
-          { slug: '04-numbers-math', title: 'Numbers and Math', time: 15, xp: 50 },
-          { slug: '05-chapter1-quest', title: 'Quest: Calculator Creation', time: 20, xp: 100 },
-        ],
-      },
-    ],
-    bash: [
-      {
-        number: 1,
-        title: 'Script Basics',
-        lessons: [
-          { slug: '01-what-is-shell-script', title: 'What is a Shell Script?', time: 10, xp: 50 },
-          { slug: '02-first-script', title: 'Your First Script', time: 15, xp: 50 },
-          { slug: '03-variables', title: 'Variables in Bash', time: 15, xp: 50 },
-          { slug: '04-running-scripts', title: 'Running Scripts', time: 15, xp: 50 },
-          { slug: '05-chapter1-quest', title: 'Quest: Automation Begins', time: 20, xp: 100 },
-        ],
-      },
-    ],
-    'raspberry-pi': [
-      {
-        number: 1,
-        title: 'Getting Started with Pi',
-        lessons: [
-          { slug: '01-pi-setup', title: 'Pi Setup', time: 20, xp: 75 },
-          { slug: '02-led-blinker', title: 'LED Blinker', time: 30, xp: 100 },
-          { slug: '03-button-input', title: 'Button Input', time: 30, xp: 100 },
-        ],
-      },
-    ],
-  };
-
-  return trackData[trackId] || [];
 }
