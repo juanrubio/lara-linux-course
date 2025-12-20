@@ -172,6 +172,10 @@
   width: 8px;
 }
 
+.terminal-container .xterm-viewport::-webkit-scrollbar-track {
+  background: var(--color-terminal-bg);
+}
+
 .terminal-container .xterm-viewport::-webkit-scrollbar-thumb {
   background: var(--color-primary);
   border-radius: 4px;

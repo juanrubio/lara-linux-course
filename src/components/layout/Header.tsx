@@ -129,7 +129,7 @@ export function Header() {
                 <div className="flex items-center gap-2">
                   <Avatar className="h-9 w-9 border-2 border-[var(--color-primary)]">
                     <AvatarImage
-                      src={`/images/avatars/${avatarId}.png`}
+                      src={`/images/avatars/${avatarId}.svg`}
                       alt={displayName}
                     />
                     <AvatarFallback className="bg-[var(--color-primary)] text-white">

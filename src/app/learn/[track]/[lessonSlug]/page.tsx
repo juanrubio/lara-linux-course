@@ -4,6 +4,7 @@ import { use, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,9 +19,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AppShell, Navigation } from '@/components/layout';
+import { LessonContent } from '@/components/lesson';
 import { useProgressStore } from '@/store/progressStore';
 import { useGameStore } from '@/store/gameStore';
 import { TRACKS } from '@/types';
@@ -60,11 +61,18 @@ interface LessonMeta {
   prevLesson?: string;
 }
 
+interface LessonNavigation {
+  prev: { slug: string; title: string } | null;
+  next: { slug: string; title: string } | null;
+}
+
 export default function LessonPage({ params }: PageProps) {
   const { track: trackId, lessonSlug } = use(params);
   const [lessonMeta, setLessonMeta] = useState<LessonMeta | null>(null);
-  const [lessonContent, setLessonContent] = useState<string>('');
+  const [mdxSource, setMdxSource] = useState<MDXRemoteSerializeResult | null>(null);
+  const [navigation, setNavigation] = useState<LessonNavigation | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [terminalExpanded, setTerminalExpanded] = useState(false);
   const [showCompletionBanner, setShowCompletionBanner] = useState(false);
 
@@ -76,38 +84,29 @@ export default function LessonPage({ params }: PageProps) {
   const lessonProgress = lessons[lessonKey];
   const isCompleted = lessonProgress?.status === 'completed';
 
-  // Load lesson content
+  // Load lesson content from API
   useEffect(() => {
     async function loadLesson() {
       setIsLoading(true);
+      setLoadError(null);
       try {
-        // In a real app, this would fetch from an API or use next-mdx-remote
-        // For now, we'll use sample data
-        const meta: LessonMeta = {
-          title: getLessonTitle(lessonSlug),
-          track: trackId,
-          chapter: 1,
-          lesson: parseInt(lessonSlug.split('-')[0]) || 1,
-          slug: lessonSlug,
-          prerequisites: [],
-          estimatedTime: 15,
-          difficulty: 'beginner',
-          xpReward: 50,
-          objectives: [
-            'Learn the basics of this topic',
-            'Practice with hands-on exercises',
-            'Complete the challenge',
-          ],
-          nextLesson: getNextLesson(trackId, lessonSlug),
-          prevLesson: getPrevLesson(trackId, lessonSlug),
-        };
-        setLessonMeta(meta);
-        setLessonContent('loaded');
+        const response = await fetch(`/api/lesson/${trackId}/${lessonSlug}`);
+
+        if (!response.ok) {
+          throw new Error('Failed to load lesson');
+        }
+
+        const data = await response.json();
+
+        setLessonMeta(data.frontmatter);
+        setMdxSource(data.source);
+        setNavigation(data.navigation);
 
         // Mark lesson as started
         startLesson(trackId, lessonSlug);
       } catch (error) {
         console.error('Failed to load lesson:', error);
+        setLoadError('Failed to load lesson content. Please try again.');
       } finally {
         setIsLoading(false);
       }
@@ -205,8 +204,8 @@ export default function LessonPage({ params }: PageProps) {
                   </p>
                 </div>
               </div>
-              {lessonMeta?.nextLesson && (
-                <Link href={`/learn/${trackId}/${lessonMeta.nextLesson}`}>
+              {navigation?.next && (
+                <Link href={`/learn/${trackId}/${navigation.next.slug}`}>
                   <Button>
                     Next Lesson
                     <ChevronRight className="h-4 w-4 ml-1" />
@@ -250,22 +249,26 @@ export default function LessonPage({ params }: PageProps) {
                   </CardContent>
                 </Card>
 
-                {/* Lesson Content Placeholder */}
-                <div className="prose prose-invert max-w-none">
-                  <div className="p-6 rounded-xl bg-[var(--color-surface)] border border-white/10">
-                    <p className="text-[var(--color-text-muted)] text-center">
-                      Lesson content for <strong>{lessonMeta?.title}</strong> will be loaded here.
-                    </p>
-                    <p className="text-sm text-[var(--color-text-muted)] text-center mt-2">
-                      Practice commands in the terminal on the right!
-                    </p>
+                {/* Lesson Content */}
+                {loadError ? (
+                  <div className="p-6 rounded-xl bg-red-900/20 border border-red-500/30">
+                    <p className="text-red-400 text-center">{loadError}</p>
                   </div>
-                </div>
+                ) : mdxSource ? (
+                  <LessonContent source={mdxSource} />
+                ) : (
+                  <div className="space-y-4">
+                    <Skeleton className="h-8 w-3/4" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                  </div>
+                )}
 
                 {/* Navigation Footer */}
                 <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
-                  {lessonMeta?.prevLesson ? (
-                    <Link href={`/learn/${trackId}/${lessonMeta.prevLesson}`}>
+                  {navigation?.prev ? (
+                    <Link href={`/learn/${trackId}/${navigation.prev.slug}`}>
                       <Button variant="outline" size="sm">
                         <ChevronLeft className="h-4 w-4 mr-1" />
                         Previous
@@ -283,8 +286,8 @@ export default function LessonPage({ params }: PageProps) {
                       </Button>
                     )}
 
-                    {lessonMeta?.nextLesson && (
-                      <Link href={`/learn/${trackId}/${lessonMeta.nextLesson}`}>
+                    {navigation?.next && (
+                      <Link href={`/learn/${trackId}/${navigation.next.slug}`}>
                         <Button variant={isCompleted ? 'default' : 'outline'}>
                           Next
                           <ChevronRight className="h-4 w-4 ml-1" />
@@ -335,75 +338,11 @@ export default function LessonPage({ params }: PageProps) {
   );
 }
 
-// Helper functions
-function getLessonTitle(slug: string): string {
-  const titles: Record<string, string> = {
-    '01-what-is-linux': 'What is Linux?',
-    '02-the-terminal': 'The Terminal - Your Command Center',
-    '03-first-commands': 'Your First Commands',
-    '04-getting-help': 'Getting Help',
-    '05-chapter1-quest': 'Quest: Terminal Awakening',
-    '06-understanding-directories': 'Understanding Directories',
-    '07-navigation': 'Navigation',
-    '08-creating-removing': 'Creating & Removing',
-    '09-copying-moving': 'Copying & Moving',
-    '10-chapter2-quest': 'Quest: The Lost Files',
-  };
-  return titles[slug] || slug.replace(/-/g, ' ').replace(/^\d+-/, '');
-}
-
-function getNextLesson(track: string, currentSlug: string): string | undefined {
-  const lessons: Record<string, string[]> = {
-    linux: [
-      '01-what-is-linux',
-      '02-the-terminal',
-      '03-first-commands',
-      '04-getting-help',
-      '05-chapter1-quest',
-      '06-understanding-directories',
-      '07-navigation',
-      '08-creating-removing',
-      '09-copying-moving',
-      '10-chapter2-quest',
-    ],
-  };
-  const trackLessons = lessons[track] || [];
-  const currentIndex = trackLessons.indexOf(currentSlug);
-  if (currentIndex >= 0 && currentIndex < trackLessons.length - 1) {
-    return trackLessons[currentIndex + 1];
-  }
-  return undefined;
-}
-
-function getPrevLesson(track: string, currentSlug: string): string | undefined {
-  const lessons: Record<string, string[]> = {
-    linux: [
-      '01-what-is-linux',
-      '02-the-terminal',
-      '03-first-commands',
-      '04-getting-help',
-      '05-chapter1-quest',
-      '06-understanding-directories',
-      '07-navigation',
-      '08-creating-removing',
-      '09-copying-moving',
-      '10-chapter2-quest',
-    ],
-  };
-  const trackLessons = lessons[track] || [];
-  const currentIndex = trackLessons.indexOf(currentSlug);
-  if (currentIndex > 0) {
-    return trackLessons[currentIndex - 1];
-  }
-  return undefined;
-}
-
+// Helper function for terminal welcome message
 function getTerminalWelcome(lessonTitle: string): string {
-  return `\x1b[1;36m╔════════════════════════════════════════════════════════════════════╗\x1b[0m
-\x1b[1;36m║\x1b[0m  \x1b[1;33m📚 Lesson: ${lessonTitle.substring(0, 50).padEnd(50)}\x1b[0m  \x1b[1;36m║\x1b[0m
-\x1b[1;36m║\x1b[0m                                                                      \x1b[1;36m║\x1b[0m
-\x1b[1;36m║\x1b[0m  Use this terminal to practice the commands from the lesson.        \x1b[1;36m║\x1b[0m
-\x1b[1;36m║\x1b[0m  Type \x1b[1;32mhelp\x1b[0m to see available commands.                                \x1b[1;36m║\x1b[0m
-\x1b[1;36m╚════════════════════════════════════════════════════════════════════╝\x1b[0m
+  return `\x1b[1;33m📚 ${lessonTitle}\x1b[0m
+
+\x1b[1;36mUse this terminal to practice commands from the lesson.\x1b[0m
+Type \x1b[1;32mhelp\x1b[0m to see available commands.
 `;
 }
