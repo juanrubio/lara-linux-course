@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node server.js",
-    "dev:next": "next dev",
+    "dev": "NEXT_PUBLIC_TERMINAL_WS_URL=ws://localhost:4000/api/terminal node server.js",
+    "dev:next": "NEXT_PUBLIC_TERMINAL_WS_URL=ws://localhost:4000/api/terminal next dev",
+    "dev:terminal": "node terminal-server.js",
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
     "start:next": "next start",
+    "start:terminal": "NODE_ENV=production node terminal-server.js",
     "lint": "eslint"
   },
   "dependencies": {

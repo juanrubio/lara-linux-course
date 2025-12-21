@@ -37,17 +37,32 @@ cd lara-linux-course
 # Install dependencies
 npm install
 
-# Run the development server
+# Run the frontend server
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+Start the terminal WebSocket server in a second terminal:
+
+```bash
+npm run dev:terminal
+```
+
+By default the frontend connects to `ws://localhost:4000/api/terminal`.
+To use a different terminal server URL, set `NEXT_PUBLIC_TERMINAL_WS_URL` before starting the frontend.
 
 ### Build for Production
 
 ```bash
 npm run build
 npm start
+```
+
+Then start the terminal server separately:
+
+```bash
+npm run start:terminal
 ```
 
 ## Project Structure

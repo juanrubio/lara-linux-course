@@ -20,8 +20,35 @@ interface TerminalState {
   statusHandlers: Set<StatusHandler>;
   reconnectTimer: ReturnType<typeof setTimeout> | null;
   keepAliveTimer: ReturnType<typeof setInterval> | null;
+  connectTimeoutTimer: ReturnType<typeof setTimeout> | null;
   reconnectAttempts: number;
   connectLock: boolean;
+  shouldConnect: boolean;
+}
+
+function getTerminalWsUrl(): string | null {
+  if (typeof window === 'undefined') return null;
+
+  const configured = (process.env.NEXT_PUBLIC_TERMINAL_WS_URL || '').trim();
+  const defaultPath = '/api/terminal';
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+
+  if (configured) {
+    let url = configured;
+    if (url.startsWith('http://')) url = `ws://${url.slice('http://'.length)}`;
+    if (url.startsWith('https://')) url = `wss://${url.slice('https://'.length)}`;
+
+    if (url.startsWith('ws://') || url.startsWith('wss://')) {
+      const hasPath = url.replace(/^wss?:\/\/[^/]+/, '').length > 0;
+      return hasPath ? url : `${url}${defaultPath}`;
+    }
+
+    const withoutSlashes = url.replace(/^\/\//, '');
+    const hasPath = withoutSlashes.includes('/');
+    return `${protocol}//${withoutSlashes}${hasPath ? '' : defaultPath}`;
+  }
+
+  return `${protocol}//${window.location.host}${defaultPath}`;
 }
 
 declare global {
@@ -41,8 +68,10 @@ function getState(): TerminalState {
       statusHandlers: new Set(),
       reconnectTimer: null,
       keepAliveTimer: null,
+      connectTimeoutTimer: null,
       reconnectAttempts: 0,
       connectLock: false,
+      shouldConnect: false,
     };
   }
 
@@ -55,8 +84,10 @@ function getState(): TerminalState {
       statusHandlers: new Set(),
       reconnectTimer: null,
       keepAliveTimer: null,
+      connectTimeoutTimer: null,
       reconnectAttempts: 0,
       connectLock: false,
+      shouldConnect: false,
     };
   }
   return window.__TERMINAL_STATE__!;
@@ -71,11 +102,13 @@ function startKeepAlive(ws: WebSocket) {
   if (state.keepAliveTimer) {
     clearInterval(state.keepAliveTimer);
   }
-  state.keepAliveTimer = setInterval(() => {
+  const sendPing = () => {
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ type: 'ping', time: Date.now() }));
     }
-  }, 25000);
+  };
+  sendPing();
+  state.keepAliveTimer = setInterval(sendPing, 25000);
 }
 
 function stopKeepAlive() {
@@ -83,6 +116,14 @@ function stopKeepAlive() {
   if (state.keepAliveTimer) {
     clearInterval(state.keepAliveTimer);
     state.keepAliveTimer = null;
+  }
+}
+
+function clearConnectTimeout() {
+  const state = getState();
+  if (state.connectTimeoutTimer) {
+    clearTimeout(state.connectTimeoutTimer);
+    state.connectTimeoutTimer = null;
   }
 }
 
@@ -134,17 +175,29 @@ function connect() {
   console.log('[TC] Creating WebSocket connection...');
   setStatus(ConnectionStatus.CONNECTING);
 
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const ws = new WebSocket(`${protocol}//${window.location.host}/api/terminal`);
+  const wsUrl = getTerminalWsUrl();
+  if (!wsUrl) {
+    console.log('[TC] No WebSocket URL available');
+    state.connectLock = false;
+    return;
+  }
+  const ws = new WebSocket(wsUrl);
   ws.binaryType = 'arraybuffer';
   state.ws = ws;
   window.__TERMINAL_WS__ = ws; // Keep direct reference to prevent GC
   console.log('[TC] WebSocket created and stored on window');
+  state.connectTimeoutTimer = setTimeout(() => {
+    if (ws.readyState === WebSocket.CONNECTING) {
+      console.log('[TC] Connection timeout, closing stale socket');
+      try { ws.close(); } catch {}
+    }
+  }, 5000);
 
   ws.onopen = () => {
     console.log('[TC] WebSocket opened');
     const s = getState();
     s.connectLock = false;
+    clearConnectTimeout();
     if (s.ws !== ws) {
       console.log('[TC] Stale WebSocket opened (s.ws !== ws), closing');
       ws.close();
@@ -152,6 +205,9 @@ function connect() {
     }
     s.reconnectAttempts = 0;
     startKeepAlive(ws);
+    try {
+      ws.send(JSON.stringify({ type: 'init' }));
+    } catch {}
     setStatus(ConnectionStatus.CONNECTED);
     console.log('[TC] WebSocket fully connected and ready');
   };
@@ -180,6 +236,7 @@ function connect() {
     console.log(`[TC] WebSocket closed: code=${e.code}`);
     const s = getState();
     s.connectLock = false;
+    clearConnectTimeout();
 
     if (s.ws !== ws) {
       console.log('[TC] Stale WebSocket closed, ignoring');
@@ -192,7 +249,7 @@ function connect() {
     }
     setStatus(ConnectionStatus.DISCONNECTED);
 
-    const shouldReconnect = hasActiveSubscribers(s);
+    const shouldReconnect = s.shouldConnect || hasActiveSubscribers(s);
     if (!shouldReconnect) {
       console.log('[TC] No active subscribers, staying disconnected');
       s.reconnectAttempts = 0;
@@ -214,24 +271,10 @@ function connect() {
   ws.onerror = () => {
     console.log('[TC] WebSocket error');
     stopKeepAlive();
+    clearConnectTimeout();
+    setStatus(ConnectionStatus.DISCONNECTED);
     getState().connectLock = false;
   };
-}
-
-// Auto-connect on module load (client-side only)
-// This ensures the connection is established early and survives component lifecycle
-if (typeof window !== 'undefined') {
-  // Use a longer delay to ensure the page is fully loaded
-  setTimeout(() => {
-    const state = getState();
-    // Only connect if not already connected/connecting and no pending reconnect
-    if (state.status === ConnectionStatus.DISCONNECTED && !state.ws && !state.connectLock && !state.reconnectTimer) {
-      console.log('[TC] Auto-connecting on module load');
-      connect();
-    } else {
-      console.log(`[TC] Skipping auto-connect: status=${state.status}, ws=${!!state.ws}, lock=${state.connectLock}, timer=${!!state.reconnectTimer}`);
-    }
-  }, 300);
 }
 
 // Public API
@@ -253,15 +296,27 @@ export function getTerminalConnection() {
 
     onMessage(handler: MessageHandler) {
       const state = getState();
+      state.shouldConnect = true;
       state.messageHandlers.add(handler);
-      return () => state.messageHandlers.delete(handler);
+      return () => {
+        state.messageHandlers.delete(handler);
+        if (state.messageHandlers.size === 0 && state.statusHandlers.size === 0) {
+          state.shouldConnect = false;
+        }
+      };
     },
 
     onStatus(handler: StatusHandler) {
       const state = getState();
+      state.shouldConnect = true;
       state.statusHandlers.add(handler);
       handler(state.status); // Immediate callback
-      return () => state.statusHandlers.delete(handler);
+      return () => {
+        state.statusHandlers.delete(handler);
+        if (state.messageHandlers.size === 0 && state.statusHandlers.size === 0) {
+          state.shouldConnect = false;
+        }
+      };
     },
 
     isConnected() {
@@ -274,6 +329,7 @@ export function getTerminalConnection() {
 
     ensureConnected() {
       const state = getState();
+      state.shouldConnect = true;
       if (state.status === ConnectionStatus.DISCONNECTED) {
         if (state.reconnectTimer) {
           clearTimeout(state.reconnectTimer);
