@@ -91,6 +91,5 @@ export const TRACKS: TrackInfo[] = [
     icon: '🍓',
     color: '#ec4899',
     totalLessons: 10,
-    prerequisites: ['linux', 'python'],
   },
 ];

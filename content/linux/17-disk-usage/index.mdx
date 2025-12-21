@@ -32,7 +32,7 @@ prevLesson: "16-system-information"
 **df** stands for "**D**isk **F**ree" - it shows how much space is available on your drives!
 
 <TerminalDemo>
-{`learner@codequest:~$ df
+{`lara@raspberrypi:~$ df
 Filesystem     1K-blocks    Used Available Use% Mounted on
 /dev/sda1       51474912 25737456  23083544  53% /
 tmpfs            4021776        0   4021776   0% /dev/shm`}
@@ -43,7 +43,7 @@ Hmm, those numbers are hard to read! Let's make it human-friendly.
 ### df -h: Human-Readable Format
 
 <TerminalDemo>
-{`learner@codequest:~$ df -h
+{`lara@raspberrypi:~$ df -h
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/sda1        50G   25G   22G  53% /
 tmpfs           3.9G     0  3.9G   0% /dev/shm
@@ -64,7 +64,7 @@ Much better! Now we can see:
 ### df -T: Show File System Type
 
 <TerminalDemo>
-{`learner@codequest:~$ df -Th
+{`lara@raspberrypi:~$ df -Th
 Filesystem     Type      Size  Used Avail Use% Mounted on
 /dev/sda1      ext4       50G   25G   22G  53% /
 tmpfs          tmpfs     3.9G     0  3.9G   0% /dev/shm`}
@@ -81,7 +81,7 @@ Now you can see what type of file system each disk uses (ext4, tmpfs, ntfs, etc.
 **df** tells you about entire disks, but **du** (Disk Usage) tells you how much space directories and files are using!
 
 <TerminalDemo>
-{`learner@codequest:~$ du Documents/
+{`lara@raspberrypi:~$ du Documents/
 4       Documents/notes
 8       Documents/projects/game
 12      Documents/projects
@@ -93,7 +93,7 @@ Those numbers are in kilobytes (KB). Let's make it readable!
 ### du -h: Human-Readable Sizes
 
 <TerminalDemo>
-{`learner@codequest:~$ du -h Documents/
+{`lara@raspberrypi:~$ du -h Documents/
 4.0K    Documents/notes
 8.0K    Documents/projects/game
 12K     Documents/projects
@@ -105,10 +105,10 @@ Those numbers are in kilobytes (KB). Let's make it readable!
 Sometimes you don't want to see every subfolder - just the total!
 
 <TerminalDemo>
-{`learner@codequest:~$ du -sh Documents/
+{`lara@raspberrypi:~$ du -sh Documents/
 20K     Documents/
 
-learner@codequest:~$ du -sh Downloads/
+lara@raspberrypi:~$ du -sh Downloads/
 2.3G    Downloads/`}
 </TerminalDemo>
 
@@ -119,12 +119,12 @@ The `-s` means "summary" - just show the total size!
 Want to find your largest directories? Combine du with sort!
 
 <TerminalDemo>
-{`learner@codequest:~$ du -h ~ | sort -hr | head -5
-2.3G    /home/learner/Downloads
-1.5G    /home/learner/Videos
-500M    /home/learner/Documents
-250M    /home/learner/Pictures
-100M    /home/learner/.cache`}
+{`lara@raspberrypi:~$ du -h ~ | sort -hr | head -5
+2.3G    /home/lara/Downloads
+1.5G    /home/lara/Videos
+500M    /home/lara/Documents
+250M    /home/lara/Pictures
+100M    /home/lara/.cache`}
 </TerminalDemo>
 
 This shows the 5 biggest directories in your home folder!
@@ -147,13 +147,13 @@ This shows the 5 biggest directories in your home folder!
 ## Checking Specific Locations
 
 <TerminalDemo>
-{`learner@codequest:~$ du -sh /var/log
+{`lara@raspberrypi:~$ du -sh /var/log
 150M    /var/log
 
-learner@codequest:~$ du -sh ~/.cache
-100M    /home/learner/.cache
+lara@raspberrypi:~$ du -sh ~/.cache
+100M    /home/lara/.cache
 
-learner@codequest:~$ du -sh /tmp
+lara@raspberrypi:~$ du -sh /tmp
 25M     /tmp`}
 </TerminalDemo>
 

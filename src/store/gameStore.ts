@@ -62,7 +62,7 @@ const initialPreferences: UserPreferences = {
   soundEnabled: true,
   notificationsEnabled: true,
   animationsEnabled: true,
-  darkMode: true,
+  darkMode: false,
   terminalFontSize: 14,
   showHints: true,
   difficulty: 'normal',

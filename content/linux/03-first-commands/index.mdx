@@ -31,12 +31,12 @@ When you first open a terminal, you're standing in a folder (directory). But whi
 **pwd** stands for "**P**rint **W**orking **D**irectory"
 
 <TerminalDemo>
-{`learner@codequest:~$ pwd
-/home/learner`}
+{`lara@raspberrypi:~$ pwd
+/home/lara`}
 </TerminalDemo>
 
-The output `/home/learner` tells you:
-- You're in the `learner` folder
+The output `/home/lara` tells you:
+- You're in the `lara` folder
 - Which is inside the `home` folder
 - Which is at the root (`/`) of the system
 
@@ -49,7 +49,7 @@ The output `/home/learner` tells you:
 Now that you know WHERE you are, let's see WHAT'S around you. The `ls` command **lists** the contents of a directory.
 
 <TerminalDemo>
-{`learner@codequest:~$ ls
+{`lara@raspberrypi:~$ ls
 Desktop  Documents  Downloads  Pictures  projects`}
 </TerminalDemo>
 
@@ -67,13 +67,13 @@ Those are all folders (and sometimes files) in your current directory!
 | `ls -la` | Both! Details AND hidden files |
 
 <TerminalDemo>
-{`learner@codequest:~$ ls -la
+{`lara@raspberrypi:~$ ls -la
 total 24
-drwxr-xr-x  5 learner learner 4096 Jan 15 10:30 .
+drwxr-xr-x  5 lara lara 4096 Jan 15 10:30 .
 drwxr-xr-x  3 root    root    4096 Jan 10 08:00 ..
--rw-------  1 learner learner  220 Jan 10 08:00 .bash_history
-drwxr-xr-x  2 learner learner 4096 Jan 12 14:20 Desktop
-drwxr-xr-x  2 learner learner 4096 Jan 13 09:15 Documents`}
+-rw-------  1 lara lara  220 Jan 10 08:00 .bash_history
+drwxr-xr-x  2 lara lara 4096 Jan 12 14:20 Desktop
+drwxr-xr-x  2 lara lara 4096 Jan 13 09:15 Documents`}
 </TerminalDemo>
 
 <FunFact>
@@ -85,8 +85,8 @@ drwxr-xr-x  2 learner learner 4096 Jan 13 09:15 Documents`}
 Sometimes you need to know which user you're logged in as. The `whoami` command tells you!
 
 <TerminalDemo>
-{`learner@codequest:~$ whoami
-learner`}
+{`lara@raspberrypi:~$ whoami
+lara`}
 </TerminalDemo>
 
 Simple, but very useful when you're working on different computers or have multiple accounts!

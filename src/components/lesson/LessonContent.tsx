@@ -71,7 +71,7 @@ const mdxComponents = {
   ),
   pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
     <pre
-      className="p-4 rounded-lg bg-[var(--color-terminal-bg)] overflow-x-auto mb-4"
+      className="p-4 rounded-lg bg-[var(--color-terminal-bg)] text-[var(--color-terminal-text)] font-mono text-sm overflow-x-auto mb-4"
       {...props}
     />
   ),

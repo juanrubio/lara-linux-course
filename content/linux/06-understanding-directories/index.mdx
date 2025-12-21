@@ -61,16 +61,16 @@ Unlike Windows (which has C:, D:, etc.), Linux has just ONE tree, and everything
 Your **home directory** is YOUR space. It's where you keep your files, downloads, and projects.
 
 <TerminalDemo>
-{`learner@codequest:~$ pwd
-/home/learner
+{`lara@raspberrypi:~$ pwd
+/home/lara
 
-learner@codequest:~$ cd /
-learner@codequest:/$ pwd
+lara@raspberrypi:~$ cd /
+lara@raspberrypi:/$ pwd
 /
 
-learner@codequest:/$ cd ~
-learner@codequest:~$ pwd
-/home/learner`}
+lara@raspberrypi:/$ cd ~
+lara@raspberrypi:~$ pwd
+/home/lara`}
 </TerminalDemo>
 
 The `~` (tilde) is a shortcut that ALWAYS means "my home folder"!
@@ -84,7 +84,7 @@ There are two ways to describe locations:
 Like a full street address. Always starts with `/`.
 
 ```
-/home/learner/Documents/homework.txt
+/home/lara/Documents/homework.txt
 ```
 
 This works from ANYWHERE because it's the complete path from the root.
@@ -97,7 +97,7 @@ Like saying "it's next door." Depends on your current location.
 Documents/homework.txt
 ```
 
-This only works if you're already in `/home/learner/`!
+This only works if you're already in `/home/lara/`!
 
 <StoryBox character="pixel_the_penguin">
   Think of it like giving directions:
@@ -118,7 +118,7 @@ This only works if you're already in `/home/learner/`!
 | `..` | Parent directory (one up) | `cd ..` |
 
 <FunFact>
-  The `..` is super useful! If you're in `/home/learner/Documents/projects`, typing `cd ..` takes you to `/home/learner/Documents`. It's like climbing up a ladder!
+  The `..` is super useful! If you're in `/home/lara/Documents/projects`, typing `cd ..` takes you to `/home/lara/Documents`. It's like climbing up a ladder!
 </FunFact>
 
 ## Practice: Explore the System

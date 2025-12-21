@@ -29,11 +29,11 @@ prevLesson: "08-creating-removing"
 **cp** means "**C**o**P**y". It duplicates files!
 
 <TerminalDemo>
-{`learner@codequest:~$ ls
+{`lara@raspberrypi:~$ ls
 notes.txt
 
-learner@codequest:~$ cp notes.txt notes_backup.txt
-learner@codequest:~$ ls
+lara@raspberrypi:~$ cp notes.txt notes_backup.txt
+lara@raspberrypi:~$ ls
 notes.txt  notes_backup.txt`}
 </TerminalDemo>
 
@@ -42,15 +42,15 @@ Now you have TWO files with the same content!
 ### Copy to a Different Directory
 
 <TerminalDemo>
-{`learner@codequest:~$ cp notes.txt Documents/
-learner@codequest:~$ ls Documents
+{`lara@raspberrypi:~$ cp notes.txt Documents/
+lara@raspberrypi:~$ ls Documents
 notes.txt`}
 </TerminalDemo>
 
 ### Copy and Rename
 
 <TerminalDemo>
-{`learner@codequest:~$ cp notes.txt Documents/my_notes.txt`}
+{`lara@raspberrypi:~$ cp notes.txt Documents/my_notes.txt`}
 </TerminalDemo>
 
 ## Copying Directories: cp -r
@@ -58,9 +58,9 @@ notes.txt`}
 To copy a directory with all its contents, use `-r` (recursive):
 
 <TerminalDemo>
-{`learner@codequest:~$ cp -r projects projects_backup
+{`lara@raspberrypi:~$ cp -r projects projects_backup
 
-learner@codequest:~$ ls
+lara@raspberrypi:~$ ls
 projects  projects_backup`}
 </TerminalDemo>
 
@@ -73,14 +73,14 @@ projects  projects_backup`}
 **mv** means "**M**o**V**e". Unlike cp, it MOVES (not copies) - the original is gone!
 
 <TerminalDemo>
-{`learner@codequest:~$ ls
+{`lara@raspberrypi:~$ ls
 notes.txt  Documents
 
-learner@codequest:~$ mv notes.txt Documents/
-learner@codequest:~$ ls
+lara@raspberrypi:~$ mv notes.txt Documents/
+lara@raspberrypi:~$ ls
 Documents
 
-learner@codequest:~$ ls Documents
+lara@raspberrypi:~$ ls Documents
 notes.txt`}
 </TerminalDemo>
 
@@ -97,18 +97,18 @@ The file MOVED - it's not in both places!
 mv is also used to RENAME files! Just "move" to a new name in the same folder:
 
 <TerminalDemo>
-{`learner@codequest:~$ ls
+{`lara@raspberrypi:~$ ls
 oldname.txt
 
-learner@codequest:~$ mv oldname.txt newname.txt
-learner@codequest:~$ ls
+lara@raspberrypi:~$ mv oldname.txt newname.txt
+lara@raspberrypi:~$ ls
 newname.txt`}
 </TerminalDemo>
 
 ### Rename AND Move
 
 <TerminalDemo>
-{`learner@codequest:~$ mv report.txt Documents/final_report.txt`}
+{`lara@raspberrypi:~$ mv report.txt Documents/final_report.txt`}
 </TerminalDemo>
 
 This moves the file to Documents AND renames it!
@@ -118,8 +118,8 @@ This moves the file to Documents AND renames it!
 mv works on directories without needing -r:
 
 <TerminalDemo>
-{`learner@codequest:~$ mv projects Documents/
-learner@codequest:~$ ls Documents
+{`lara@raspberrypi:~$ mv projects Documents/
+lara@raspberrypi:~$ ls Documents
 projects`}
 </TerminalDemo>
 
@@ -132,7 +132,7 @@ projects`}
 Both cp and mv can overwrite existing files without warning! Use `-i` to be safe:
 
 <TerminalDemo>
-{`learner@codequest:~$ cp -i file1.txt file2.txt
+{`lara@raspberrypi:~$ cp -i file1.txt file2.txt
 cp: overwrite 'file2.txt'? n`}
 </TerminalDemo>
 

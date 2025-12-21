@@ -39,7 +39,7 @@ export function Terminal({
   const historyIndexRef = useRef(-1);
 
   const writePrompt = useCallback((term: XTerm) => {
-    term.write('\x1b[1;32mlara\x1b[0m@\x1b[1;34mcodequest\x1b[0m:\x1b[1;36m~\x1b[0m$ ');
+    term.write('\x1b[1;32mlara\x1b[0m@\x1b[1;34mraspberrypi\x1b[0m:\x1b[1;36m~\x1b[0m$ ');
   }, []);
 
   const replaceCurrentLine = useCallback((term: XTerm, newLine: string) => {

@@ -38,7 +38,7 @@ Linux is like an apartment building:
 Each user has:
 - A unique username
 - A User ID (UID) number
-- A home directory (like `/home/learner`)
+- A home directory (like `/home/lara`)
 - Group memberships
 - Their own files and settings
 
@@ -47,8 +47,8 @@ Each user has:
 The simplest command - it tells you your current username!
 
 <TerminalDemo>
-{`learner@codequest:~$ whoami
-learner`}
+{`lara@raspberrypi:~$ whoami
+lara`}
 </TerminalDemo>
 
 Super simple, but useful in scripts or when switching between users!
@@ -62,8 +62,8 @@ Super simple, but useful in scripts or when switching between users!
 **id** shows detailed information about your user account!
 
 <TerminalDemo>
-{`learner@codequest:~$ id
-uid=1000(learner) gid=1000(learner) groups=1000(learner),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev)`}
+{`lara@raspberrypi:~$ id
+uid=1000(lara) gid=1000(lara) groups=1000(lara),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev)`}
 </TerminalDemo>
 
 This tells you:
@@ -74,7 +74,7 @@ This tells you:
 ### Check Another User's ID
 
 <TerminalDemo>
-{`learner@codequest:~$ id root
+{`lara@raspberrypi:~$ id root
 uid=0(root) gid=0(root) groups=0(root)`}
 </TerminalDemo>
 
@@ -87,9 +87,9 @@ uid=0(root) gid=0(root) groups=0(root)`}
 The **who** command shows everyone currently logged into the system!
 
 <TerminalDemo>
-{`learner@codequest:~$ who
-learner  tty1         2025-12-19 10:23
-learner  pts/0        2025-12-19 14:15 (192.168.1.100)
+{`lara@raspberrypi:~$ who
+lara  tty1         2025-12-19 10:23
+lara  pts/0        2025-12-19 14:15 (192.168.1.100)
 juan     pts/1        2025-12-19 15:30 (192.168.1.101)`}
 </TerminalDemo>
 
@@ -102,8 +102,8 @@ This shows:
 ### who am i - More Details About Me
 
 <TerminalDemo>
-{`learner@codequest:~$ who am i
-learner  pts/0        2025-12-19 14:15 (192.168.1.100)`}
+{`lara@raspberrypi:~$ who am i
+lara  pts/0        2025-12-19 14:15 (192.168.1.100)`}
 </TerminalDemo>
 
 ### w - Even More Information!
@@ -111,10 +111,10 @@ learner  pts/0        2025-12-19 14:15 (192.168.1.100)`}
 The **w** command is like "who" with extra details:
 
 <TerminalDemo>
-{`learner@codequest:~$ w
+{`lara@raspberrypi:~$ w
  15:45:01 up 5 days,  3:45,  2 users,  load average: 0.52, 0.48, 0.41
 USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
-learner  pts/0    192.168.1.100    14:15    0.00s  0.12s  0.01s w
+lara  pts/0    192.168.1.100    14:15    0.00s  0.12s  0.01s w
 juan     pts/1    192.168.1.101    15:30    5:00   0.05s  0.05s vim report.txt`}
 </TerminalDemo>
 
@@ -139,13 +139,13 @@ Now you can see what each user is currently doing!
 ### Check Your Groups
 
 <TerminalDemo>
-{`learner@codequest:~$ groups
-learner adm cdrom sudo dip plugdev
+{`lara@raspberrypi:~$ groups
+lara adm cdrom sudo dip plugdev
 
-learner@codequest:~$ groups learner
-learner : learner adm cdrom sudo dip plugdev
+lara@raspberrypi:~$ groups lara
+lara : lara adm cdrom sudo dip plugdev
 
-learner@codequest:~$ groups juan
+lara@raspberrypi:~$ groups juan
 juan : juan users`}
 </TerminalDemo>
 
@@ -159,14 +159,14 @@ juan : juan users`}
 
 <TerminalDemo>
 {`# Regular user (can't read protected files)
-learner@codequest:~$ cat /etc/shadow
+lara@raspberrypi:~$ cat /etc/shadow
 cat: /etc/shadow: Permission denied
 
 # Using sudo to run as root
-learner@codequest:~$ sudo cat /etc/shadow
-[sudo] password for learner:
+lara@raspberrypi:~$ sudo cat /etc/shadow
+[sudo] password for lara:
 root:*:19000:0:99999:7:::
-learner:$6$abc123...:19000:0:99999:7:::`}
+lara:$6$abc123...:19000:0:99999:7:::`}
 </TerminalDemo>
 
 <FunFact>
@@ -180,8 +180,8 @@ Linux stores user information in special files:
 ### /etc/passwd - User Database
 
 <TerminalDemo>
-{`learner@codequest:~$ cat /etc/passwd | grep learner
-learner:x:1000:1000:Learner User:/home/learner:/bin/bash`}
+{`lara@raspberrypi:~$ cat /etc/passwd | grep lara
+lara:x:1000:1000:Lara User:/home/lara:/bin/bash`}
 </TerminalDemo>
 
 Format: `username:x:UID:GID:full_name:home_dir:shell`
@@ -189,8 +189,8 @@ Format: `username:x:UID:GID:full_name:home_dir:shell`
 ### /etc/group - Group Database
 
 <TerminalDemo>
-{`learner@codequest:~$ cat /etc/group | grep sudo
-sudo:x:27:learner,juan`}
+{`lara@raspberrypi:~$ cat /etc/group | grep sudo
+sudo:x:27:lara,juan`}
 </TerminalDemo>
 
 Shows which users belong to each group!
@@ -201,15 +201,15 @@ The **su** command lets you switch to another user account:
 
 <TerminalDemo>
 {`# Switch to another user
-learner@codequest:~$ su juan
+lara@raspberrypi:~$ su juan
 Password:
-juan@codequest:~$ whoami
+juan@raspberrypi:~$ whoami
 juan
 
 # Exit back to original user
-juan@codequest:~$ exit
-learner@codequest:~$ whoami
-learner`}
+juan@raspberrypi:~$ exit
+lara@raspberrypi:~$ whoami
+lara`}
 </TerminalDemo>
 
 ### su vs sudo
@@ -315,24 +315,24 @@ Even if you're the only person using your Linux machine, the multi-user system i
 
 ### Check if you're in the sudo group
 <TerminalDemo>
-{`learner@codequest:~$ groups | grep sudo
-learner adm cdrom sudo dip plugdev
+{`lara@raspberrypi:~$ groups | grep sudo
+lara adm cdrom sudo dip plugdev
 # Yes! "sudo" is in the list`}
 </TerminalDemo>
 
 ### Find out who's hogging resources
 <TerminalDemo>
-{`learner@codequest:~$ w
+{`lara@raspberrypi:~$ w
 USER     TTY      WHAT
-learner  pts/0    w
+lara  pts/0    w
 juan     pts/1    python heavy_script.py
 # Juan is running a heavy script!`}
 </TerminalDemo>
 
 ### Check your own user info
 <TerminalDemo>
-{`learner@codequest:~$ id $(whoami)
-uid=1000(learner) gid=1000(learner) groups=1000(learner),...`}
+{`lara@raspberrypi:~$ id $(whoami)
+uid=1000(lara) gid=1000(lara) groups=1000(lara),...`}
 </TerminalDemo>
 
 ## What's Next?

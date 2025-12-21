@@ -29,12 +29,12 @@ prevLesson: "06-understanding-directories"
 **cd** stands for "**C**hange **D**irectory". It's how you move from one folder to another.
 
 <TerminalDemo>
-{`learner@codequest:~$ pwd
-/home/learner
+{`lara@raspberrypi:~$ pwd
+/home/lara
 
-learner@codequest:~$ cd Documents
-learner@codequest:~/Documents$ pwd
-/home/learner/Documents`}
+lara@raspberrypi:~$ cd Documents
+lara@raspberrypi:~/Documents$ pwd
+/home/lara/Documents`}
 </TerminalDemo>
 
 Notice how the prompt changed from `~` to `~/Documents`? That shows you moved!
@@ -60,8 +60,8 @@ Here's a SECRET that will save you HOURS of typing: **Tab completion!**
 Start typing a directory name, then press Tab:
 
 <TerminalDemo>
-{`learner@codequest:~$ cd Doc<TAB>
-learner@codequest:~$ cd Documents/`}
+{`lara@raspberrypi:~$ cd Doc<TAB>
+lara@raspberrypi:~$ cd Documents/`}
 </TerminalDemo>
 
 The terminal auto-completes for you! If there are multiple matches, press Tab twice to see all options.
@@ -75,23 +75,23 @@ The terminal auto-completes for you! If there are multiple matches, press Tab tw
 Let's practice moving around!
 
 <TerminalDemo>
-{`learner@codequest:~$ cd /
-learner@codequest:/$ pwd
+{`lara@raspberrypi:~$ cd /
+lara@raspberrypi:/$ pwd
 /
 
-learner@codequest:/$ cd home
-learner@codequest:/home$ ls
-learner
+lara@raspberrypi:/$ cd home
+lara@raspberrypi:/home$ ls
+lara
 
-learner@codequest:/home$ cd learner
-learner@codequest:~$ pwd
-/home/learner
+lara@raspberrypi:/home$ cd lara
+lara@raspberrypi:~$ pwd
+/home/lara
 
-learner@codequest:~$ cd -
+lara@raspberrypi:~$ cd -
 /home
-learner@codequest:/home$ cd
-learner@codequest:~$ pwd
-/home/learner`}
+lara@raspberrypi:/home$ cd
+lara@raspberrypi:~$ pwd
+/home/lara`}
 </TerminalDemo>
 
 See how `cd -` took us BACK to `/home`? Super useful when bouncing between two directories!
@@ -101,13 +101,13 @@ See how `cd -` took us BACK to `/home`? Super useful when bouncing between two d
 You can chain directories together:
 
 <TerminalDemo>
-{`learner@codequest:~$ cd Documents/projects/game
-learner@codequest:~/Documents/projects/game$ pwd
-/home/learner/Documents/projects/game
+{`lara@raspberrypi:~$ cd Documents/projects/game
+lara@raspberrypi:~/Documents/projects/game$ pwd
+/home/lara/Documents/projects/game
 
-learner@codequest:~/Documents/projects/game$ cd ../..
-learner@codequest:~/Documents$ pwd
-/home/learner/Documents`}
+lara@raspberrypi:~/Documents/projects/game$ cd ../..
+lara@raspberrypi:~/Documents$ pwd
+/home/lara/Documents`}
 </TerminalDemo>
 
 ## Common Mistakes

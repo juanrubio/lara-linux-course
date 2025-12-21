@@ -42,7 +42,7 @@ Think of processes like tasks on a to-do list that your computer is working on!
 **ps** shows you a snapshot of currently running processes.
 
 <TerminalDemo>
-{`learner@codequest:~$ ps
+{`lara@raspberrypi:~$ ps
   PID TTY          TIME CMD
  1234 pts/0    00:00:00 bash
  5678 pts/0    00:00:00 ps`}
@@ -53,12 +53,12 @@ By default, ps only shows YOUR processes in the current terminal. Not very excit
 ### ps aux - Show ALL Processes
 
 <TerminalDemo>
-{`learner@codequest:~$ ps aux
+{`lara@raspberrypi:~$ ps aux
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root         1  0.0  0.1  16808  9128 ?        Ss   Dec15   0:05 /sbin/init
-learner   1234  0.0  0.2  21468  5012 pts/0    Ss   10:23   0:01 bash
-learner   2345  2.3  5.8 892456 234816 ?       Sl   10:25   2:15 firefox
-learner   3456  0.5  1.2  45678 12456 ?        S    11:00   0:30 python script.py`}
+lara   1234  0.0  0.2  21468  5012 pts/0    Ss   10:23   0:01 bash
+lara   2345  2.3  5.8 892456 234816 ?       Sl   10:25   2:15 firefox
+lara   3456  0.5  1.2  45678 12456 ?        S    11:00   0:30 python script.py`}
 </TerminalDemo>
 
 Now we're talking! Let's decode this:
@@ -79,14 +79,14 @@ Now we're talking! Let's decode this:
 
 <TerminalDemo>
 {`# Show all processes with details
-learner@codequest:~$ ps aux
+lara@raspberrypi:~$ ps aux
 
 # Show processes in a tree (see parent-child relationships)
-learner@codequest:~$ ps auxf
+lara@raspberrypi:~$ ps auxf
 
 # Find specific process
-learner@codequest:~$ ps aux | grep firefox
-learner   2345  2.3  5.8 892456 234816 ?  Sl  10:25  2:15 firefox`}
+lara@raspberrypi:~$ ps aux | grep firefox
+lara   2345  2.3  5.8 892456 234816 ?  Sl  10:25  2:15 firefox`}
 </TerminalDemo>
 
 <StoryBox character="pixel_the_penguin">
@@ -98,7 +98,7 @@ learner   2345  2.3  5.8 892456 234816 ?  Sl  10:25  2:15 firefox`}
 **top** is like a live dashboard showing your system's activity in real-time!
 
 <TerminalDemo>
-{`learner@codequest:~$ top
+{`lara@raspberrypi:~$ top
 
 top - 14:23:45 up 5 days,  3:45,  2 users,  load average: 0.52, 0.48, 0.41
 Tasks: 248 total,   1 running, 247 sleeping,   0 stopped,   0 zombie
@@ -107,9 +107,9 @@ MiB Mem :   7856.3 total,   1234.5 free,   4321.2 used,   2300.6 buff/cache
 MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   2987.4 avail Mem
 
   PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
- 2345 learner   20   0  892456 234816  89256 S   5.3   2.9   2:15.42 firefox
- 3456 learner   20   0   45678  12456   8234 S   1.0   0.2   0:30.15 python
- 1234 learner   20   0   21468   5012   3456 S   0.0   0.1   0:01.23 bash`}
+ 2345 lara   20   0  892456 234816  89256 S   5.3   2.9   2:15.42 firefox
+ 3456 lara   20   0   45678  12456   8234 S   1.0   0.2   0:30.15 python
+ 1234 lara   20   0   21468   5012   3456 S   0.0   0.1   0:01.23 bash`}
 </TerminalDemo>
 
 Top updates every few seconds - it's alive! Press `q` to quit.
@@ -146,7 +146,7 @@ While top is running, you can press:
 **htop** is like top but with colors, graphs, and easier controls! (You might need to install it first)
 
 <TerminalDemo>
-{`learner@codequest:~$ htop`}
+{`lara@raspberrypi:~$ htop`}
 </TerminalDemo>
 
 htop shows:
@@ -165,14 +165,14 @@ Sometimes a program freezes or goes crazy. You need to stop it! That's where **k
 
 <TerminalDemo>
 {`# Find the process first
-learner@codequest:~$ ps aux | grep frozen_program
-learner   9999  99.0  50.0 999999 500000 ?  R  14:30  10:00 frozen_program
+lara@raspberrypi:~$ ps aux | grep frozen_program
+lara   9999  99.0  50.0 999999 500000 ?  R  14:30  10:00 frozen_program
 
 # Kill it by PID
-learner@codequest:~$ kill 9999
+lara@raspberrypi:~$ kill 9999
 
 # Check if it's gone
-learner@codequest:~$ ps aux | grep frozen_program
+lara@raspberrypi:~$ ps aux | grep frozen_program
 # (no output - it's gone!)`}
 </TerminalDemo>
 
@@ -188,10 +188,10 @@ learner@codequest:~$ ps aux | grep frozen_program
 
 <TerminalDemo>
 {`# Try polite termination first
-learner@codequest:~$ kill 9999
+lara@raspberrypi:~$ kill 9999
 
 # If that doesn't work, force it
-learner@codequest:~$ kill -9 9999`}
+lara@raspberrypi:~$ kill -9 9999`}
 </TerminalDemo>
 
 <StoryBox character="commander_byte">
@@ -208,7 +208,7 @@ Not all processes are equal! Some are more important than others. This is contro
 
 <TerminalDemo>
 {`# Run a command with low priority (nice = 19)
-learner@codequest:~$ nice -n 19 ./slow_script.sh`}
+lara@raspberrypi:~$ nice -n 19 ./slow_script.sh`}
 </TerminalDemo>
 
 ## Common Process Scenarios
@@ -216,23 +216,23 @@ learner@codequest:~$ nice -n 19 ./slow_script.sh`}
 ### Scenario 1: Find a Frozen Browser
 
 <TerminalDemo>
-{`learner@codequest:~$ ps aux | grep firefox
-learner   2345  99.0  25.0 892456 234816 ?  R  10:25  15:00 firefox
+{`lara@raspberrypi:~$ ps aux | grep firefox
+lara   2345  99.0  25.0 892456 234816 ?  R  10:25  15:00 firefox
 
-learner@codequest:~$ kill 2345`}
+lara@raspberrypi:~$ kill 2345`}
 </TerminalDemo>
 
 ### Scenario 2: Find What's Using All the CPU
 
 <TerminalDemo>
-{`learner@codequest:~$ top
+{`lara@raspberrypi:~$ top
 # Look at the top of the list - highest %CPU users!`}
 </TerminalDemo>
 
 ### Scenario 3: Find What's Using All the Memory
 
 <TerminalDemo>
-{`learner@codequest:~$ top
+{`lara@raspberrypi:~$ top
 # Press 'M' to sort by memory
 # Or use: ps aux --sort=-%mem | head -10`}
 </TerminalDemo>

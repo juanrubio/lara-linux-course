@@ -86,7 +86,7 @@ function highlightLine(line: string, language: string): React.ReactNode {
       return (
         <>
           <span className="text-green-400">$</span>
-          <span className="text-[var(--color-text)]">{line.slice(1)}</span>
+          <span className="text-[var(--color-terminal-text)]">{line.slice(1)}</span>
         </>
       );
     }

@@ -29,24 +29,24 @@ prevLesson: "07-navigation"
 **mkdir** means "**M**ake **D**irectory". It creates a new folder!
 
 <TerminalDemo>
-{`learner@codequest:~$ ls
+{`lara@raspberrypi:~$ ls
 Documents  Downloads  Pictures
 
-learner@codequest:~$ mkdir projects
-learner@codequest:~$ ls
+lara@raspberrypi:~$ mkdir projects
+lara@raspberrypi:~$ ls
 Documents  Downloads  Pictures  projects
 
-learner@codequest:~$ mkdir projects/python
-learner@codequest:~$ ls projects
+lara@raspberrypi:~$ mkdir projects/python
+lara@raspberrypi:~$ ls projects
 python`}
 </TerminalDemo>
 
 ### Create Multiple Directories at Once
 
 <TerminalDemo>
-{`learner@codequest:~$ mkdir games homework music
+{`lara@raspberrypi:~$ mkdir games homework music
 
-learner@codequest:~$ ls
+lara@raspberrypi:~$ ls
 Documents  Downloads  games  homework  music  Pictures  projects`}
 </TerminalDemo>
 
@@ -55,8 +55,8 @@ Documents  Downloads  games  homework  music  Pictures  projects`}
 What if you want to create `/projects/python/game1` but `projects` doesn't exist yet? Use `-p`:
 
 <TerminalDemo>
-{`learner@codequest:~$ mkdir -p projects/python/game1
-learner@codequest:~$ ls projects/python
+{`lara@raspberrypi:~$ mkdir -p projects/python/game1
+lara@raspberrypi:~$ ls projects/python
 game1`}
 </TerminalDemo>
 
@@ -71,12 +71,12 @@ The `-p` (parent) option creates all the folders in the path!
 **touch** creates an empty file (or updates a file's timestamp):
 
 <TerminalDemo>
-{`learner@codequest:~$ touch notes.txt
-learner@codequest:~$ ls
+{`lara@raspberrypi:~$ touch notes.txt
+lara@raspberrypi:~$ ls
 Documents  notes.txt  projects
 
-learner@codequest:~$ touch project1.py script.sh readme.md
-learner@codequest:~$ ls
+lara@raspberrypi:~$ touch project1.py script.sh readme.md
+lara@raspberrypi:~$ ls
 Documents  notes.txt  project1.py  projects  readme.md  script.sh`}
 </TerminalDemo>
 
@@ -89,11 +89,11 @@ Documents  notes.txt  project1.py  projects  readme.md  script.sh`}
 **rm** means "**R**e**M**ove". BE CAREFUL - there's no recycle bin!
 
 <TerminalDemo>
-{`learner@codequest:~$ ls
+{`lara@raspberrypi:~$ ls
 Documents  notes.txt  test.txt
 
-learner@codequest:~$ rm test.txt
-learner@codequest:~$ ls
+lara@raspberrypi:~$ rm test.txt
+lara@raspberrypi:~$ ls
 Documents  notes.txt`}
 </TerminalDemo>
 
@@ -102,9 +102,9 @@ Documents  notes.txt`}
 Add `-i` to get a confirmation prompt:
 
 <TerminalDemo>
-{`learner@codequest:~$ rm -i notes.txt
+{`lara@raspberrypi:~$ rm -i notes.txt
 rm: remove regular file 'notes.txt'? n
-learner@codequest:~$ ls
+lara@raspberrypi:~$ ls
 Documents  notes.txt`}
 </TerminalDemo>
 
@@ -115,14 +115,14 @@ Type `y` for yes, `n` for no!
 **rmdir** removes EMPTY directories only:
 
 <TerminalDemo>
-{`learner@codequest:~$ mkdir empty_folder
-learner@codequest:~$ rmdir empty_folder`}
+{`lara@raspberrypi:~$ mkdir empty_folder
+lara@raspberrypi:~$ rmdir empty_folder`}
 </TerminalDemo>
 
 **rm -r** removes directories with contents (CAREFUL!):
 
 <TerminalDemo>
-{`learner@codequest:~$ rm -r projects/old_game`}
+{`lara@raspberrypi:~$ rm -r projects/old_game`}
 </TerminalDemo>
 
 <StoryBox character="commander_byte">
