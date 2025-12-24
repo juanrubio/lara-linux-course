@@ -24,7 +24,8 @@ process.on('unhandledRejection', (reason) => {
 
 // WebSocket server for terminal connections
 // Disable permessage-deflate to avoid occasional abrupt disconnects (1006)
-const wss = new WebSocketServer({ port, path: '/api/terminal', perMessageDeflate: false });
+// Bind to 0.0.0.0 to allow connections from Windows host in WSL2
+const wss = new WebSocketServer({ host: '0.0.0.0', port, path: '/api/terminal', perMessageDeflate: false });
 
 const HEARTBEAT_INTERVAL_MS = 30000;
 const HEARTBEAT_GRACE_MS = HEARTBEAT_INTERVAL_MS * 2;
