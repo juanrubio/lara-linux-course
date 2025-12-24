@@ -8,8 +8,14 @@ export NEXT_PUBLIC_TERMINAL_WS_URL="ws://localhost:4000/api/terminal"
 export NODE_ENV=development
 
 echo "Starting CodeQuest Academy (local development)..."
+echo "Environment:"
+echo "  NEXT_PUBLIC_TERMINAL_WS_URL=${NEXT_PUBLIC_TERMINAL_WS_URL}"
+echo "  NODE_ENV=${NODE_ENV}"
+echo ""
 echo "Open http://localhost:3000 in your browser."
+echo "Debug page: http://localhost:3000/debug"
 echo "Press Ctrl+C to stop."
+echo ""
 
 cleanup() {
   echo "Stopping servers..."
