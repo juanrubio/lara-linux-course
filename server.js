@@ -7,6 +7,7 @@ const next = require('next');
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
 const port = parseInt(process.env.PORT || '3000', 10);
+const lanHost = process.env.TERMINAL_HOST || hostname;
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
@@ -37,7 +38,12 @@ app.prepare().then(() => {
     upgrade(request, socket, head);
   });
 
-  server.listen(port, () => {
-    console.log(`> Ready on http://${hostname}:${port}`);
+  server.listen(port, '0.0.0.0', () => {
+    if (lanHost !== hostname) {
+      console.log(`> Ready on http://${lanHost}:${port} (LAN)`);
+      console.log(`> Also available on http://${hostname}:${port} (local)`);
+    } else {
+      console.log(`> Ready on http://${hostname}:${port}`);
+    }
   });
 });
