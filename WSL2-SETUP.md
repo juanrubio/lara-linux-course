@@ -7,8 +7,13 @@ If you're running this application in WSL2 (Windows Subsystem for Linux 2) on Wi
 From within WSL2 Ubuntu, run:
 
 ```bash
-./scripts/dev.sh
+./scripts/dev-localhost.sh
 ```
+
+This script will:
+- Clear the Next.js cache to remove any stale environment variables
+- Explicitly set the WebSocket URL to `ws://localhost:4000/api/terminal`
+- Start both servers with the correct configuration
 
 Then open your browser on Windows and go to `http://localhost:3000`
 
@@ -66,7 +71,8 @@ LISTEN 0      511          0.0.0.0:3000       0.0.0.0:*
 
 ## Development Scripts
 
-- `./scripts/dev.sh` - Local development (uses `localhost`)
+- `./scripts/dev-localhost.sh` - **Recommended for WSL2** - Explicitly uses `localhost` and clears cache
+- `./scripts/dev.sh` - Basic local development script
 - `./scripts/dev-lan.sh` - LAN access (uses your IP address)
 
-For WSL2, use `dev.sh` since you're accessing from the Windows host.
+For WSL2, **always use `dev-localhost.sh`** since you're accessing from the Windows host.

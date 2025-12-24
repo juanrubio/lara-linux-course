@@ -36,17 +36,43 @@ cd lara-linux-course
 
 # Install dependencies
 npm install
-
-# Run the frontend server
-npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Development Scripts
 
-Start the terminal WebSocket server in a second terminal:
+We provide several convenience scripts for different scenarios:
+
+#### 1. **Localhost Development** (Recommended for WSL2 and local development)
 
 ```bash
+./scripts/dev-localhost.sh
+```
+
+- Explicitly uses `ws://localhost:4000/api/terminal`
+- Clears Next.js cache to ensure fresh environment
+- Best for: WSL2 on Windows, local development
+- Access at: `http://localhost:3000`
+
+#### 2. **LAN Development** (For accessing from other devices on your network)
+
+```bash
+./scripts/dev-lan.sh
+```
+
+- Automatically detects your LAN IP address
+- Configures firewall (UFW) to allow ports 3000 and 4000
+- Uses `ws://YOUR_IP:4000/api/terminal`
+- Best for: Accessing from phones, tablets, or other computers on your network
+- Access at: `http://YOUR_IP:3000` (shown in terminal output)
+
+#### 3. **Manual NPM Scripts** (For advanced users)
+
+```bash
+# Terminal 1: Start terminal WebSocket server
 npm run dev:terminal
+
+# Terminal 2: Start Next.js frontend
+npm run dev
 ```
 
 By default the frontend connects to `ws://localhost:4000/api/terminal`.
