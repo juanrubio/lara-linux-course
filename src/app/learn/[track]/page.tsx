@@ -32,7 +32,7 @@ interface PageProps {
 
 export default function TrackPage({ params }: PageProps) {
   const { track: trackId } = use(params);
-  const { tracks, lessons } = useProgressStore();
+  const { tracks, lessons, _hasHydrated } = useProgressStore();
   const [chaptersData, setChaptersData] = useState<ChapterSummary[]>([]);
   const [totalLessons, setTotalLessons] = useState<number | null>(null);
   const [totalMinutes, setTotalMinutes] = useState<number | null>(null);
@@ -54,7 +54,7 @@ export default function TrackPage({ params }: PageProps) {
     );
   }
 
-  const percentage = trackProgress
+  const percentage = trackProgress && _hasHydrated
     ? Math.round(
         (trackProgress.lessonsCompleted / trackProgress.totalLessons) * 100
       )
@@ -191,7 +191,7 @@ export default function TrackPage({ params }: PageProps) {
               <div className="space-y-2">
                 {chapter.lessons.map((lesson, lessonIndex) => {
                   const lessonKey = `${trackId}/${lesson.slug}`;
-                  const lessonProgress = lessons[lessonKey];
+                  const lessonProgress = _hasHydrated ? lessons[lessonKey] : undefined;
                   const status = lessonProgress?.status || (lessonIndex === 0 && chapterIndex === 0 ? 'available' : 'locked');
 
                   const isCompleted = status === 'completed';

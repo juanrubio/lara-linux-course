@@ -14,6 +14,10 @@ export interface UserGameStats {
   longestStreak: number;
   lastActivityDate: string | null;
   totalTimeSpentMinutes: number;
+  // Command tracking for achievements
+  totalCommands: number;
+  uniqueCommands: string[];
+  commandVariations: Record<string, string[]>; // e.g., { "ls": ["-l", "-la", "-a"] }
 }
 
 export interface UserProgress {

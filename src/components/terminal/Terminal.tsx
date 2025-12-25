@@ -7,6 +7,7 @@ import { WebLinksAddon } from '@xterm/addon-web-links';
 import '@xterm/xterm/css/xterm.css';
 import { useGameStore } from '@/store/gameStore';
 import { getTerminalConnection, ConnectionStatus } from '@/lib/terminalConnection';
+import { checkCommandAchievements } from '@/lib/gamification/achievement-manager';
 
 interface TerminalProps {
   onCommand?: (command: string, output: string) => void;
@@ -26,7 +27,7 @@ export function Terminal({
   const welcomeMessageRef = useRef(welcomeMessage);
   const [connectionStatus, setConnectionStatus] = useState(ConnectionStatus.DISCONNECTED);
 
-  const { preferences } = useGameStore();
+  const { preferences, trackCommand, unlockAchievement, showAchievement, addXP } = useGameStore();
   const isConnected = connectionStatus === ConnectionStatus.CONNECTED;
 
   useEffect(() => {
@@ -37,6 +38,9 @@ export function Terminal({
   const currentLineRef = useRef('');
   const commandHistoryRef = useRef<string[]>([]);
   const historyIndexRef = useRef(-1);
+
+  // Real terminal mode - track commands for achievements
+  const realTerminalBufferRef = useRef('');
 
   const writePrompt = useCallback((term: XTerm) => {
     term.write('\x1b[1;32mlara\x1b[0m@\x1b[1;34mraspberrypi\x1b[0m:\x1b[1;36m~\x1b[0m$ ');
@@ -51,6 +55,11 @@ export function Terminal({
 
   const executeDemoCommand = useCallback((term: XTerm, command: string) => {
     const [cmd, ...args] = command.split(' ');
+
+    // Track the command for achievements
+    const flags = args.filter(arg => arg.startsWith('-'));
+    trackCommand(cmd, flags);
+
     switch (cmd) {
       case 'help':
         term.writeln('\x1b[1;36mDemo Mode Commands:\x1b[0m');
@@ -68,8 +77,17 @@ export function Terminal({
         break;
       default: term.writeln(`\x1b[1;33m${cmd}: not available in demo\x1b[0m`);
     }
+
+    // Check for command achievements
+    const newAchievements = checkCommandAchievements(useGameStore.getState());
+    for (const { achievementId, xpReward } of newAchievements) {
+      unlockAchievement(achievementId);
+      showAchievement(achievementId);
+      addXP(xpReward);
+    }
+
     writePrompt(term);
-  }, [writePrompt]);
+  }, [writePrompt, trackCommand, unlockAchievement, showAchievement, addXP]);
 
   const handleDemoInput = useCallback((term: XTerm, data: string) => {
     if (data === '\r') {
@@ -188,6 +206,36 @@ export function Terminal({
     const inputDisp = term.onData((data) => {
       const status = connection.getStatus();
       if (status === ConnectionStatus.CONNECTED) {
+        // Track commands in real terminal mode
+        if (data === '\r') {
+          // Enter pressed - track the command
+          const command = realTerminalBufferRef.current.trim();
+          if (command) {
+            console.log('[Terminal] Command entered:', command);
+            const [cmd, ...args] = command.split(' ');
+            const flags = args.filter(arg => arg.startsWith('-'));
+            trackCommand(cmd, flags);
+
+            // Check for command achievements
+            const newAchievements = checkCommandAchievements(useGameStore.getState());
+            for (const { achievementId, xpReward } of newAchievements) {
+              unlockAchievement(achievementId);
+              showAchievement(achievementId);
+              addXP(xpReward);
+            }
+          }
+          realTerminalBufferRef.current = '';
+        } else if (data === '\x7f') {
+          // Backspace
+          realTerminalBufferRef.current = realTerminalBufferRef.current.slice(0, -1);
+        } else if (data >= ' ' || data === '\t') {
+          // Regular character
+          realTerminalBufferRef.current += data;
+        } else if (data === '\x03') {
+          // Ctrl+C - clear buffer
+          realTerminalBufferRef.current = '';
+        }
+
         connection.send(JSON.stringify({ type: 'input', data }));
       } else if (status === ConnectionStatus.DISCONNECTED) {
         handleDemoInput(term, data);
@@ -224,7 +272,7 @@ export function Terminal({
       xtermRef.current = null;
       fitAddonRef.current = null;
     };
-  }, [handleDemoInput, preferences.terminalFontSize]);
+  }, [handleDemoInput, preferences.terminalFontSize, trackCommand, unlockAchievement, showAchievement, addXP]);
 
   return (
     <div className={`terminal-container relative ${className}`}>

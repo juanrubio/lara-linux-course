@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
+import { AchievementPopup } from '@/components/gamification';
 import { useGameStore } from '@/store/gameStore';
 import { getTheme, getThemeCSSVariables, getThemeTokens } from '@/lib/themes';
 import { cn } from '@/lib/utils';
@@ -61,6 +62,7 @@ export function AppShell({ children }: AppShellProps) {
         >
           {children}
         </main>
+        <AchievementPopup />
       </div>
     </MotionConfig>
   );

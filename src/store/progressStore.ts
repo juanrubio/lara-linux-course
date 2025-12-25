@@ -28,13 +28,16 @@ interface ProgressState {
   currentTrack: Track | null;
   currentLesson: string | null;
 
+  // Hydration state
+  _hasHydrated: boolean;
+
   // Actions
   setCurrentTrack: (track: Track | null) => void;
   setCurrentLesson: (trackId: Track, lessonSlug: string) => void;
-  startLesson: (trackId: string, lessonSlug: string) => void; // Simplified start for lesson page
+  startLesson: (trackId: Track, lessonSlug: string) => void; // Simplified start for lesson page
   updateLessonStatus: (trackId: Track, lessonSlug: string, status: LessonStatus) => void;
   completeExercise: (trackId: Track, lessonSlug: string, exerciseId: string) => void;
-  completeLesson: (trackId: string, lessonSlug: string, score?: number) => void; // score is optional
+  completeLesson: (trackId: Track, lessonSlug: string, score?: number) => void; // score is optional
   unlockNextLesson: (trackId: Track, currentLessonSlug: string, nextLessonSlug: string) => void;
   getTrackProgress: (trackId: Track) => TrackProgressState;
   getLessonProgress: (trackId: Track, lessonSlug: string) => LessonProgressState | undefined;
@@ -57,6 +60,7 @@ export const useProgressStore = create<ProgressState>()(
       lessons: {},
       currentTrack: null,
       currentLesson: null,
+      _hasHydrated: false,
 
       setCurrentTrack: (track) => set({ currentTrack: track }),
 
@@ -168,10 +172,19 @@ export const useProgressStore = create<ProgressState>()(
         const lessonKey = `${trackId}/${lessonSlug}`;
         const state = get();
         const lessonProgress = state.lessons[lessonKey];
-        const trackProgress = state.tracks[trackId as Track];
+        const trackProgress = state.tracks[trackId];
+
+        // Validate track exists
+        if (!trackProgress) {
+          console.error(`[Progress] Invalid track ID: "${trackId}". Available tracks:`, Object.keys(state.tracks));
+          return;
+        }
 
         // Don't increment if already completed
         const wasCompleted = lessonProgress?.status === 'completed';
+
+        console.log(`[Progress] Completing lesson: ${lessonKey}`);
+        console.log(`[Progress] Track progress before:`, trackProgress);
 
         set({
           lessons: {
@@ -193,6 +206,9 @@ export const useProgressStore = create<ProgressState>()(
             },
           } : state.tracks,
         });
+
+        const updatedTrack = get().tracks[trackId];
+        console.log(`[Progress] Lesson completed! Track "${trackId}" now has ${updatedTrack.lessonsCompleted}/${updatedTrack.totalLessons} lessons`);
       },
 
       unlockNextLesson: (trackId, currentLessonSlug, nextLessonSlug) => {
@@ -245,6 +261,12 @@ export const useProgressStore = create<ProgressState>()(
     }),
     {
       name: 'codequest-progress',
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state._hasHydrated = true;
+          console.log('[ProgressStore] Hydration complete');
+        }
+      },
     }
   )
 );

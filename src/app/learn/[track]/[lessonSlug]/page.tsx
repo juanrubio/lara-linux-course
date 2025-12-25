@@ -24,7 +24,8 @@ import { AppShell, Navigation } from '@/components/layout';
 import { LessonContent } from '@/components/lesson';
 import { useProgressStore } from '@/store/progressStore';
 import { useGameStore } from '@/store/gameStore';
-import { TRACKS } from '@/types';
+import { TRACKS, type Track } from '@/types';
+import { checkLessonAchievements } from '@/lib/gamification/achievement-manager';
 
 // Dynamically import Terminal with no SSR
 const Terminal = dynamic(
@@ -76,11 +77,13 @@ export default function LessonPage({ params }: PageProps) {
   const [terminalExpanded, setTerminalExpanded] = useState(false);
   const [showCompletionBanner, setShowCompletionBanner] = useState(false);
 
-  const { lessons, completeLesson, startLesson } = useProgressStore();
-  const { addXP } = useGameStore();
+  const { lessons, completeLesson, startLesson, _hasHydrated: progressHydrated } = useProgressStore();
+  const { addXP, unlockAchievement, showAchievement, _hasHydrated: gameHydrated } = useGameStore();
 
   const track = TRACKS.find((t) => t.id === trackId);
   const lessonKey = `${trackId}/${lessonSlug}`;
+  // Only require progressStore to be hydrated (gameStore has issues with getters)
+  const isHydrated = progressHydrated;
   const lessonProgress = lessons[lessonKey];
   const isCompleted = lessonProgress?.status === 'completed';
 
@@ -103,7 +106,7 @@ export default function LessonPage({ params }: PageProps) {
         setNavigation(data.navigation);
 
         // Mark lesson as started
-        startLesson(trackId, lessonSlug);
+        startLesson(trackId as Track, lessonSlug);
       } catch (error) {
         console.error('Failed to load lesson:', error);
         setLoadError('Failed to load lesson content. Please try again.');
@@ -116,9 +119,41 @@ export default function LessonPage({ params }: PageProps) {
 
   const handleCompleteLesson = () => {
     if (!isCompleted && lessonMeta) {
-      completeLesson(trackId, lessonSlug);
-      addXP(lessonMeta.xpReward);
-      setShowCompletionBanner(true);
+      // Validate track ID
+      const validTracks = ['linux', 'python', 'bash', 'raspberry-pi'];
+      if (!validTracks.includes(trackId)) {
+        console.error('[Lesson] Invalid track ID:', trackId);
+        return;
+      }
+
+      try {
+        completeLesson(trackId as Track, lessonSlug);
+        addXP(lessonMeta.xpReward);
+        setShowCompletionBanner(true);
+        console.log('[Lesson] Completed successfully:', lessonSlug, `+${lessonMeta.xpReward} XP`);
+
+        // Check for unlocked achievements
+        const newAchievements = checkLessonAchievements(
+          trackId as Track,
+          lessonSlug,
+          useProgressStore.getState(),
+          useGameStore.getState()
+        );
+
+        // Unlock and show each achievement
+        for (const { achievementId, xpReward } of newAchievements) {
+          unlockAchievement(achievementId);
+          showAchievement(achievementId);
+          addXP(xpReward);
+          console.log('[Achievement] Unlocked:', achievementId, `+${xpReward} XP`);
+        }
+
+        if (newAchievements.length > 0) {
+          console.log(`[Achievement] Unlocked ${newAchievements.length} new achievement(s)!`);
+        }
+      } catch (error) {
+        console.error('[Lesson] Failed to complete:', error);
+      }
     }
   };
 
@@ -147,6 +182,11 @@ export default function LessonPage({ params }: PageProps) {
         </div>
       </AppShell>
     );
+  }
+
+  // Log hydration status for debugging
+  if (!isHydrated) {
+    console.log('[Lesson] Rendering before hydration complete - this may cause hydration mismatch');
   }
 
   return (

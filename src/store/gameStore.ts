@@ -29,6 +29,9 @@ interface GameState {
   showAchievementPopup: boolean;
   pendingAchievements: string[];
 
+  // Hydration state
+  _hasHydrated: boolean;
+
   // Actions
   setUsername: (username: string) => void;
   setDisplayName: (displayName: string) => void;
@@ -37,6 +40,7 @@ interface GameState {
   addXp: (amount: number) => void;
   addXP: (amount: number) => void; // Alias for addXp
   updateStreak: () => void;
+  trackCommand: (command: string, flags?: string[]) => void;
   setTheme: (theme: ThemeId) => void;
   setPreference: <K extends keyof UserPreferences>(key: K, value: UserPreferences[K]) => void;
   updatePreferences: (prefs: Partial<UserPreferences>) => void;
@@ -55,6 +59,9 @@ const initialStats: UserGameStats = {
   longestStreak: 0,
   lastActivityDate: null,
   totalTimeSpentMinutes: 0,
+  totalCommands: 0,
+  uniqueCommands: [],
+  commandVariations: {},
 };
 
 const initialPreferences: UserPreferences = {
@@ -109,6 +116,7 @@ export const useGameStore = create<GameState>()(
       sidebarOpen: true,
       showAchievementPopup: false,
       pendingAchievements: [],
+      _hasHydrated: false,
 
       setUsername: (username) => set({ username }),
 
@@ -172,6 +180,40 @@ export const useGameStore = create<GameState>()(
           };
         }),
 
+      trackCommand: (command, flags = []) =>
+        set((state) => {
+          const newTotalCommands = state.stats.totalCommands + 1;
+          const commandBase = command.toLowerCase();
+
+          // Track unique commands
+          const newUniqueCommands = state.stats.uniqueCommands.includes(commandBase)
+            ? state.stats.uniqueCommands
+            : [...state.stats.uniqueCommands, commandBase];
+
+          // Track command variations (different flag combinations)
+          const newVariations = { ...state.stats.commandVariations };
+          if (flags.length > 0) {
+            const flagsStr = flags.join(' ');
+            const existingVariations = newVariations[commandBase] || [];
+            if (!existingVariations.includes(flagsStr)) {
+              newVariations[commandBase] = [...existingVariations, flagsStr];
+            }
+          } else if (!newVariations[commandBase]) {
+            newVariations[commandBase] = [];
+          }
+
+          console.log(`[GameStore] Command tracked: "${commandBase}" (total: ${newTotalCommands}, unique: ${newUniqueCommands.length})`);
+
+          return {
+            stats: {
+              ...state.stats,
+              totalCommands: newTotalCommands,
+              uniqueCommands: newUniqueCommands,
+              commandVariations: newVariations,
+            },
+          };
+        }),
+
       setTheme: (theme) =>
         set((state) => ({
           preferences: { ...state.preferences, theme },
@@ -225,6 +267,17 @@ export const useGameStore = create<GameState>()(
     }),
     {
       name: 'codequest-game-state',
+      partialize: (state) => {
+        // Exclude getters and non-serializable properties from persistence
+        const { currentLevel, totalXp, currentStreak, ...rest } = state;
+        return rest;
+      },
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state._hasHydrated = true;
+          console.log('[GameStore] Hydration complete');
+        }
+      },
     }
   )
 );
