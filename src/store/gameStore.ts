@@ -98,15 +98,15 @@ export const useGameStore = create<GameState>()(
       avatarId: 'default',
       stats: initialStats,
 
-      // Convenience getters
+      // Convenience getters (safe during hydration)
       get currentLevel() {
-        return get().stats.currentLevel;
+        return get().stats?.currentLevel ?? 1;
       },
       get totalXp() {
-        return get().stats.totalXp;
+        return get().stats?.totalXp ?? 0;
       },
       get currentStreak() {
-        return get().stats.currentStreak;
+        return get().stats?.currentStreak ?? 0;
       },
 
       // Achievements
