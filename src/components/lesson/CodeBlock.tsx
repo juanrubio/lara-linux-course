@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 import { Copy, Check, Terminal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface CodeBlockProps {
-  children: string;
+  children: ReactNode;
   language?: string;
   showLineNumbers?: boolean;
   title?: string;
@@ -19,13 +19,26 @@ export function CodeBlock({
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
+  // Extract text content from React nodes (same as TerminalDemo)
+  const extractText = (node: ReactNode): string => {
+    if (typeof node === 'string') return node;
+    if (typeof node === 'number') return String(node);
+    if (Array.isArray(node)) return node.map(extractText).join('');
+    if (node && typeof node === 'object' && 'props' in node && node.props.children) {
+      return extractText(node.props.children);
+    }
+    return '';
+  };
+
+  const content = extractText(children);
+
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(children);
+    await navigator.clipboard.writeText(content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const lines = children.trim().split('\n');
+  const lines = content.trim().split('\n');
 
   return (
     <div className="my-4 rounded-lg overflow-hidden border border-white/10">
