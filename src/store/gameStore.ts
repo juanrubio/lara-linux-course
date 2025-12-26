@@ -267,15 +267,21 @@ export const useGameStore = create<GameState>()(
     }),
     {
       name: 'codequest-game-state',
-      partialize: (state) => {
-        // Exclude getters and non-serializable properties from persistence
-        const { currentLevel, totalXp, currentStreak, ...rest } = state;
-        return rest;
-      },
-      onRehydrateStorage: () => (state) => {
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error('[GameStore] Hydration failed:', error);
+          return;
+        }
         if (state) {
           state._hasHydrated = true;
           console.log('[GameStore] Hydration complete');
+          console.log('[GameStore] Restored:', {
+            xp: state.stats.totalXp,
+            level: state.stats.currentLevel,
+            achievements: state.unlockedAchievements.length,
+            commands: state.stats.totalCommands,
+            uniqueCommands: state.stats.uniqueCommands.length,
+          });
         }
       },
     }
