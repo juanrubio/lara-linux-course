@@ -7,8 +7,18 @@ interface TerminalDemoProps {
 }
 
 export function TerminalDemo({ children }: TerminalDemoProps) {
-  // Handle both string and React node children
-  const content = typeof children === 'string' ? children : String(children);
+  // Extract text content from React nodes
+  const extractText = (node: ReactNode): string => {
+    if (typeof node === 'string') return node;
+    if (typeof node === 'number') return String(node);
+    if (Array.isArray(node)) return node.map(extractText).join('');
+    if (node && typeof node === 'object' && 'props' in node && node.props.children) {
+      return extractText(node.props.children);
+    }
+    return '';
+  };
+
+  const content = extractText(children);
   const lines = content.trim().split('\n');
 
   return (
