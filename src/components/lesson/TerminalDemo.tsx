@@ -1,11 +1,15 @@
 'use client';
 
+import { ReactNode } from 'react';
+
 interface TerminalDemoProps {
-  children: string;
+  children: ReactNode;
 }
 
 export function TerminalDemo({ children }: TerminalDemoProps) {
-  const lines = children.trim().split('\n');
+  // Handle both string and React node children
+  const content = typeof children === 'string' ? children : String(children);
+  const lines = content.trim().split('\n');
 
   return (
     <div className="my-4 rounded-lg overflow-hidden border border-white/10">
