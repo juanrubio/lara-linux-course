@@ -98,16 +98,11 @@ export const useGameStore = create<GameState>()(
       avatarId: 'default',
       stats: initialStats,
 
-      // Convenience getters (safe during hydration)
-      get currentLevel() {
-        return get().stats?.currentLevel ?? 1;
-      },
-      get totalXp() {
-        return get().stats?.totalXp ?? 0;
-      },
-      get currentStreak() {
-        return get().stats?.currentStreak ?? 0;
-      },
+      // Convenience getters - removed from state to fix hydration issues
+      // Access stats directly instead: state.stats.currentLevel, state.stats.totalXp, etc.
+      currentLevel: 1, // Placeholder, will be computed from stats
+      totalXp: 0, // Placeholder, will be computed from stats
+      currentStreak: 0, // Placeholder, will be computed from stats
 
       // Achievements
       unlockedAchievements: [],
@@ -125,9 +120,15 @@ export const useGameStore = create<GameState>()(
       setAvatarId: (avatarId) => set({ avatarId }),
 
       updateStats: (newStats) =>
-        set((state) => ({
-          stats: { ...state.stats, ...newStats },
-        })),
+        set((state) => {
+          const updatedStats = { ...state.stats, ...newStats };
+          return {
+            stats: updatedStats,
+            currentLevel: updatedStats.currentLevel,
+            totalXp: updatedStats.totalXp,
+            currentStreak: updatedStats.currentStreak,
+          };
+        }),
 
       addXp: (amount) =>
         set((state) => {
@@ -139,6 +140,8 @@ export const useGameStore = create<GameState>()(
               totalXp: newTotalXp,
               currentLevel: newLevel,
             },
+            currentLevel: newLevel,
+            totalXp: newTotalXp,
           };
         }),
 
@@ -177,6 +180,7 @@ export const useGameStore = create<GameState>()(
               longestStreak: Math.max(newStreak, state.stats.longestStreak),
               lastActivityDate: today,
             },
+            currentStreak: newStreak,
           };
         }),
 
@@ -256,6 +260,9 @@ export const useGameStore = create<GameState>()(
       reset: () =>
         set({
           stats: initialStats,
+          currentLevel: 1,
+          totalXp: 0,
+          currentStreak: 0,
           preferences: initialPreferences,
           pendingAchievements: [],
           showAchievementPopup: false,
@@ -274,6 +281,10 @@ export const useGameStore = create<GameState>()(
         }
         if (state) {
           state._hasHydrated = true;
+          // Sync convenience properties from stats
+          state.currentLevel = state.stats.currentLevel;
+          state.totalXp = state.stats.totalXp;
+          state.currentStreak = state.stats.currentStreak;
           console.log('[GameStore] Hydration complete');
           console.log('[GameStore] Restored:', {
             xp: state.stats.totalXp,
