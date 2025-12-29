@@ -252,50 +252,31 @@ export function Terminal({
       }
     });
 
-    // Resize observer - with loop prevention and throttling
+    // Use window resize instead of ResizeObserver to avoid layout feedback loops
+    // This only fires on actual browser window resizes, not internal layout changes
     let resizeTimer: NodeJS.Timeout | null = null;
-    let isResizing = false; // Prevent re-entry
 
-    const resizeObs = new ResizeObserver(() => {
-      // Ignore resize events while we're actively resizing
-      if (isResizing) return;
-
+    const handleWindowResize = () => {
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         try {
-          // Propose dimensions first without fitting
+          // Propose dimensions first
           const dims = fitAddon.proposeDimensions();
           if (!dims) return;
 
-          // CRITICAL: Only resize if dimensions actually changed
-          // This prevents infinite loop where fit() triggers ResizeObserver again
+          // Only resize if dimensions actually changed
           const last = lastDimensionsRef.current;
           if (last && last.cols === dims.cols && last.rows === dims.rows) {
-            return; // No change, skip resize to prevent loop
+            return; // No change, skip resize
           }
 
           // Update tracked dimensions
           lastDimensionsRef.current = { cols: dims.cols, rows: dims.rows };
 
-          // Set flag to ignore resize events caused by fit()
-          isResizing = true;
-
-          // Temporarily disconnect observer to prevent it from seeing fit() changes
-          resizeObs.disconnect();
-
-          // Now apply fit
+          // Apply fit
           fitAddon.fit();
 
-          // Reconnect observer after a short delay to let DOM settle
-          setTimeout(() => {
-            isResizing = false;
-            if (terminalRef.current) {
-              resizeObs.observe(terminalRef.current);
-            }
-          }, 50);
-
           // Send resize to server with time-based throttling
-          // This prevents overwhelming nano with constant SIGWINCH signals
           if (connection.isConnected()) {
             const now = Date.now();
             if (now - lastResizeTimeRef.current >= MIN_RESIZE_INTERVAL) {
@@ -305,15 +286,11 @@ export function Terminal({
           }
         } catch (err) {
           console.error('[Terminal] Resize error:', err);
-          isResizing = false;
-          // Try to reconnect observer if error occurred
-          if (terminalRef.current) {
-            resizeObs.observe(terminalRef.current);
-          }
         }
       }, 100);
-    });
-    resizeObs.observe(terminalRef.current);
+    };
+
+    window.addEventListener('resize', handleWindowResize);
 
     // Ensure connected
     connection.ensureConnected();
@@ -321,7 +298,7 @@ export function Terminal({
     return () => {
       console.log(`[Terminal] Cleanup (${mountId})`);
       if (resizeTimer) clearTimeout(resizeTimer);
-      resizeObs.disconnect();
+      window.removeEventListener('resize', handleWindowResize);
       unsubMsg();
       unsubStatus();
       inputDisp.dispose();
