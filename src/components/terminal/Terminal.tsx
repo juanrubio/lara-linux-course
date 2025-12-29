@@ -254,7 +254,12 @@ export function Terminal({
 
     // Resize observer - with loop prevention and throttling
     let resizeTimer: NodeJS.Timeout | null = null;
+    let isResizing = false; // Prevent re-entry
+
     const resizeObs = new ResizeObserver(() => {
+      // Ignore resize events while we're actively resizing
+      if (isResizing) return;
+
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         try {
@@ -272,8 +277,22 @@ export function Terminal({
           // Update tracked dimensions
           lastDimensionsRef.current = { cols: dims.cols, rows: dims.rows };
 
+          // Set flag to ignore resize events caused by fit()
+          isResizing = true;
+
+          // Temporarily disconnect observer to prevent it from seeing fit() changes
+          resizeObs.disconnect();
+
           // Now apply fit
           fitAddon.fit();
+
+          // Reconnect observer after a short delay to let DOM settle
+          setTimeout(() => {
+            isResizing = false;
+            if (terminalRef.current) {
+              resizeObs.observe(terminalRef.current);
+            }
+          }, 50);
 
           // Send resize to server with time-based throttling
           // This prevents overwhelming nano with constant SIGWINCH signals
@@ -286,6 +305,11 @@ export function Terminal({
           }
         } catch (err) {
           console.error('[Terminal] Resize error:', err);
+          isResizing = false;
+          // Try to reconnect observer if error occurred
+          if (terminalRef.current) {
+            resizeObs.observe(terminalRef.current);
+          }
         }
       }, 100);
     });
