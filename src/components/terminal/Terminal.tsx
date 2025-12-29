@@ -42,6 +42,11 @@ export function Terminal({
   // Real terminal mode - track commands for achievements
   const realTerminalBufferRef = useRef('');
 
+  // Track dimensions to prevent resize loop
+  const lastDimensionsRef = useRef<{ cols: number; rows: number } | null>(null);
+  const lastResizeTimeRef = useRef(0);
+  const MIN_RESIZE_INTERVAL = 500; // ms - prevent nano from being overwhelmed
+
   const writePrompt = useCallback((term: XTerm) => {
     term.write('\x1b[1;32mlara\x1b[0m@\x1b[1;34mraspberrypi\x1b[0m:\x1b[1;36m~\x1b[0m$ ');
   }, []);
@@ -141,13 +146,13 @@ export function Terminal({
     const connection = getTerminalConnection();
     const decoder = new TextDecoder('utf-8');
 
-    // Create xterm
+    // Create xterm with improved full-screen app support
     const term = new XTerm({
       cursorBlink: true,
       cursorStyle: 'block',
       fontSize: preferences.terminalFontSize,
       fontFamily: 'var(--font-geist-mono), monospace',
-      scrollback: 500,
+      scrollback: 1000, // Increased from 500 for better history
       convertEol: true,
       theme: {
         background: '#0a0a0a',
@@ -160,6 +165,11 @@ export function Terminal({
         brightCyan: '#22d3ee', brightWhite: '#ffffff',
       },
       allowProposedApi: true,
+      // Better full-screen application support (nano, vim, etc.)
+      altClickMovesCursor: false,
+      windowsMode: false,
+      fastScrollModifier: 'shift',
+      fastScrollSensitivity: 5,
     });
 
     const fitAddon = new FitAddon();
@@ -242,18 +252,41 @@ export function Terminal({
       }
     });
 
-    // Resize observer
+    // Resize observer - with loop prevention and throttling
     let resizeTimer: NodeJS.Timeout | null = null;
     const resizeObs = new ResizeObserver(() => {
       if (resizeTimer) clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         try {
-          fitAddon.fit();
+          // Propose dimensions first without fitting
           const dims = fitAddon.proposeDimensions();
-          if (dims && connection.isConnected()) {
-            connection.resize(dims.cols, dims.rows);
+          if (!dims) return;
+
+          // CRITICAL: Only resize if dimensions actually changed
+          // This prevents infinite loop where fit() triggers ResizeObserver again
+          const last = lastDimensionsRef.current;
+          if (last && last.cols === dims.cols && last.rows === dims.rows) {
+            return; // No change, skip resize to prevent loop
           }
-        } catch {}
+
+          // Update tracked dimensions
+          lastDimensionsRef.current = { cols: dims.cols, rows: dims.rows };
+
+          // Now apply fit
+          fitAddon.fit();
+
+          // Send resize to server with time-based throttling
+          // This prevents overwhelming nano with constant SIGWINCH signals
+          if (connection.isConnected()) {
+            const now = Date.now();
+            if (now - lastResizeTimeRef.current >= MIN_RESIZE_INTERVAL) {
+              lastResizeTimeRef.current = now;
+              connection.resize(dims.cols, dims.rows);
+            }
+          }
+        } catch (err) {
+          console.error('[Terminal] Resize error:', err);
+        }
       }, 100);
     });
     resizeObs.observe(terminalRef.current);
