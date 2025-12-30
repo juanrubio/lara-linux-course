@@ -281,16 +281,24 @@ export const useGameStore = create<GameState>()(
         }
         if (state) {
           state._hasHydrated = true;
+          // Ensure stats has all required fields (migration from older versions)
+          if (!state.stats) {
+            state.stats = initialStats;
+          } else {
+            state.stats.uniqueCommands = state.stats.uniqueCommands ?? [];
+            state.stats.commandVariations = state.stats.commandVariations ?? {};
+          }
+          state.unlockedAchievements = state.unlockedAchievements ?? [];
           // Sync convenience properties from stats
-          state.currentLevel = state.stats.currentLevel;
-          state.totalXp = state.stats.totalXp;
-          state.currentStreak = state.stats.currentStreak;
+          state.currentLevel = state.stats.currentLevel ?? 1;
+          state.totalXp = state.stats.totalXp ?? 0;
+          state.currentStreak = state.stats.currentStreak ?? 0;
           console.log('[GameStore] Hydration complete');
           console.log('[GameStore] Restored:', {
             xp: state.stats.totalXp,
             level: state.stats.currentLevel,
             achievements: state.unlockedAchievements.length,
-            commands: state.stats.totalCommands,
+            commands: state.stats.totalCommands ?? 0,
             uniqueCommands: state.stats.uniqueCommands.length,
           });
         }

@@ -27,14 +27,18 @@ function calculateLevel(xp: number): number {
  * Merge achievements (Union - combine both sets)
  */
 export function mergeAchievements(local: string[], imported: string[]): string[] {
-  return Array.from(new Set([...local, ...imported]));
+  const safeLocal = Array.isArray(local) ? local : [];
+  const safeImported = Array.isArray(imported) ? imported : [];
+  return Array.from(new Set([...safeLocal, ...safeImported]));
 }
 
 /**
  * Merge unique commands (Union)
  */
 export function mergeUniqueCommands(local: string[], imported: string[]): string[] {
-  return Array.from(new Set([...local, ...imported]));
+  const safeLocal = Array.isArray(local) ? local : [];
+  const safeImported = Array.isArray(imported) ? imported : [];
+  return Array.from(new Set([...safeLocal, ...safeImported]));
 }
 
 /**
@@ -45,17 +49,19 @@ export function mergeCommandVariations(
   imported: Record<string, string[]>
 ): Record<string, string[]> {
   const merged: Record<string, string[]> = {};
+  const safeLocal = local && typeof local === 'object' ? local : {};
+  const safeImported = imported && typeof imported === 'object' ? imported : {};
 
   // Get all command names from both
   const allCommands = new Set([
-    ...Object.keys(local),
-    ...Object.keys(imported),
+    ...Object.keys(safeLocal),
+    ...Object.keys(safeImported),
   ]);
 
   // Merge variations for each command
   for (const cmd of allCommands) {
-    const localVariations = local[cmd] || [];
-    const importedVariations = imported[cmd] || [];
+    const localVariations = safeLocal[cmd] || [];
+    const importedVariations = safeImported[cmd] || [];
     merged[cmd] = Array.from(new Set([...localVariations, ...importedVariations]));
   }
 
@@ -70,16 +76,18 @@ export function mergeLessons(
   imported: Record<string, LessonProgress>
 ): Record<string, LessonProgress> {
   const merged: Record<string, LessonProgress> = {};
+  const safeLocal = local && typeof local === 'object' ? local : {};
+  const safeImported = imported && typeof imported === 'object' ? imported : {};
 
   // Get all lesson IDs from both
   const allLessonIds = new Set([
-    ...Object.keys(local),
-    ...Object.keys(imported),
+    ...Object.keys(safeLocal),
+    ...Object.keys(safeImported),
   ]);
 
   for (const lessonId of allLessonIds) {
-    const localLesson = local[lessonId];
-    const importedLesson = imported[lessonId];
+    const localLesson = safeLocal[lessonId];
+    const importedLesson = safeImported[lessonId];
 
     // If only one side has it, use that
     if (!localLesson) {
@@ -96,19 +104,18 @@ export function mergeLessons(
     const isCompleted =
       localLesson.status === 'completed' || importedLesson.status === 'completed';
 
-    // Merge exercises completed (union)
+    // Merge exercises completed (union) - handle potentially undefined arrays
+    const localExercises = Array.isArray(localLesson.exercisesCompleted) ? localLesson.exercisesCompleted : [];
+    const importedExercises = Array.isArray(importedLesson.exercisesCompleted) ? importedLesson.exercisesCompleted : [];
     const exercisesCompleted = Array.from(
-      new Set([
-        ...localLesson.exercisesCompleted,
-        ...importedLesson.exercisesCompleted,
-      ])
+      new Set([...localExercises, ...importedExercises])
     );
 
-    // Take best score
-    const bestScore = Math.max(localLesson.bestScore, importedLesson.bestScore);
+    // Take best score (handle undefined)
+    const bestScore = Math.max(localLesson.bestScore ?? 0, importedLesson.bestScore ?? 0);
 
-    // Sum attempts
-    const attempts = localLesson.attempts + importedLesson.attempts;
+    // Sum attempts (handle undefined)
+    const attempts = (localLesson.attempts ?? 0) + (importedLesson.attempts ?? 0);
 
     // Determine status
     let status: LessonProgress['status'];

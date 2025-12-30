@@ -110,6 +110,16 @@ export function validateAchievements(achievements: string[]): {
 export function sanitizeData(data: BackupData): BackupData {
   const sanitized = JSON.parse(JSON.stringify(data)); // Deep clone
 
+  // Ensure gameState exists
+  if (!sanitized.stores.gameState) {
+    sanitized.stores.gameState = {};
+  }
+
+  // Ensure stats exists with defaults
+  if (!sanitized.stores.gameState.stats) {
+    sanitized.stores.gameState.stats = {};
+  }
+
   // Sanitize game stats
   const stats = sanitized.stores.gameState.stats;
   stats.totalXp = Math.max(0, stats.totalXp || 0);
@@ -118,12 +128,29 @@ export function sanitizeData(data: BackupData): BackupData {
   stats.longestStreak = Math.max(0, stats.longestStreak || 0);
   stats.totalTimeSpentMinutes = Math.max(0, stats.totalTimeSpentMinutes || 0);
   stats.totalCommands = Math.max(0, stats.totalCommands || 0);
+  stats.uniqueCommands = Array.isArray(stats.uniqueCommands) ? stats.uniqueCommands : [];
+  stats.commandVariations = stats.commandVariations && typeof stats.commandVariations === 'object'
+    ? stats.commandVariations
+    : {};
 
-  // Sanitize achievements - filter out invalid
-  sanitized.stores.gameState.unlockedAchievements =
-    sanitized.stores.gameState.unlockedAchievements.filter(
-      (a: any) => typeof a === 'string' && a.trim().length > 0
-    );
+  // Sanitize achievements - ensure array and filter out invalid
+  const achievements = sanitized.stores.gameState.unlockedAchievements;
+  sanitized.stores.gameState.unlockedAchievements = Array.isArray(achievements)
+    ? achievements.filter((a: any) => typeof a === 'string' && a.trim().length > 0)
+    : [];
+
+  // Ensure progressState exists
+  if (!sanitized.stores.progressState) {
+    sanitized.stores.progressState = {};
+  }
+
+  // Ensure lessons and tracks exist
+  if (!sanitized.stores.progressState.lessons || typeof sanitized.stores.progressState.lessons !== 'object') {
+    sanitized.stores.progressState.lessons = {};
+  }
+  if (!sanitized.stores.progressState.tracks || typeof sanitized.stores.progressState.tracks !== 'object') {
+    sanitized.stores.progressState.tracks = {};
+  }
 
   // Sanitize lessons - remove invalid, fix numbers
   const lessons = sanitized.stores.progressState.lessons;
