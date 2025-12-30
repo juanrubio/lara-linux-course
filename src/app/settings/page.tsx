@@ -16,6 +16,7 @@ import {
   RotateCcw,
   CheckCircle2,
   Lock,
+  Download,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardDescription, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,7 @@ import { Label } from '@/components/ui/label';
 import { AppShell, Navigation } from '@/components/layout';
 import { useGameStore } from '@/store/gameStore';
 import { useProgressStore } from '@/store/progressStore';
+import { ProgressMigration } from '@/components/settings/ProgressMigration';
 
 const THEMES = [
   {
@@ -346,6 +348,28 @@ export default function SettingsPage() {
                   onCheckedChange={(checked) => handleToggle('darkMode', checked)}
                 />
               </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Progress Migration */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+        >
+          <Card className="border-white/10 bg-[var(--color-surface)]">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Download className="h-5 w-5 text-[var(--color-primary)]" />
+                <CardTitle>Progress Migration</CardTitle>
+              </div>
+              <CardDescription>
+                Export your progress to transfer between devices
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ProgressMigration />
             </CardContent>
           </Card>
         </motion.div>
