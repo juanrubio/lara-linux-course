@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useGameStore } from '@/store/gameStore';
 import { useProgressStore } from '@/store/progressStore';
+import { checkLevelAchievements } from '@/lib/gamification/achievement-manager';
 
 interface ExerciseCardProps {
   id: string;
@@ -32,7 +33,7 @@ export function ExerciseCard({
 }: ExerciseCardProps) {
   const [showHint, setShowHint] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
-  const { addXp } = useGameStore();
+  const { addXp, unlockAchievement, showAchievement } = useGameStore();
   const { currentTrack, currentLesson, completeExercise } = useProgressStore();
 
   const handleComplete = () => {
@@ -42,6 +43,18 @@ export function ExerciseCard({
       if (currentTrack && currentLesson) {
         const lessonSlug = currentLesson.split('/')[1];
         completeExercise(currentTrack, lessonSlug, id);
+      }
+
+      // Check for level-based achievements after XP is added
+      const gameState = useGameStore.getState();
+      const levelAchievements = checkLevelAchievements(
+        gameState.stats.currentLevel,
+        gameState.unlockedAchievements
+      );
+      for (const { achievementId, xpReward } of levelAchievements) {
+        unlockAchievement(achievementId);
+        showAchievement(achievementId);
+        addXp(xpReward);
       }
     }
   };

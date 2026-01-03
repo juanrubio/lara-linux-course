@@ -7,7 +7,7 @@ import { WebLinksAddon } from '@xterm/addon-web-links';
 import '@xterm/xterm/css/xterm.css';
 import { useGameStore } from '@/store/gameStore';
 import { getTerminalConnection, ConnectionStatus } from '@/lib/terminalConnection';
-import { checkCommandAchievements } from '@/lib/gamification/achievement-manager';
+import { checkCommandAchievements, checkLevelAchievements } from '@/lib/gamification/achievement-manager';
 
 interface TerminalProps {
   onCommand?: (command: string, output: string) => void;
@@ -89,6 +89,20 @@ export function Terminal({
       unlockAchievement(achievementId);
       showAchievement(achievementId);
       addXP(xpReward);
+    }
+
+    // Check for level-based achievements after any XP was added
+    if (newAchievements.length > 0) {
+      const gameState = useGameStore.getState();
+      const levelAchievements = checkLevelAchievements(
+        gameState.stats.currentLevel,
+        gameState.unlockedAchievements
+      );
+      for (const { achievementId, xpReward } of levelAchievements) {
+        unlockAchievement(achievementId);
+        showAchievement(achievementId);
+        addXP(xpReward);
+      }
     }
 
     writePrompt(term);
@@ -232,6 +246,20 @@ export function Terminal({
               unlockAchievement(achievementId);
               showAchievement(achievementId);
               addXP(xpReward);
+            }
+
+            // Check for level-based achievements after any XP was added
+            if (newAchievements.length > 0) {
+              const gameState = useGameStore.getState();
+              const levelAchievements = checkLevelAchievements(
+                gameState.stats.currentLevel,
+                gameState.unlockedAchievements
+              );
+              for (const { achievementId, xpReward } of levelAchievements) {
+                unlockAchievement(achievementId);
+                showAchievement(achievementId);
+                addXP(xpReward);
+              }
             }
           }
           realTerminalBufferRef.current = '';

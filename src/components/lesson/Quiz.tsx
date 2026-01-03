@@ -6,6 +6,7 @@ import { CheckCircle2, XCircle, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useGameStore } from '@/store/gameStore';
+import { checkLevelAchievements } from '@/lib/gamification/achievement-manager';
 
 interface QuizQuestion {
   question: string;
@@ -25,7 +26,7 @@ export function Quiz({ questions, xpPerQuestion = 5 }: QuizProps) {
   const [showResult, setShowResult] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-  const { addXp } = useGameStore();
+  const { addXp, unlockAchievement, showAchievement } = useGameStore();
 
   const question = questions[currentQuestion];
   const isCorrect = selectedAnswer === question.correct;
@@ -40,6 +41,18 @@ export function Quiz({ questions, xpPerQuestion = 5 }: QuizProps) {
     if (isCorrect) {
       setCorrectAnswers((prev) => prev + 1);
       addXp(xpPerQuestion);
+
+      // Check for level-based achievements after XP is added
+      const gameState = useGameStore.getState();
+      const levelAchievements = checkLevelAchievements(
+        gameState.stats.currentLevel,
+        gameState.unlockedAchievements
+      );
+      for (const { achievementId, xpReward } of levelAchievements) {
+        unlockAchievement(achievementId);
+        showAchievement(achievementId);
+        addXp(xpReward);
+      }
     }
   };
 

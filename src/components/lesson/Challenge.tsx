@@ -6,6 +6,7 @@ import { Swords, CheckCircle2, Circle, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useGameStore } from '@/store/gameStore';
+import { checkLevelAchievements } from '@/lib/gamification/achievement-manager';
 
 interface ChallengeStep {
   command: string;
@@ -24,7 +25,7 @@ interface ChallengeProps {
 export function Challenge({ id, title, description, steps, xp, badge }: ChallengeProps) {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [isComplete, setIsComplete] = useState(false);
-  const { addXp, showAchievement } = useGameStore();
+  const { addXp, showAchievement, unlockAchievement } = useGameStore();
 
   const handleStepComplete = (index: number) => {
     if (!completedSteps.includes(index)) {
@@ -36,6 +37,18 @@ export function Challenge({ id, title, description, steps, xp, badge }: Challeng
         addXp(xp);
         if (badge) {
           showAchievement(badge);
+        }
+
+        // Check for level-based achievements after XP is added
+        const gameState = useGameStore.getState();
+        const levelAchievements = checkLevelAchievements(
+          gameState.stats.currentLevel,
+          gameState.unlockedAchievements
+        );
+        for (const { achievementId, xpReward } of levelAchievements) {
+          unlockAchievement(achievementId);
+          showAchievement(achievementId);
+          addXp(xpReward);
         }
       }
     }
