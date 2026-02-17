@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getTrackLessons } from '@/lib/content/loader';
 import type { Track } from '@/types';
+import type { Difficulty } from '@/types/lesson';
 
 interface LessonSummary {
   slug: string;
   title: string;
   time: number;
   xp: number;
-  difficulty: string;
+  difficulty: Difficulty;
   lessonNumber: number;
 }
 

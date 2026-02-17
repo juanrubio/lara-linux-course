@@ -62,9 +62,9 @@ export function checkLessonAchievements(
       case 'level_reached':
         // Check if the user has reached the required level
         if ('value' in condition) {
-          shouldUnlock = gameState.stats.currentLevel >= condition.value;
+          shouldUnlock = gameState.stats.currentLevel >= condition.value!;
           if (shouldUnlock) {
-            console.log(`[Achievement] Level reached: ${condition.value}`);
+            console.log(`[Achievement] Level reached: ${condition.value!}`);
           }
         }
         break;
@@ -77,15 +77,15 @@ export function checkLessonAchievements(
             // Count specific command (e.g., grep 20 times)
             const commandName = condition.command.toLowerCase();
             const commandOccurrences = gameState.stats.uniqueCommands.filter(
-              cmd => cmd === commandName
+              (cmd: string) => cmd === commandName
             ).length;
-            shouldUnlock = gameState.stats.totalCommands >= condition.value && commandOccurrences > 0;
+            shouldUnlock = gameState.stats.totalCommands >= condition.value! && commandOccurrences > 0;
           } else {
             // Total command count
-            shouldUnlock = gameState.stats.totalCommands >= condition.value;
+            shouldUnlock = gameState.stats.totalCommands >= condition.value!;
           }
           if (shouldUnlock) {
-            console.log(`[Achievement] Command count reached: ${condition.value}`);
+            console.log(`[Achievement] Command count reached: ${condition.value!}`);
           }
         }
         break;
@@ -105,7 +105,7 @@ export function checkLessonAchievements(
       case 'unique_commands':
         // Check if user has used enough unique commands
         if ('value' in condition) {
-          shouldUnlock = gameState.stats.uniqueCommands.length >= condition.value;
+          shouldUnlock = gameState.stats.uniqueCommands.length >= condition.value!;
           if (shouldUnlock) {
             console.log(`[Achievement] Unique commands: ${gameState.stats.uniqueCommands.length}`);
           }
@@ -163,7 +163,7 @@ export function checkLevelAchievements(
 
     const { condition } = achievement;
     if (condition.type === 'level_reached' && 'value' in condition) {
-      if (currentLevel >= condition.value) {
+      if (currentLevel >= condition.value!) {
         unlocked.push({
           achievementId: achievement.id,
           xpReward: achievement.xpReward,
@@ -233,11 +233,11 @@ export function checkCommandAchievements(
           if ('command' in condition && typeof condition.command === 'string') {
             const commandName = condition.command.toLowerCase();
             const commandOccurrences = gameState.stats.uniqueCommands.filter(
-              cmd => cmd === commandName
+              (cmd: string) => cmd === commandName
             ).length;
-            shouldUnlock = gameState.stats.totalCommands >= condition.value && commandOccurrences > 0;
+            shouldUnlock = gameState.stats.totalCommands >= condition.value! && commandOccurrences > 0;
           } else {
-            shouldUnlock = gameState.stats.totalCommands >= condition.value;
+            shouldUnlock = gameState.stats.totalCommands >= condition.value!;
           }
         }
         break;
@@ -252,7 +252,7 @@ export function checkCommandAchievements(
 
       case 'unique_commands':
         if ('value' in condition) {
-          shouldUnlock = gameState.stats.uniqueCommands.length >= condition.value;
+          shouldUnlock = gameState.stats.uniqueCommands.length >= condition.value!;
         }
         break;
 

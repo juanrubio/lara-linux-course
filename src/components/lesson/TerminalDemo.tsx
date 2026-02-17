@@ -12,8 +12,8 @@ export function TerminalDemo({ children }: TerminalDemoProps) {
     if (typeof node === 'string') return node;
     if (typeof node === 'number') return String(node);
     if (Array.isArray(node)) return node.map(extractText).join('');
-    if (node && typeof node === 'object' && 'props' in node && node.props.children) {
-      return extractText(node.props.children);
+    if (node && typeof node === 'object' && 'props' in node && (node as any).props.children) {
+      return extractText((node as any).props.children);
     }
     return '';
   };
