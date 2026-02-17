@@ -13,6 +13,50 @@ import { mergeStates } from './merge';
 import { exportProgress } from './export';
 
 /**
+ * Default empty states for fresh installs where localStorage is empty
+ */
+const defaultGameState: GameState = {
+  userId: 1,
+  username: '',
+  displayName: '',
+  avatarId: 'default',
+  stats: {
+    totalXp: 0,
+    currentLevel: 1,
+    currentStreak: 0,
+    longestStreak: 0,
+    lastActivityDate: null,
+    totalTimeSpentMinutes: 0,
+    totalCommands: 0,
+    uniqueCommands: [],
+    commandVariations: {},
+  },
+  unlockedAchievements: [],
+  preferences: {
+    theme: 'space',
+    soundEnabled: true,
+    notificationsEnabled: true,
+    animationsEnabled: true,
+    darkMode: false,
+    terminalFontSize: 14,
+    showHints: true,
+    difficulty: 'normal',
+  },
+};
+
+const defaultProgressState: ProgressState = {
+  tracks: {
+    linux: { trackId: 'linux', lessonsCompleted: 0, totalLessons: 20, currentLesson: null },
+    python: { trackId: 'python', lessonsCompleted: 0, totalLessons: 25, currentLesson: null },
+    bash: { trackId: 'bash', lessonsCompleted: 0, totalLessons: 15, currentLesson: null },
+    'raspberry-pi': { trackId: 'raspberry-pi', lessonsCompleted: 0, totalLessons: 10, currentLesson: null },
+  },
+  lessons: {},
+  currentTrack: null,
+  currentLesson: null,
+};
+
+/**
  * Read current state from localStorage
  */
 function readFromLocalStorage<T>(key: string): T | null {
@@ -195,20 +239,9 @@ export async function importProgress(
     // Sanitize data
     const sanitized = sanitizeData(backupData);
 
-    // Read current state
-    const currentGame = readFromLocalStorage<GameState>('codequest-game-state');
-    const currentProgress = readFromLocalStorage<ProgressState>('codequest-progress');
-
-    if (!currentGame || !currentProgress) {
-      return {
-        success: false,
-        error: {
-          code: 'READ_ERROR' as MigrationErrorCode,
-          message: 'Failed to read current progress',
-          action: 'Please try reloading the page',
-        },
-      };
-    }
+    // Read current state (fall back to defaults on fresh install)
+    const currentGame = readFromLocalStorage<GameState>('codequest-game-state') || defaultGameState;
+    const currentProgress = readFromLocalStorage<ProgressState>('codequest-progress') || defaultProgressState;
 
     // Create safety backup if requested
     if (createBackup) {
@@ -328,16 +361,9 @@ export async function previewImport(
     // Sanitize
     const sanitized = sanitizeData(backupData);
 
-    // Read current state
-    const currentGame = readFromLocalStorage<GameState>('codequest-game-state');
-    const currentProgress = readFromLocalStorage<ProgressState>('codequest-progress');
-
-    if (!currentGame || !currentProgress) {
-      return {
-        success: false,
-        error: { message: 'Failed to read current state' },
-      };
-    }
+    // Read current state (fall back to defaults on fresh install)
+    const currentGame = readFromLocalStorage<GameState>('codequest-game-state') || defaultGameState;
+    const currentProgress = readFromLocalStorage<ProgressState>('codequest-progress') || defaultProgressState;
 
     // Perform merge (without saving)
     const mergeResult = mergeStates(
